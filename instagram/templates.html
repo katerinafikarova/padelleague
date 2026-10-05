@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Systém šablon PadelLeague</title>
+<meta name="description" content="Osm šablon pro Instagram PadelLeague. Formulář vlevo živě přepisuje grafiku vpravo.">
+<meta name="theme-color" content="#022F44">
+<link rel="stylesheet" href="graphics.css?v=5">
+<style>
+  :root{--ui:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:#022F44;color:#E6EFF3;font:15px/1.5 var(--ui);padding-inline:20px;
+    background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:40px 40px}
+  .page{max-width:1240px;margin:0 auto;padding-block:36px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:28px}
+  .brand{display:flex;gap:8px;align-items:center;font:900 14px/1 'Satoshi',var(--ui);letter-spacing:.08em;text-transform:uppercase;color:#fff}
+  .brand i{width:9px;height:9px;border-radius:50%;background:#F97316}
+  h1{margin:10px 0 6px;font:900 clamp(30px,4vw,48px)/1 'Satoshi',var(--ui);text-transform:uppercase;color:#fff}
+  h1 span{font-weight:300}
+  .lede{margin:0;max-width:62ch;color:#A9C0CC}
+  header nav{display:flex;gap:10px;flex-wrap:wrap}
+  header nav a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:8px 14px;font-size:13.5px}
+  section{display:grid;grid-template-columns:320px 1fr;gap:24px;background:rgba(2,28,40,.6);border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:22px;margin-bottom:22px}
+  section h2{margin:0 0 4px;font:900 20px/1.1 'Satoshi',var(--ui);text-transform:uppercase;color:#fff}
+  section h2 em{font-style:normal;color:#F97316;margin-right:8px}
+  .meta{font-size:12.5px;color:#7F9DAD;margin:0 0 14px}
+  form{display:flex;flex-direction:column;gap:10px}
+  label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#A9C0CC}
+  input,select,textarea{font:15px/1.4 var(--ui);color:#0B2A3A;background:#F9FAFB;border:0;border-radius:10px;padding:9px 11px;text-transform:none;letter-spacing:0;font-weight:400}
+  textarea{min-height:120px;resize:vertical}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .prev{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .slot{display:flex;flex-direction:column;gap:8px}
+  .slot .cap{font-size:12px;color:#7F9DAD}
+  .fit{position:relative;overflow:hidden;border-radius:12px;background:#0b2a3a}
+  .fit .gi{position:absolute;left:0;top:0;transform-origin:0 0}
+  .fit.feed{width:280px;aspect-ratio:1080/1350}
+  .fit.story{width:224px;aspect-ratio:1080/1920}
+  .dl{background:#F97316;color:#fff;border:0;border-radius:10px;padding:9px 12px;font:600 13px/1 var(--ui);cursor:pointer;align-self:flex-start}
+  .hint{font-size:13px;color:#A9C0CC;margin:4px 0 0}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0B2A3A;color:#fff;padding:12px 16px;border-radius:12px;font-size:14px;z-index:9;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+  :focus-visible{outline:2px solid #F97316;outline-offset:2px}
+  @media (max-width:860px){section{grid-template-columns:1fr}.fit.feed{width:min(280px,100%)}}
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div>
+      <div class="brand"><i></i>Padel League</div>
+      <h1>Systém <span>šablon</span></h1>
+      <p class="lede">Jeden design, libovolně mnoho grafik. Vlevo uprav data tak, jak je pošle aplikace, vpravo se grafika okamžitě překreslí. Každou jde stáhnout jako PNG ve skutečném rozměru.</p>
+    </div>
+    <nav><a href="index.html">← Instagram profil</a><a href="../index.html">Prototyp aplikace</a></nav>
+  </header>
+  <div id="list"></div>
+</div>
+<script src="logos.js?v=5"></script>
+<script src="content.js?v=5"></script>
+<script src="templates.js?v=5"></script>
+<script>
+(function () {
+  'use strict';
+  var IG = window.IG, T = window.PLT;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  /* pomocná jména: formulář zapisuje do IG.players pod dočasná id */
+  function setName(id, n) { IG.players[id] = n || '—'; return id; }
+
+  var TPL = [
+    { n: '01', name: 'Pozvánka se živým stavem', meta: 'Příspěvek 1080 × 1350 · data: event.*, event.going[]',
+      fields: [['name', 'Název eventu', IG.event.name], ['format', 'Formát', IG.event.format], ['day', 'Den', IG.event.day], ['time', 'Čas', IG.event.time], ['venue', 'Místo', IG.event.venue], ['price', 'Cena', IG.event.price], ['cap', 'Kapacita', IG.event.cap], ['going', 'Přihlášení (čárkou)', 'Tereza M., Jakub L., Ondřej P., Klára R., Martin Č., Eliška K., Lukáš D., Anna J., Petr S.', 'area']],
+      render: function (v) {
+        var ids = v.going.split(',').map(function (x, i) { return setName('g' + i, x.trim()); }).filter(function (id) { return IG.players[id] !== '—' && IG.players[id]; });
+        IG.event = { name: v.name, format: v.format, day: v.day, time: v.time, venue: v.venue, price: v.price, cap: Math.max(+v.cap || 1, ids.length), going: ids };
+        return [['feed', T.feed({ t: 'announce' }), 'Příspěvek'], ['story', T.story({ t: 'spots' }), 'Story: zbývající místa']];
+      } },
+    { n: '02', name: 'Tým potvrzen', meta: 'Story 1080 × 1920 · generuje se po každé přihlášce',
+      fields: [['a', 'Hráč 1', 'Tereza M.'], ['b', 'Hráč 2', 'Jakub L.'], ['name', 'Event', IG.event.name]],
+      render: function (v) { setName('ta', v.a); setName('tb', v.b); IG.event.name = v.name; return [['story', T.story({ t: 'team', a: 'ta', b: 'tb' }), 'Story']]; } },
+    { n: '03', name: 'Vítězové', meta: 'Story 1080 × 1920 · stejná šablona každý týden',
+      fields: [['series', 'Číslo série', '13'], ['date', 'Datum', '6. 11.'], ['p1', '1. místo', 'Klára R.'], ['p2', '2. místo', 'Ondřej P.'], ['p3', '3. místo', 'Tereza M.'], ['pts', 'Body (čárkou)', '122, 117, 110']],
+      render: function (v) {
+        var pts = v.pts.split(',').map(function (x) { return +x.trim() || 0; });
+        IG.results[v.series] = Object.assign({}, IG.results[12], { date: v.date, podium: [setName('w1', v.p1), setName('w2', v.p2), setName('w3', v.p3)], pts: pts });
+        return [['story', T.story({ t: 'winners', series: v.series }), 'Story']];
+      } },
+    { n: '04', name: 'Recap eventu', meta: 'Karusel 1080 × 1350 · podium, ocenění, statistika',
+      fields: [['series', 'Číslo série', '12'], ['date', 'Datum', '30. 10.'], ['p1', '1. místo', 'Tereza M.'], ['p2', '2. místo', 'Martin Č.'], ['p3', '3. místo', 'Jakub L.'], ['pts', 'Body (čárkou)', '125, 119, 111'], ['jumper', 'Skokan večera', 'Martin Č.'], ['jump', 'Posun o míst', '6'], ['players', 'Hráčů', '24'], ['matches', 'Zápasů', '66']],
+      render: function (v) {
+        var pts = v.pts.split(',').map(function (x) { return +x.trim() || 0; });
+        IG.results[v.series] = { date: v.date, podium: [setName('r1', v.p1), setName('r2', v.p2), setName('r3', v.p3)], pts: pts, jumper: setName('rj', v.jumper), jump: v.jump,
+          stats: [{ n: v.players, l: 'hráčů' }, { n: v.matches, l: 'zápasů' }, { n: '3 h', l: 'padelu' }] };
+        return [['feed', T.feed({ t: 'podium', series: v.series }, { i: 0, n: 3 }), 'Slide 1'], ['feed', T.feed({ t: 'awards', series: v.series }, { i: 1, n: 3 }), 'Slide 2'],
+          ['feed', T.feed({ t: 'stats', series: v.series, tone: 'white', num: '03.', tag: 'STATISTIKA VEČERA', eyebrow: 'Americano #' + v.series }, { i: 2, n: 3 }), 'Slide 3']];
+      } },
+    { n: '05', name: 'Hráčská karta', meta: '3 varianty podle JVS · příspěvek i story',
+      fields: [['p', 'Jméno', 'Anna J.'], ['series', 'Americano #', '12'], ['result', 'Výsledek', 'VÍTĚZKA!'], ['won', 'Vyhráno', '8'], ['total', 'Zápasů', '10'], ['variant', 'Varianta', 'photo', 'select', [['photo', 'S fotkou'], ['navy', 'Navy'], ['orange', 'Oranžová']]]],
+      render: function (v) {
+        setName('hc', v.p);
+        var d = { t: 'card', p: 'hc', series: IG.results[v.series] ? v.series : 12, result: v.result, won: v.won, total: v.total, variant: v.variant };
+        return [['feed', T.feed(d), 'Příspěvek'], ['story', T.card(d, true), 'Story']];
+      } },
+    { n: '06', name: 'Měsíční žebříček', meta: 'Příspěvek 1080 × 1350 · řádek = jméno; body; posun',
+      fields: [['month', 'Měsíc', 'LISTOPAD'], ['rows', 'Top 10', 'Klára R.; 502; 2\nTereza M.; 497; -1\nJakub L.; 480; -1\nOndřej P.; 466; 1\nMartin Č.; 455; -1\nFilip H.; 440; 2\nLucie B.; 431; -1\nAnna J.; 418; 3\nEliška K.; 405; -2\nPetr S.; 399; 1', 'area'], ['jumper', 'Skokan měsíce', 'Anna J.']],
+      render: function (v) {
+        var rows = v.rows.split('\n').filter(Boolean).slice(0, 10).map(function (r, i) { var c = r.split(';'); return { p: setName('lb' + i, (c[0] || '').trim()), pts: +(c[1] || 0), d: +(c[2] || 0) }; });
+        var j = rows.filter(function (r) { return IG.players[r.p] === v.jumper.trim(); })[0];
+        IG.leaderboard = { month: v.month, rows: rows, jumper: j ? j.p : setName('lbj', v.jumper) };
+        return [['feed', T.feed({ t: 'leader' }), 'Příspěvek']];
+      } },
+    { n: '07', name: 'Achievement', meta: 'Karusel a story „ODEMČENO“',
+      fields: [['tier', 'Úroveň', '2', 'select', [['0', 'Základní raketa'], ['1', 'Stříbrná raketa'], ['2', 'Zlatá raketa'], ['3', 'Diamantová raketa'], ['streak', 'Streak']]]],
+      render: function (v) {
+        var out = [['story', T.story({ t: 'unlock', tier: v.tier === 'streak' ? 'streak' : +v.tier }), 'Story']];
+        if (v.tier !== 'streak') out.unshift(['feed', T.feed({ t: 'ach', tier: +v.tier }, { i: +v.tier, n: 4 }), 'Příspěvek']);
+        return out;
+      } },
+    { n: '08', name: 'Milník', meta: 'Příspěvek 1080 × 1350 · design brief: „100 hráčů, první turnaj v…“',
+      fields: [['n', 'Číslo', '1 000'], ['label', 'Co', 'PŘIHLÁŠENÝCH HRÁČŮ'], ['sub', 'Podtitulek', 'Za 3 měsíce, bez jediného účtu.']],
+      render: function (v) { return [['feed', T.feed({ t: 'milestone', n: v.n, label: v.label, sub: v.sub }), 'Příspěvek']]; } }
+  ];
+
+  var list = document.getElementById('list');
+  list.innerHTML = TPL.map(function (t, k) {
+    var f = t.fields.map(function (x) {
+      var id = 't' + k + '-' + x[0];
+      if (x[3] === 'area') return '<label for="' + id + '">' + x[1] + '<textarea id="' + id + '" name="' + x[0] + '">' + esc(x[2]) + '</textarea></label>';
+      if (x[3] === 'select') return '<label for="' + id + '">' + x[1] + '<select id="' + id + '" name="' + x[0] + '">' + x[4].map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === x[2] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>';
+      return '<label for="' + id + '">' + x[1] + '<input id="' + id + '" name="' + x[0] + '" value="' + esc(x[2]) + '"></label>';
+    }).join('');
+    return '<section aria-labelledby="h' + k + '"><div><h2 id="h' + k + '"><em>' + t.n + '</em>' + t.name + '</h2><p class="meta">' + t.meta + '</p><form data-k="' + k + '">' + f + '</form><p class="hint">Změna se projeví hned.</p></div><div class="prev" id="p' + k + '"></div></section>';
+  }).join('');
+
+  function draw(k) {
+    var form = list.querySelector('form[data-k="' + k + '"]'), v = {};
+    [].slice.call(form.elements).forEach(function (el) { v[el.name] = el.value; });
+    var out = TPL[k].render(v), box = document.getElementById('p' + k);
+    box.innerHTML = out.map(function (o, i) {
+      return '<div class="slot"><div class="fit ' + o[0] + '" data-w="1080" data-h="' + (o[0] === 'story' ? 1920 : 1350) + '"><div class="gi">' + o[1] + '</div></div><span class="cap">' + o[2] + ' · ' + (o[0] === 'story' ? '1080 × 1920' : '1080 × 1350') + '</span><button class="dl" data-k="' + k + '" data-i="' + i + '">Stáhnout PNG</button></div>';
+    }).join('');
+    box._out = out; fit(box);
+  }
+  function fit(root) { root.querySelectorAll('.fit').forEach(function (el) { el.firstChild.style.transform = 'scale(' + (el.clientWidth / +el.dataset.w) + ')'; }); }
+  TPL.forEach(function (_, k) { draw(k); });
+  list.addEventListener('input', function (e) { var f = e.target.closest('form'); if (f) draw(+f.dataset.k); });
+  window.addEventListener('resize', function () { fit(document); });
+  if (document.fonts) document.fonts.ready.then(function () { fit(document); });
+
+  /* export PNG */
+  function toast(m) { var t = document.querySelector('.toast'); if (t) t.remove(); t = document.createElement('div'); t.className = 'toast'; t.textContent = m; document.body.appendChild(t); setTimeout(function () { t.remove(); }, 2600); }
+  function loadH2C(cb) { if (window.html2canvas) return cb(); var s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'; s.onload = cb; s.onerror = function () { toast('Knihovnu pro export se nepodařilo načíst.'); }; document.head.appendChild(s); }
+  list.addEventListener('click', function (e) {
+    var b = e.target.closest('.dl'); if (!b) return;
+    var o = document.getElementById('p' + b.dataset.k)._out[+b.dataset.i], w = 1080, h = o[0] === 'story' ? 1920 : 1350;
+    toast('Připravuji PNG ' + w + ' × ' + h + '…');
+    loadH2C(function () {
+      var box = document.createElement('div'); box.style.cssText = 'position:fixed;left:-30000px;top:0;width:' + w + 'px;height:' + h + 'px'; box.innerHTML = o[1]; document.body.appendChild(box);
+      var imgs = [].slice.call(box.querySelectorAll('img'));
+      Promise.all(imgs.map(function (im) { return im.complete ? 1 : new Promise(function (r) { im.onload = im.onerror = r; }); }))
+        .then(function () { return window.html2canvas(box.firstChild, { width: w, height: h, scale: 1, useCORS: true, backgroundColor: null, logging: false }); })
+        .then(function (cv) { cv.toBlob(function (bl) { var a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'padelleague-sablona-' + TPL[+b.dataset.k].n + '-' + (+b.dataset.i + 1) + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500); box.remove(); toast('Staženo'); }, 'image/png'); })
+        .catch(function () { box.remove(); toast('Export se nepovedl. Otevři stránku přes GitHub Pages nebo lokální server.'); });
+    });
+  });
+})();
+</script>
+</body>
+</html>

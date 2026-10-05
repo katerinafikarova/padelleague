@@ -32,6 +32,9 @@ U každé cesty je v mapě vlevo rozbalovací poznámka „Kde váhá a jak jsme
 
 Každá obrazovka jde otevřít přímo odkazem, např. `index.html#/p-event`, `index.html#/o-after`.
 
+### Instagram profil
+Složka `instagram/`: klikací prototyp IG profilu PadelLeague (mřížka 12 příspěvků, 6 highlights, stories, označené karty hráčů) a systém šablon s živou úpravou a exportem PNG. Podrobnosti v `instagram/README.md`, otevřené otázky v `instagram/OTAZKY.md`.
+
 ## Nahrání na GitHub Pages
 
 1. Na github.com vytvoř nový repozitář, například `padelleague-prototyp` (Public).

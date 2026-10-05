@@ -86,6 +86,7 @@
       '<button class="row start-row" data-go="p-chat"><span><b>' + t('start_player') + '</b><span class="sub">' + t('start_player_sub') + '</span></span><span class="r">→</span></button>' +
       '<button class="row start-row" data-go="o-signup"><span><b>' + t('start_org') + '</b><span class="sub">' + t('start_org_sub') + '</span></span><span class="r">→</span></button>' +
       '<a class="row start-row" href="landing.html?lang=' + lang + '" style="text-decoration:none"><span><b>' + t('start_land') + '</b><span class="sub">' + t('start_land_sub') + '</span></span><span class="r">↗</span></a>' +
+      '<a class="row start-row" href="instagram/index.html" style="text-decoration:none"><span><b>' + t('start_ig') + '</b><span class="sub">' + t('start_ig_sub') + '</span></span><span class="r">↗</span></a>' +
       '</div>');
   };
   function langSwitch() {

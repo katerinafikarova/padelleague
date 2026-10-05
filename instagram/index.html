@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PadelLeague na Instagramu</title>
+<meta name="description" content="Klikací prototyp Instagram profilu PadelLeague: mřížka, highlights, stories a systém šablon.">
+<meta name="theme-color" content="#022F44">
+<link rel="preload" href="../assets/fonts/satoshi-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="graphics.css?v=5">
+<link rel="stylesheet" href="ig.css?v=5">
+</head>
+<body>
+<div class="wrap">
+  <aside class="side" aria-label="Navigace">
+    <div class="brandline"><i></i>Padel League</div>
+    <div>
+      <h1>Instagram profil</h1>
+      <p style="margin-top:8px">Prototyp profilu po zhruba 3 měsících provozu. Klikej v telefonu: příspěvky, highlights, aktivní story u avataru.</p>
+    </div>
+    <h2>Profil</h2>
+    <nav class="nav">
+      <a href="#" data-nav="grid">Mřížka (12 příspěvků)</a>
+      <a href="#" data-nav="reels">Reels</a>
+      <a href="#" data-nav="tagged">Označené (karty hráčů)</a>
+    </nav>
+    <h2>Systém</h2>
+    <nav class="nav">
+      <a href="templates.html">Šablony grafik (živá úprava)</a>
+      <a href="../index.html">← Prototyp aplikace</a>
+      <a href="../landing.html">← Landing page</a>
+    </nav>
+    <p class="small">Lidé, komunity a místa jsou fiktivní. Písmo Satoshi, barvy podle JVS. Celý prototyp je zatím česky.</p>
+  </aside>
+
+  <main class="stage">
+    <div class="device"><div class="app" id="app" aria-live="polite"></div></div>
+  </main>
+
+  <aside class="why" id="why" aria-label="Proč takhle"></aside>
+</div>
+<button class="info-btn" data-act="info" aria-label="Proč takhle">i</button>
+<script src="logos.js?v=5"></script>
+<script src="content.js?v=5"></script>
+<script src="templates.js?v=5"></script>
+<script src="ig.js?v=5"></script>
+</body>
+</html>
