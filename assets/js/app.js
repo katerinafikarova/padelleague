@@ -651,16 +651,70 @@
 
   /* ---------- RENDER ---------- */
   var app = document.getElementById('app'), device = document.querySelector('.device');
+  var web = document.getElementById('web'), view = web ? web.querySelector('.web-view') : null, urlEl = web ? web.querySelector('.web-url') : null;
+  var mode = 'desktop';
+  try { var qm = new URLSearchParams(location.search).get('mode'); mode = qm === 'mobile' || qm === 'desktop' ? qm : (localStorage.getItem('pl-app-mode') || 'desktop'); } catch (e) { /* bez úložiště */ }
+  function isDesk() { return mode === 'desktop' && !!view && window.innerWidth > 820; }
+  function rootEl() { return isDesk() ? view : app; }
+  function setMode(m) { mode = m; try { localStorage.setItem('pl-app-mode', m); } catch (e) { /* */ } render(); }
+
+  /* ---------- DESKTOP: obal podle typu obrazovky ---------- */
+  var ORG_NAV = [['o-home', 'dk_home', '⌂'], ['o-new', 'dk_new', '+'], ['o-manage', 'dk_players', '☰'], ['o-schedule', 'dk_sched', '▦'], ['o-play', 'dk_play', '▶'], ['o-after', 'dk_after', '★'], ['o-next', 'dk_next', '↻'], ['o-card', 'dk_card', '◎']];
+  function kind(r) {
+    if (r === 'p-chat' || r === 'p-reminder' || r === 'o-wa') return 'wa';
+    if (r === 'o-signup' || r === 'o-community' || r === 'o-stripe') return 'auth';
+    if (r.indexOf('o-') === 0) return 'org';
+    return 'site';
+  }
+  function deskUrl(r) {
+    var k = kind(r), slug = S.community.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-');
+    if (k === 'wa') return 'web.whatsapp.com';
+    if (r === 'o-stripe') return 'connect.stripe.com/setup';
+    if (k === 'auth') return 'app.padelleague.eu/' + (r === 'o-signup' ? 'registrace' : 'nova-komunita');
+    if (k === 'org') return 'app.padelleague.eu/' + slug + '/' + ({ 'o-home': '', 'o-new': 'novy-event', 'o-live': 'event/' + S.ev.slug, 'o-manage': 'event/' + S.ev.slug + '/hraci', 'o-schedule': 'event/' + S.ev.slug + '/rozpis', 'o-play': 'event/' + S.ev.slug + '/zive', 'o-after': 'event/' + S.ev.slug + '/souhrn', 'o-after-d': 'event/' + S.ev.slug + '/souhrn', 'o-next': 'dalsi-event', 'o-card': 'event/' + S.ev.slug + '/karta' }[r] || '');
+    if (r === 'start') return 'padelleague.eu/prototyp';
+    return 'padelleague.eu/e/' + S.ev.slug;
+  }
+  function deskShell(r, inner) {
+    var k = kind(r);
+    if (k === 'org') {
+      var cur = r === 'o-after-d' ? 'o-after' : r;
+      return '<div class="dk-org"><aside class="dk-side"><div class="dk-brand"><i></i>Padel League</div><div class="dk-comm"><b>' + esc(S.community) + '</b><span>' + esc(S.city) + '</span></div><nav>' +
+        ORG_NAV.map(function (n) { return '<button class="' + (n[0] === cur ? 'on' : '') + '" data-go="' + n[0] + '"><span>' + n[2] + '</span>' + t(n[1]) + '</button>'; }).join('') +
+        '</nav><span class="dk-sp"></span><button class="dk-view" data-go="p-event">' + t('em_view') + ' ↗</button><div class="dk-lang">' + langSwitch() + '</div></aside>' +
+        '<div class="dk-main r-' + r + '">' + inner + '</div></div>';
+    }
+    if (k === 'wa') {
+      var chats = r === 'o-wa' ? [['Padel Teplice 🎾', '12:13', 1], ['PadelLeague', 'včera', 0], ['Tomáš Novák', 'po', 0], ['Rodina 🏡', 'ne', 0]] :
+        r === 'p-reminder' ? [['PadelLeague', '17:00', 1], ['Padel Teplice 🎾', '18:40', 0], ['Klára', 'út', 0], ['Rodina 🏡', 'ne', 0]] : [['Padel Teplice 🎾', '18:40', 1], ['PadelLeague', 'čt', 0], ['Klára', 'út', 0], ['Rodina 🏡', 'ne', 0]];
+      return '<div class="dk-wa"><aside class="dk-wa-list"><div class="dk-wa-h"><b>Chaty</b></div><div class="dk-wa-search">Hledat</div>' +
+        chats.map(function (c) { return '<div class="dk-wa-chat' + (c[2] ? ' on' : '') + '"><i>' + esc(c[0].charAt(0)) + '</i><span><b>' + esc(c[0]) + '</b><small>' + (c[2] ? '…' : '') + '</small></span><em>' + c[1] + '</em></div>'; }).join('') +
+        '</aside><div class="dk-main r-' + r + '">' + inner + '</div></div>';
+    }
+    if (k === 'auth') return '<div class="dk-auth"><div class="dk-main r-' + r + '">' + inner + '</div></div>';
+    return '<div class="dk-site"><header class="dk-head"><span class="logo"><i></i>Padel League</span><span class="dk-head-r">' + langSwitch() + '<button class="dk-login" data-act="toast" data-arg="m_login_t">' + t('m_login') + '</button></span></header><div class="dk-main r-' + r + '">' + inner + '</div></div>';
+  }
   function route() { var h = location.hash.replace(/^#\/?/, ''); return R[h] ? h : 'start'; }
   function render() {
     var r = route();
     if ((r === 'o-after' || r === 'o-after-d' || r === 'o-card') && !S.last) demoFinished();
     if ((r === 'o-schedule' || r === 'o-play') && !S.sched) { if (S.players.length < 4) S.players = mkPlayers(14); buildSched(); }
-    if (device) device.classList.toggle('wide', r === 'o-after-d');
-    var html = R[r]();
+    var desk = isDesk();
+    document.body.classList.toggle('mode-desktop', desk);
+    document.body.classList.toggle('mode-mobile', !desk);
+    document.querySelectorAll('[data-mode]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-mode') === mode); });
+    if (device) device.classList.toggle('wide', !desk && r === 'o-after-d');
+    var html = desk && r === 'o-after' ? R['o-after-d']() : R[r]();
     if (S.sheet && SH[S.sheet]) html += '<div class="overlay" data-act="' + (S.sheet === 'paying' ? '' : 'close') + '"></div><div class="sheet' + (S.sheet === 'paying' ? ' paysheet' : '') + '" role="dialog" aria-modal="true">' + SH[S.sheet]() + '</div>';
     if (S.toast) html += '<div class="toast" role="status"><span>✓</span><span>' + esc(S.toast) + '</span></div>';
-    app.innerHTML = html;
+    if (desk) {
+      app.innerHTML = '';
+      view.innerHTML = deskShell(r, html);
+      if (urlEl) urlEl.textContent = deskUrl(r);
+    } else {
+      if (view) view.innerHTML = '';
+      app.innerHTML = html;
+    }
     document.querySelectorAll('[data-route]').forEach(function (a) { a.classList.toggle('on', a.getAttribute('data-route') === r); });
     document.querySelectorAll('[data-preset-grp]').forEach(syncPresetButtons);
   }
@@ -677,8 +731,9 @@
   }
 
   document.addEventListener('click', function (e) {
-    var el = e.target.closest('[data-go],[data-act],[data-preset],[data-panel]');
+    var el = e.target.closest('[data-go],[data-act],[data-preset],[data-panel],[data-mode]');
     if (!el) return;
+    if (el.hasAttribute('data-mode')) { setMode(el.getAttribute('data-mode')); return; }
     if (el.hasAttribute('data-panel')) { document.querySelector('.panel').classList.toggle('open'); return; }
     if (el.hasAttribute('data-preset')) { PRESETS[el.getAttribute('data-preset')](); syncPanelLang(); render(); return; }
     if (el.hasAttribute('data-go')) { e.preventDefault(); S.sheet = null; go(el.getAttribute('data-go')); return; }
@@ -687,7 +742,9 @@
   });
   document.querySelectorAll('.panel a[data-route]').forEach(function (a) { a.addEventListener('click', function () { document.querySelector('.panel').classList.remove('open'); }); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && S.sheet && S.sheet !== 'paying') closeSheet(); });
-  window.addEventListener('hashchange', function () { S.sheet = null; render(); var sc = app.querySelector('.scroll,.d-main'); if (sc) sc.scrollTop = 0; });
+  window.addEventListener('hashchange', function () { S.sheet = null; render(); var sc = rootEl().querySelector('.scroll,.d-main'); if (sc) sc.scrollTop = 0; });
+  var lastDesk = null;
+  window.addEventListener('resize', function () { var d = isDesk(); if (d !== lastDesk) { lastDesk = d; render(); } });
   document.documentElement.lang = lang;
   syncPanelLang();
   render();

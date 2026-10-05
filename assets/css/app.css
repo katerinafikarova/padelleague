@@ -341,3 +341,147 @@ button.row:hover{border-color:#C9D5DC}
 .start-row b{display:block}
 .start-row .sub{display:block;margin-top:3px;font-size:13px;line-height:1.35;color:var(--muted);white-space:normal}
 .start-row > .r{flex:none}
+
+/* =================== DESKTOP: přepínač a okno prohlížeče =================== */
+.stage{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-width:0}
+.modebar{display:flex;align-items:center;gap:10px;flex:none;font-size:12.5px;color:#A9C0CC}
+.mseg{display:inline-flex;border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:3px;gap:2px}
+.mseg button{padding:7px 14px;border-radius:99px;color:#D7E4EB;font-weight:600;font-size:13px}
+.mseg button.on{background:#fff;color:var(--navy)}
+.device{height:min(844px,calc(100dvh - 92px))}
+.web{display:none;flex-direction:column;width:100%;max-width:1400px;flex:1;min-height:0;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 40px 80px -30px rgba(0,0,0,.7)}
+body.mode-desktop .device,body.mode-desktop .hint{display:none}
+body.mode-desktop .web{display:flex}
+body.mode-desktop .stage{padding:14px 18px}
+.web-bar{flex:none;display:flex;align-items:center;gap:14px;padding:9px 14px;background:#E9EDF0;border-bottom:1px solid #D5DBDF}
+.web-bar .dots{display:flex;gap:7px}
+.web-bar .dots i{width:11px;height:11px;border-radius:50%;background:#FF5F57}
+.web-bar .dots i:nth-child(2){background:#FEBC2E}.web-bar .dots i:nth-child(3){background:#28C840}
+.web-url{flex:1;max-width:520px;margin:0 auto;background:#fff;border-radius:8px;padding:6px 12px;font:12.5px/1 var(--f-body);color:#4A5A63;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.web-view{position:relative;flex:1;min-height:0;display:flex;background:var(--ground);color:var(--ink);container-type:size;isolation:isolate}
+.web-view>div{flex:1;min-width:0;min-height:0}
+@media (max-width:820px){.modebar{display:none}.device{height:100dvh}}
+
+/* společné: obrazovka uvnitř hlavní plochy */
+.dk-main{position:relative;flex:1;min-width:0;min-height:0;overflow:hidden}
+.dk-main .screen{animation:none}
+.dk-main .status{display:none}
+.dk-main .top{padding:22px 40px 12px;max-width:1100px;width:100%;margin:0 auto}
+.dk-main .top .ttl{text-align:left;font-size:18px;padding-left:6px}
+.dk-main .scroll{width:100%;max-width:1100px;margin:0 auto;padding:6px 40px 28px;gap:16px}
+.dk-main .dock{width:100%;max-width:1100px;margin:0 auto;padding:14px 40px 26px;flex-direction:row;align-items:center;justify-content:flex-end;gap:18px;border-top:1px solid var(--line);background:var(--ground)}
+.dk-main .screen.dark .dock{background:transparent;border-color:rgba(255,255,255,.12)}
+.dk-main .dock .cta{width:auto;min-width:340px}
+.dk-main .dock .fine{text-align:right;flex:1}
+.dk-main .dock .link{padding:6px 2px}
+.dk-main .h-caps{font-size:46px}
+/* panely jako modální okna */
+.dk-main .sheet{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);width:min(500px,calc(100% - 48px));border-radius:22px;max-height:88%;animation:fade .2s ease;padding-bottom:22px}
+.dk-main .sheet .grab{display:none}
+.dk-main .toast{left:50%;right:auto;transform:translateX(-50%);bottom:28px;min-width:340px}
+
+/* web pro hráče */
+.dk-site{display:flex;flex-direction:column}
+.dk-head{flex:none;display:flex;justify-content:space-between;align-items:center;padding:14px 40px;background:var(--navy);color:#fff}
+.dk-head .logo{color:#fff}
+.dk-head-r{display:flex;gap:16px;align-items:center}
+.dk-head .lang-sw{border-color:rgba(255,255,255,.3)}
+.dk-head .lang-sw button.on{background:#fff;color:var(--navy)}
+.dk-login{font-weight:700;font-size:14px;color:#fff;opacity:.9}
+.dk-site .dk-main .top{display:none}
+.dk-site .dk-main .scroll{padding-top:28px}
+
+/* stránka eventu ve dvou sloupcích */
+.r-p-event .scroll{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr);align-content:start;gap:18px 28px}
+.r-p-event .photo{grid-row:1 / span 4;min-height:min(560px,70cqh)}
+.r-p-event .photo .over-title{font-size:40px;top:64px}
+.r-p-event .photo .glass{padding:20px 22px}
+.r-p-event .photo .kv .v{font-size:17px}
+.r-p-event .dock{justify-content:flex-end}
+.r-p-start .scroll,.r-start .scroll{max-width:760px}
+.r-start .h-caps{font-size:64px}
+.r-p-in .scroll,.r-p-in .dock{max-width:720px}
+.r-p-in .scroll{padding-top:40px}
+
+/* administrace organizátora */
+.dk-org{display:flex}
+.dk-side{flex:none;width:236px;background:var(--navy-deep);color:#D7E4EB;display:flex;flex-direction:column;padding:22px 14px;gap:16px;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:28px 28px}
+.dk-brand{display:flex;align-items:center;gap:8px;font:900 13px/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:#fff;padding:0 8px}
+.dk-brand i{width:8px;height:8px;border-radius:50%;background:var(--orange)}
+.dk-comm{background:rgba(255,255,255,.07);border-radius:12px;padding:10px 12px}
+.dk-comm b{display:block;color:#fff;font-size:14px}
+.dk-comm span{font-size:12px;opacity:.7}
+.dk-side nav{display:flex;flex-direction:column;gap:2px}
+.dk-side nav button{display:flex;gap:10px;align-items:center;text-align:left;padding:9px 10px;border-radius:9px;font-size:14px;color:#D7E4EB}
+.dk-side nav button span{width:18px;text-align:center;opacity:.7}
+.dk-side nav button:hover{background:rgba(255,255,255,.06)}
+.dk-side nav button.on{background:var(--orange);color:#fff}
+.dk-side nav button.on span{opacity:1}
+.dk-sp{flex:1}
+.dk-view{font-size:13px;color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:9px 10px;text-align:left}
+.dk-lang{padding:0 4px}
+.dk-org .dk-main .top{border-bottom:1px solid var(--line);max-width:none;padding:18px 32px 14px;margin:0}
+.dk-org .dk-main .top .ib{display:none}
+.dk-org .dk-main .top .ttl{font-size:20px;padding-left:0}
+.dk-org .dk-main .screen.dark .top{border-color:rgba(255,255,255,.12)}
+.dk-org .dk-main .scroll{max-width:1040px;padding:24px 32px 28px}
+.dk-org .dk-main .dock{max-width:none;padding:14px 32px 22px}
+.dk-org .r-o-after .d-bar,.dk-org .r-o-after-d .d-bar{display:none}
+.dk-org .r-o-after .d-main,.dk-org .r-o-after-d .d-main{padding:26px 32px}
+
+.r-o-home .scroll{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,1fr);align-content:start;gap:14px 24px}
+.r-o-home .scroll>.lbl:first-child{grid-column:1/-1}
+.r-o-home .card-ev{grid-row:2 / span 5;min-height:320px}
+.r-o-home .card-ev .glass{padding:18px 20px}
+.r-o-home .card-ev .kv .v{font-size:20px}
+.r-o-new .scroll{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:14px 18px}
+.r-o-new .scroll>.lbl,.r-o-new .scroll>.formats,.r-o-new .scroll>.stripe-card,.r-o-new .scroll>.acc,.r-o-new .scroll>.row{grid-column:1/-1}
+.r-o-new .formats{grid-template-columns:repeat(4,1fr)}
+.r-o-new .acc .inner{display:none}
+.r-o-new .acc.open .inner{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.r-o-manage .scroll{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:10px 16px}
+.r-o-manage .scroll>.seg3,.r-o-manage .scroll>.lbl,.r-o-manage .scroll>button.row,.r-o-manage .scroll>.empty{grid-column:1/-1}
+.r-o-manage .seg3{grid-template-columns:repeat(3,minmax(0,220px))}
+.r-o-schedule .scroll{display:grid;grid-template-columns:1fr 1fr;align-content:start}
+.r-o-schedule .scroll>.row,.r-o-schedule .scroll>.p{grid-column:1/-1}
+.r-o-play .scroll{display:grid;grid-template-columns:1fr 1fr;align-content:start}
+.r-o-play .scroll>.tabs,.r-o-play .scroll>.lbl,.r-o-play .scroll>.stand{grid-column:1/-1}
+.r-o-play .stand{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.r-o-live .scroll{max-width:1040px}
+.r-o-live .courts-mini{grid-template-columns:repeat(4,1fr)}
+.r-o-live .h-caps{font-size:52px}
+.r-o-live .dock{justify-content:space-between}
+.r-o-live .nudge{flex:1;max-width:560px}
+.r-o-next .scroll{display:grid;grid-template-columns:1fr 1fr;align-content:start}
+.r-o-next .scroll>.h-mid,.r-o-next .scroll>button.row:last-child{grid-column:1/-1}
+.r-o-card .scroll{align-items:center}
+.r-o-card .somecard{width:min(420px,100%);flex:none;aspect-ratio:9/16;min-height:0}
+
+/* registrace a Stripe: karta uprostřed */
+.dk-auth{display:flex;align-items:center;justify-content:center;background:var(--navy);background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:40px 40px}
+.dk-auth .dk-main{flex:none;width:min(520px,calc(100% - 48px));height:min(720px,calc(100cqh - 48px));border-radius:24px;box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
+.dk-auth .dk-main .top,.dk-auth .dk-main .scroll,.dk-auth .dk-main .dock{padding-left:28px;padding-right:28px}
+.dk-auth .dk-main .dock{flex-direction:column;align-items:stretch}
+.dk-auth .dk-main .dock .cta{min-width:0;width:100%}
+.dk-auth .dk-main .status{display:none}
+.dk-auth .r-o-stripe .screen>div:nth-child(2){padding-top:18px}
+
+/* WhatsApp Web */
+.dk-wa{display:flex;background:#F0F2F5}
+.dk-wa-list{flex:none;width:320px;background:#fff;border-right:1px solid #E1E4E8;display:flex;flex-direction:column}
+.dk-wa-h{padding:18px 18px 10px;font-size:20px}
+.dk-wa-search{margin:0 14px 10px;background:#F0F2F5;border-radius:8px;padding:9px 12px;color:#667781;font-size:14px}
+.dk-wa-chat{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;padding:10px 16px;border-bottom:1px solid #F0F2F5}
+.dk-wa-chat.on{background:#F0F2F5}
+.dk-wa-chat i{width:44px;height:44px;border-radius:50%;background:#DFE5E7;display:grid;place-items:center;font-style:normal;font-weight:700;color:#54656F}
+.dk-wa-chat b{display:block;font-weight:500;font-size:15px}
+.dk-wa-chat small{color:#667781}
+.dk-wa-chat em{font-style:normal;font-size:12px;color:#667781}
+.dk-wa .dk-main .top{max-width:none;margin:0;padding:12px 20px}
+.dk-wa .dk-main .top .ib{display:none}
+.dk-wa .dk-main .scroll{max-width:none;padding:20px 8%}
+.dk-wa .dk-main .bubble{max-width:min(560px,70%)}
+.dk-wa .dk-main .dock{max-width:none;background:#F0F2F5;border:0}
+.dk-auth .dk-main .h-caps{font-size:34px}
+.r-o-live .nudge{min-width:360px}
+.r-o-live .dock{flex-wrap:wrap}

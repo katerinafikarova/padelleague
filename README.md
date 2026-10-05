@@ -5,13 +5,15 @@ Vizuál podle JVS Princová & Fikarová (navy #034867, oranžová #F97316, Satos
 
 Aplikace i landing jsou **česky**, angličtina je druhá jazyková verze (přepínač CZ / EN v aplikaci, v mapě vlevo i na landingu; nebo `?lang=en` v adrese).
 
+**Dvě zobrazení:** výchozí je **počítač** (okno prohlížeče: hráč vidí webovou stránku eventu ve dvou sloupcích a panely jako modální okna, organizátor administraci s bočním menu, WhatsApp jako WhatsApp Web). Nahoře nad oknem se přepíná na **mobil** (telefon). Volba se pamatuje, odkaz `?mode=mobile` nebo `?mode=desktop` ji vynutí. Na telefonu se vždy ukáže mobilní verze.
+
 Čisté HTML, CSS a JavaScript. Žádná instalace ani build, funguje jako statický web (GitHub Pages, Netlify, Vercel nebo dvojklik na `index.html`).
 
 ## Co v něm je
 
 | Soubor | Obsah |
 |---|---|
-| `index.html` | Aplikace v rámečku telefonu + mapa prototypu vlevo (na mobilu přes celou obrazovku, mapa pod oranžovým štítkem „Mapa“) |
+| `index.html` | Aplikace v okně prohlížeče (počítač) nebo v telefonu (mobil) + mapa prototypu vlevo (na skutečném telefonu přes celou obrazovku, mapa pod oranžovým štítkem „Mapa“) |
 | `landing.html` | Landing page pro organizátora, desktop i mobil. Tlačítka vedou do registrace v prototypu. |
 | `assets/css/app.css` | Styly a design tokeny |
 | `assets/js/app.js` | Obrazovky, stavy a navigace |
