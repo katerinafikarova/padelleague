@@ -485,3 +485,6 @@ body.mode-desktop .stage{padding:14px 18px}
 .dk-auth .dk-main .h-caps{font-size:34px}
 .r-o-live .nudge{min-width:360px}
 .r-o-live .dock{flex-wrap:wrap}
+.seg-ctl button[data-mode].on{background:#fff;color:var(--navy);border-color:#fff;font-weight:700}
+.modebar{font-weight:600}
+.mseg button{font-size:14px;padding:8px 16px}
