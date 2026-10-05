@@ -4,6 +4,8 @@ Profil po zhruba 3 měsících provozu: hlavička a bio, 6 highlights, aktivní 
 
 Celé česky, písmo Satoshi, barvy a grid podle JVS.
 
+**Dvě zobrazení:** výchozí je **počítač** (instagram.com v okně prohlížeče: detail příspěvku jako modální okno, stories na celou obrazovku). Nahoře nad oknem se přepíná na **mobil** (aplikace v telefonu). Volba se pamatuje, odkaz `?mode=mobile` nebo `?mode=desktop` ji vynutí. Na telefonu se vždy ukáže mobilní verze.
+
 ## Jak otevřít
 
 - Online: `…/padelleague/instagram/` (stejný GitHub Pages web jako prototyp aplikace).
@@ -35,7 +37,7 @@ Všechno se mění v `content.js`, grafiky se překreslí samy:
 
 ## Ovládání
 
-- Mřížka: klepni na příspěvek. Karusel se posouvá swipem nebo šipkami ← →.
+- Mřížka: klepni na příspěvek. Karusel se posouvá swipem, šipkami ‹ › nebo klávesami ← →. Na počítači se mezi příspěvky přechází šipkami po stranách okna, zavírá se ✕, Esc nebo klikem mimo.
 - Stories: klepni na avatar (aktivní story) nebo na highlight. Klepnutí vpravo/vlevo = další/předchozí, podržení = pauza, šipky a Esc na klávesnici.
 - Export: tlačítko v panelu „Proč takhle“ nebo ikona ↓ v prohlížeči stories. Šablony na `templates.html` mají tlačítko u každé grafiky.
 

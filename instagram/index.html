@@ -7,8 +7,8 @@
 <meta name="description" content="Klikací prototyp Instagram profilu PadelLeague: mřížka, highlights, stories a systém šablon.">
 <meta name="theme-color" content="#022F44">
 <link rel="preload" href="../assets/fonts/satoshi-900.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="graphics.css?v=5">
-<link rel="stylesheet" href="ig.css?v=5">
+<link rel="stylesheet" href="graphics.css?v=9">
+<link rel="stylesheet" href="ig.css?v=9">
 </head>
 <body>
 <div class="wrap">
@@ -16,7 +16,7 @@
     <div class="brandline"><i></i>Padel League</div>
     <div>
       <h1>Instagram profil</h1>
-      <p style="margin-top:8px">Prototyp profilu po zhruba 3 měsících provozu. Klikej v telefonu: příspěvky, highlights, aktivní story u avataru.</p>
+      <p style="margin-top:8px">Prototyp profilu po zhruba 3 měsících provozu. Výchozí je zobrazení na počítači, nahoře přepneš na mobil. Klikej na příspěvky, highlights a aktivní story u avataru.</p>
     </div>
     <h2>Profil</h2>
     <nav class="nav">
@@ -34,15 +34,17 @@
   </aside>
 
   <main class="stage">
+    <div class="modebar" role="group" aria-label="Zobrazení">Zobrazení <span class="seg"><button data-mode="desktop">💻 Počítač</button><button data-mode="mobile">📱 Mobil</button></span><span class="mb-links"><a href="templates.html">Šablony grafik</a><a href="../index.html">← Prototyp aplikace</a></span></div>
+    <div class="web" id="web"><div class="web-bar"><span class="dots"><i></i><i></i><i></i></span><span class="web-url">instagram.com/padelleague.app/</span></div><div class="web-view" aria-live="polite"></div></div>
     <div class="device"><div class="app" id="app" aria-live="polite"></div></div>
   </main>
 
   <aside class="why" id="why" aria-label="Proč takhle"></aside>
 </div>
 <button class="info-btn" data-act="info" aria-label="Proč takhle">i</button>
-<script src="logos.js?v=5"></script>
-<script src="content.js?v=5"></script>
-<script src="templates.js?v=5"></script>
-<script src="ig.js?v=5"></script>
+<script src="logos.js?v=9"></script>
+<script src="content.js?v=9"></script>
+<script src="templates.js?v=9"></script>
+<script src="ig.js?v=9"></script>
 </body>
 </html>
