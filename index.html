@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PadelLeague prototype</title>
+<meta name="description" content="Clickable prototype of the PadelLeague player, organizer and landing journeys.">
+<meta property="og:title" content="PadelLeague prototype">
+<meta property="og:description" content="Send the link. The rest happens.">
+<meta property="og:image" content="assets/img/court-orange-close.jpg">
+<meta name="theme-color" content="#034867">
+<link rel="preload" href="assets/fonts/satoshi-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/app.css?v=4">
+</head>
+<body>
+<div class="shell">
+  <aside class="panel" aria-label="Mapa prototypu">
+    <div class="brand"><i></i>Padel League</div>
+    <div>
+      <h1>Klikací prototyp</h1>
+      <p style="margin-top:8px">Tři cesty ze zadání. Klikej přímo v&nbsp;telefonu, nebo skoč na krok tady. UI je anglicky, poznámky česky.</p>
+    </div>
+
+    <nav class="flowgrp" aria-label="Cesta hráče">
+      <h2>1 · Hráč</h2>
+      <ol>
+        <li><a href="#/p-chat" data-route="p-chat">Odkaz ve WhatsApp skupině</a></li>
+        <li><a href="#/p-event" data-route="p-event">Stránka eventu</a></li>
+        <li><a href="#/p-in" data-route="p-in">You're in + pozvat kamaráda</a></li>
+        <li><a href="#/p-reminder" data-route="p-reminder">Připomínka den předem</a></li>
+      </ol>
+    </nav>
+
+    <nav class="flowgrp" aria-label="Cesta organizátora">
+      <h2>2 · Organizátor</h2>
+      <ol>
+        <li><a href="#/o-signup" data-route="o-signup">Založení účtu</a></li>
+        <li><a href="#/o-community" data-route="o-community">Název komunity</a></li>
+        <li><a href="#/o-home" data-route="o-home">Domov (přehled)</a></li>
+        <li><a href="#/o-new" data-route="o-new">Nový event + platby</a></li>
+        <li><a href="#/o-live" data-route="o-live">Event je live + nudge</a></li>
+        <li><a href="#/o-wa" data-route="o-wa">Sdílení do WhatsAppu</a></li>
+        <li><a href="#/o-manage" data-route="o-manage">Správa hráčů</a></li>
+        <li><a href="#/o-schedule" data-route="o-schedule">Rozpis a kurty</a></li>
+        <li><a href="#/o-play" data-route="o-play">Průběh a skóre</a></li>
+        <li><a href="#/o-after" data-route="o-after">Po eventu</a></li>
+        <li><a href="#/o-next" data-route="o-next">Další event</a></li>
+        <li><a href="#/o-card" data-route="o-card">Karta výsledku</a></li>
+      </ol>
+    </nav>
+
+    <nav class="flowgrp" aria-label="Landing">
+      <h2>3 · Landing</h2>
+      <ol><li><a class="ext" href="landing.html">Landing page (samostatná stránka)</a></li></ol>
+    </nav>
+
+    <div class="ctrls">
+      <h2>Stav eventu</h2>
+      <div class="seg-ctl" data-preset-grp="fill">
+        <button data-preset="open">Open 9/16</button><button data-preset="last">Last spots</button><button data-preset="full">Full + waitlist</button><button data-preset="in">Registered</button>
+      </div>
+      <div class="seg-ctl" data-preset-grp="price"><button data-preset="paid">200 Kč</button><button data-preset="free">Free</button></div>
+      <h2 style="margin-top:6px">Stripe organizátora</h2>
+      <div class="seg-ctl" data-preset-grp="stripe"><button data-preset="stripeOn">Active</button><button data-preset="stripeOff">Not connected</button></div>
+      <div class="seg-ctl"><button data-preset="reset">↺ Začít znovu</button></div>
+    </div>
+
+    <p class="note">Ukázková data z&nbsp;testovacího prostředí. Platby, Stripe a WhatsApp jsou simulované. Písmo DAZZLE Unicase je nahrazené Satoshi Black.</p>
+  </aside>
+
+  <main class="stage">
+    <div class="device"><div class="app" id="app" aria-live="polite"></div></div>
+    <p class="hint">Klikej v telefonu · Esc zavře panel</p>
+  </main>
+</div>
+<button class="map-btn" data-panel aria-label="Mapa prototypu">Mapa</button>
+<script src="assets/js/app.js?v=4"></script>
+</body>
+</html>
