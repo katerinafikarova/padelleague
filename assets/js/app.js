@@ -357,7 +357,7 @@
     }).join('');
     var todo = S.play.scores[r].filter(function (x) { return !x; }).length;
     var stand = standings().slice(0, 5).map(function (p, i) { return '<div><span>' + (i + 1) + ' · ' + esc(p.n) + '</span><b>' + p.pts + '</b></div>'; }).join('');
-    return screen('', status() + top(ib('←', 'data-go="o-schedule"', 'back'), '<span class="pill ok" style="margin-right:6px">' + t('live') + '</span>' + esc(evName()), ib('⋯', 'data-act="toast" data-arg="pl_menu_t"', 'more')) +
+    return screen('', status() + top(ib('←', 'data-go="o-schedule"', 'back'), '<span class="pill ok" style="margin-right:6px">' + t('running') + '</span>' + esc(evName()), ib('⋯', 'data-act="toast" data-arg="pl_menu_t"', 'more')) +
       '<div class="scroll" style="gap:12px"><div class="tabs">' + tabs + '</div>' + courts +
       '<div class="lbl" style="margin-top:4px">' + t('standings') + '</div><div class="stand">' + stand + '</div>' +
       '</div><div class="dock">' + (allDone() ? '<button class="cta" data-act="finish">' + t('finish') + '</button>' :
