@@ -334,3 +334,7 @@ button.row:hover{border-color:#C9D5DC}
 .why summary{cursor:pointer;font-weight:700;color:#fff;font-size:12.5px}
 .why ul{margin:8px 0 2px;padding-left:16px;display:flex;flex-direction:column;gap:5px}
 .why b{color:#fff}
+
+/* podtitulek uvnitř řádku se zalamuje (úvodní obrazovka) */
+.row > span .r{white-space:normal;display:block;margin-top:3px;line-height:1.35}
+.row > span{min-width:0}
