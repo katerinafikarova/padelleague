@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="en">
+<html lang="cs">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>PadelLeague prototype</title>
-<meta name="description" content="Clickable prototype of the PadelLeague player, organizer and landing journeys.">
-<meta property="og:title" content="PadelLeague prototype">
-<meta property="og:description" content="Send the link. The rest happens.">
+<title>PadelLeague prototyp</title>
+<meta name="description" content="Klikací prototyp cest hráče, organizátora a landing page PadelLeague.">
+<meta property="og:title" content="PadelLeague prototyp">
+<meta property="og:description" content="Pošli odkaz. Zbytek se stane sám.">
 <meta property="og:image" content="assets/img/court-orange-close.jpg">
 <meta name="theme-color" content="#034867">
 <link rel="preload" href="assets/fonts/satoshi-900.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/app.css?v=4">
+<link rel="stylesheet" href="assets/css/app.css?v=6">
 </head>
 <body>
 <div class="shell">
@@ -18,7 +18,12 @@
     <div class="brand"><i></i>Padel League</div>
     <div>
       <h1>Klikací prototyp</h1>
-      <p style="margin-top:8px">Tři cesty ze zadání. Klikej přímo v&nbsp;telefonu, nebo skoč na krok tady. UI je anglicky, poznámky česky.</p>
+      <p style="margin-top:8px">Tři cesty ze zadání. Klikej přímo v&nbsp;telefonu, nebo skoč na krok tady. Aplikace je česky, angličtina je druhá jazyková verze.</p>
+    </div>
+
+    <div class="ctrls">
+      <h2>Jazyk aplikace</h2>
+      <div class="seg-ctl" data-preset-grp="lang"><button data-preset="cs">Čeština</button><button data-preset="en">English</button></div>
     </div>
 
     <nav class="flowgrp" aria-label="Cesta hráče">
@@ -26,9 +31,16 @@
       <ol>
         <li><a href="#/p-chat" data-route="p-chat">Odkaz ve WhatsApp skupině</a></li>
         <li><a href="#/p-event" data-route="p-event">Stránka eventu</a></li>
-        <li><a href="#/p-in" data-route="p-in">You're in + pozvat kamaráda</a></li>
+        <li><a href="#/p-in" data-route="p-in">Jsi ve hře + pozvat kamaráda</a></li>
         <li><a href="#/p-reminder" data-route="p-reminder">Připomínka den předem</a></li>
       </ol>
+      <details class="why"><summary>Kde hráč váhá a jak jsme to vyřešily</summary><ul>
+        <li><b>„Kolik to stojí a kdo tam bude?“</b> Cena, datum, místo a „jde 9/16“ s&nbsp;avatary jsou na první obrazovce. Seznam jmen hned pod tím.</li>
+        <li><b>„Musím se registrovat?“</b> Ne. Jméno, telefon a Apple Pay v&nbsp;jednom panelu, pod tlačítkem „Žádný účet, žádné heslo“.</li>
+        <li><b>„Jsem opravdu přihlášený?“</b> Místo krátké hlášky celá obrazovka „Jsi ve hře“ a moje jméno oranžově v&nbsp;seznamu.</li>
+        <li><b>„Je plno, co teď?“</b> Čekací listina místo slepé uličky. Platí se, až když se uvolní místo.</li>
+        <li><b>„Nemůžu přijít.“</b> Odkaz v&nbsp;připomínce uvolní místo dalšímu z&nbsp;listiny, organizátor nic nepřepisuje.</li>
+      </ul></details>
     </nav>
 
     <nav class="flowgrp" aria-label="Cesta organizátora">
@@ -36,32 +48,45 @@
       <ol>
         <li><a href="#/o-signup" data-route="o-signup">Založení účtu</a></li>
         <li><a href="#/o-community" data-route="o-community">Název komunity</a></li>
-        <li><a href="#/o-home" data-route="o-home">Domov (přehled)</a></li>
-        <li><a href="#/o-new" data-route="o-new">Nový event + platby</a></li>
-        <li><a href="#/o-live" data-route="o-live">Event je live + nudge</a></li>
+        <li><a href="#/o-new" data-route="o-new">Nový event + zapnutí plateb</a></li>
+        <li><a href="#/o-live" data-route="o-live">Obrazovka 1: rozpis + výzva</a></li>
         <li><a href="#/o-wa" data-route="o-wa">Sdílení do WhatsAppu</a></li>
-        <li><a href="#/o-manage" data-route="o-manage">Správa hráčů</a></li>
-        <li><a href="#/o-schedule" data-route="o-schedule">Rozpis a kurty</a></li>
+        <li><a href="#/o-home" data-route="o-home">Domov (přehled)</a></li>
+        <li><a href="#/o-manage" data-route="o-manage">Správa hráčů a plateb</a></li>
+        <li><a href="#/o-schedule" data-route="o-schedule">Docházka a rozpis</a></li>
         <li><a href="#/o-play" data-route="o-play">Průběh a skóre</a></li>
-        <li><a href="#/o-after" data-route="o-after">Po eventu</a></li>
+        <li><a href="#/o-after" data-route="o-after">Obrazovka 3: po eventu (mobil)</a></li>
+        <li><a href="#/o-after-d" data-route="o-after-d">Obrazovka 3: po eventu (desktop)</a></li>
         <li><a href="#/o-next" data-route="o-next">Další event</a></li>
         <li><a href="#/o-card" data-route="o-card">Karta výsledku</a></li>
       </ol>
+      <details class="why"><summary>Kde organizátor váhá a jak jsme to vyřešily</summary><ul>
+        <li><b>„Kolik toho musím vyplnit?“</b> Čtyři kroky průvodce jsou jedna obrazovka. Místo, čas a kurty jsou předvyplněné, zbytek je v&nbsp;„Další možnosti“.</li>
+        <li><b>„Jak vyberu peníze?“</b> Stripe se připojuje přímo ve formuláři, ve chvíli, kdy nastaví vstupné. Nebo „ať hráči platí na místě“.</li>
+        <li><b>„A co teď?“</b> Po zveřejnění vidí rozpis 1. kola s&nbsp;kurty a volnými místy a jedinou výzvu: poslat odkaz do WhatsAppu.</li>
+        <li><b>„Kdo zaplatil? Kdo přišel?“</b> Stav platby u&nbsp;každého jména, připomínka na jedno klepnutí. Docházka se odškrtá před startem a rozpis se sám přepočítá.</li>
+        <li><b>„Stálo to za to?“</b> Po eventu nahoře vybraná částka, kolik zaplatilo a kolik přišlo, pod tím vítězové. Jediné tlačítko: další event, předvyplněný z&nbsp;tohoto.</li>
+      </ul></details>
     </nav>
 
     <nav class="flowgrp" aria-label="Landing">
       <h2>3 · Landing</h2>
       <ol><li><a class="ext" href="landing.html">Landing page (samostatná stránka)</a></li></ol>
+      <details class="why"><summary>Kde organizátor váhá a jak jsme to vyřešily</summary><ul>
+        <li><b>„Je to pro mě?“</b> Nadpis je jedna věta ze zadání a mluví jen k&nbsp;organizátorovi, ne ke klubům.</li>
+        <li><b>„Nečtu dlouhé stránky.“</b> 5 sekcí místo 15, všechny vedou ke stejnému tlačítku.</li>
+        <li><b>„Je to skutečné?“</b> Žádné vymyšlené reference. Ukázková čísla jsou označená jako ukázka.</li>
+      </ul></details>
     </nav>
 
     <div class="ctrls">
       <h2>Stav eventu</h2>
       <div class="seg-ctl" data-preset-grp="fill">
-        <button data-preset="open">Open 9/16</button><button data-preset="last">Last spots</button><button data-preset="full">Full + waitlist</button><button data-preset="in">Registered</button>
+        <button data-preset="open">Otevřeno 9/16</button><button data-preset="last">Poslední místa</button><button data-preset="full">Plno + čekací listina</button><button data-preset="in">Přihlášen</button>
       </div>
-      <div class="seg-ctl" data-preset-grp="price"><button data-preset="paid">200 Kč</button><button data-preset="free">Free</button></div>
+      <div class="seg-ctl" data-preset-grp="price"><button data-preset="paid">200 Kč</button><button data-preset="free">Zdarma</button></div>
       <h2 style="margin-top:6px">Stripe organizátora</h2>
-      <div class="seg-ctl" data-preset-grp="stripe"><button data-preset="stripeOn">Active</button><button data-preset="stripeOff">Not connected</button></div>
+      <div class="seg-ctl" data-preset-grp="stripe"><button data-preset="stripeOn">Aktivní</button><button data-preset="stripeOff">Nepřipojeno</button></div>
       <div class="seg-ctl"><button data-preset="reset">↺ Začít znovu</button></div>
     </div>
 
@@ -74,6 +99,7 @@
   </main>
 </div>
 <button class="map-btn" data-panel aria-label="Mapa prototypu">Mapa</button>
-<script src="assets/js/app.js?v=4"></script>
+<script src="assets/js/i18n.js?v=6"></script>
+<script src="assets/js/app.js?v=6"></script>
 </body>
 </html>

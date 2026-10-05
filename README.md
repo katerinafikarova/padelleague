@@ -3,6 +3,8 @@
 Klikací prototyp tří cest ze zadání pro design (říjen 2026): **hráč**, **organizátor**, **landing page**.
 Vizuál podle JVS Princová & Fikarová (navy #034867, oranžová #F97316, Satoshi, fotografie s grainem a rozmazáním).
 
+Aplikace i landing jsou **česky**, angličtina je druhá jazyková verze (přepínač CZ / EN v aplikaci, v mapě vlevo i na landingu; nebo `?lang=en` v adrese).
+
 Čisté HTML, CSS a JavaScript. Žádná instalace ani build, funguje jako statický web (GitHub Pages, Netlify, Vercel nebo dvojklik na `index.html`).
 
 ## Co v něm je
@@ -13,15 +15,20 @@ Vizuál podle JVS Princová & Fikarová (navy #034867, oranžová #F97316, Satos
 | `landing.html` | Landing page pro organizátora, desktop i mobil. Tlačítka vedou do registrace v prototypu. |
 | `assets/css/app.css` | Styly a design tokeny |
 | `assets/js/app.js` | Obrazovky, stavy a navigace |
+| `assets/js/i18n.js` | Všechny texty aplikace v češtině a angličtině |
 | `assets/fonts/` | Satoshi (Fontshare) 400 / 500 / 700 / 900 |
 | `assets/img/` | Fotografie z JVS |
 
 ### Cesta hráče
-WhatsApp skupina s odkazem → stránka eventu → panel Register & pay (Apple Pay / Google Pay / karta, event zdarma bez platby) → You're in → Invite a friend → připomínka den předem → „I can't come“ (místo jde prvnímu na čekací listině).
-Stavy stránky: **Open, Last spots, Full + waitlist, Registered**. Přepínají se v mapě vlevo.
+WhatsApp skupina s odkazem → stránka eventu → panel „Přihlásit a zaplatit“ (Apple Pay / Google Pay / karta, event zdarma bez platby) → „Jsi ve hře“ → Pozvat kamaráda → připomínka den předem → „Nemůžu přijít“ (místo jde prvnímu na čekací listině).
+Stavy stránky: **Otevřeno, Poslední místa, Plno + čekací listina, Přihlášen**. Přepínají se v mapě vlevo.
 
 ### Cesta organizátora
-Účet → název komunity → nový event na jedné obrazovce (+ More options, náhled, připojení Stripe přímo ve formuláři) → „Event is live“ s jedním nudgem → sdílení do WhatsAppu (tlačítko „Fast-forward“ nasimuluje přihlášky) → správa hráčů (klepnutím na stav Paid / Unpaid / On site, Remind, Move in z čekací listiny) → rozpis a kurty → průběh se zadáváním skóre → po eventu (vybráno, zaplaceno, odehráno, stupně vítězů) → Create next event (předvyplněný) → karta výsledku pro Instagram.
+Účet → název komunity → nový event na jedné obrazovce (+ Další možnosti, náhled, připojení Stripe přímo ve formuláři) → event je zveřejněný: rozpis s kurty a jedna výzva → sdílení do WhatsAppu (tlačítko „Přetočit o 2 dny“ nasimuluje přihlášky) → správa hráčů (klepnutím na stav Zaplaceno / Nezaplaceno / Na místě, Připomenout, Přesunout z čekací listiny) → docházka a rozpis → průběh se zadáváním skóre → po eventu (vybráno, zaplaceno, přišlo, stupně vítězů) → Založit další event (předvyplněný) → karta výsledku pro Instagram.
+
+Obrazovka 1 ze zadání (`#/o-live`): po zveřejnění je vidět rozpis 1. kola s kurty a volnými místy a jediná výzva poslat odkaz. Obrazovka 3 (po eventu) má mobilní (`#/o-after`) i desktopovou verzi (`#/o-after-d`) s vybranými penězi, docházkou a výsledky. Docházka se odškrtává před startem v rozpisu.
+
+U každé cesty je v mapě vlevo rozbalovací poznámka „Kde váhá a jak jsme to vyřešily“.
 
 Každá obrazovka jde otevřít přímo odkazem, např. `index.html#/p-event`, `index.html#/o-after`.
 
