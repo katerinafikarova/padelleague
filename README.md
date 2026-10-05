@@ -22,7 +22,7 @@ Aplikace i landing jsou **česky**, angličtina je druhá jazyková verze (přep
 | `assets/img/` | Fotografie z JVS |
 
 ### Cesta hráče
-WhatsApp skupina s odkazem → stránka eventu → panel „Přihlásit a zaplatit“ (Apple Pay / Google Pay / karta, event zdarma bez platby) → „Jsi ve hře“ → Pozvat kamaráda → připomínka den předem → „Nemůžu přijít“ (místo jde prvnímu na čekací listině).
+Dva vstupy: **homepage s výběrem turnajů** (`#/p-home`: jen nadcházející turnaje podle data, filtr město / tento týden / víkend / zdarma, plné turnaje vedou na čekací listinu, proběhlé turnaje sbalené dole) nebo WhatsApp skupina s odkazem. Pak stránka eventu (odkaz „← Všechny turnaje“ vede zpět) → panel „Přihlásit a zaplatit“ (Apple Pay / Google Pay / karta, event zdarma bez platby) → „Jsi ve hře“ → Pozvat kamaráda → připomínka den předem → „Nemůžu přijít“ (místo jde prvnímu na čekací listině).
 Stavy stránky: **Otevřeno, Poslední místa, Plno + čekací listina, Přihlášen**. Přepínají se v mapě vlevo.
 
 ### Cesta organizátora

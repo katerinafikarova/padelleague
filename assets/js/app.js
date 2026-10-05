@@ -41,7 +41,7 @@
       method: 'apple', stripe: 'none', stripeBack: 'o-new', community: 'Kuba komunity', city: 'Teplice',
       draft: null, more: false, acc: false, allNames: false, shuffle: 0,
       sched: null, play: { round: 0, scores: [] }, last: null, invitePrev: true,
-      sheet: null, ctx: 'player', scoreTarget: null, toast: null, stripeStep: 0, posted: false
+      sheet: null, ctx: 'player', pick: 'pa', hf: { city: 'all', when: 'all', free: false }, scoreTarget: null, toast: null, stripeStep: 0, posted: false
     };
   }
   function mkPlayers(n) { var a = []; for (var i = 0; i < n; i++) a.push({ n: NAMES[i], pay: PAYS[i % PAYS.length], noshow: false }); return a; }
@@ -52,8 +52,14 @@
   function initials(n) { return n.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2); }
   function short(n) { var p = n.split(' '); return p[0] + (p[1] && p[1][0] !== '(' ? ' ' + p[1][0] + '.' : ''); }
   function kc(n) { return n === 0 ? t('free') : n.toLocaleString('cs-CZ').replace(/ /g, ' ') + ' Kč'; }
-  function evName() { return S.ev.custom || t('evName', { f: S.ev.format }); }
-  function evDate() { return fDate(S.ev.week); }
+  function evName() { return S.ev.nm ? S.ev.nm[lang] : S.ev.custom || t('evName', { f: S.ev.format }); }
+  function evDate() { return S.ev.when ? wShort(S.ev.when) : fDate(S.ev.week); }
+  function wShort(w) { return D[lang].dows_short[w.dow] + ' ' + (lang === 'cs' ? w.d + '. ' + w.m + '.' : w.d + ' ' + (w.m === 10 ? 'Oct' : 'Nov')); }
+  function wLong(w) { return D[lang].dows_long[w.dow] + ' ' + (lang === 'cs' ? w.d + '. ' : w.d + ' ') + D[lang].months_long[w.m]; }
+  function wPrev(w) { return w.d > 1 ? { d: w.d - 1, m: w.m, dow: (w.dow + 6) % 7 } : { d: 31, m: 10, dow: (w.dow + 6) % 7 }; }
+  function endTime() { var p = S.ev.start.split(':'); return ('0' + ((+p[0] + 2) % 24)).slice(-2) + ':' + p[1]; }
+  function evLong() { return S.ev.when ? wLong(S.ev.when) : fLong(S.ev.week); }
+  function evClose() { return S.ev.when ? wShort(wPrev(S.ev.when)) + (lang === 'cs' ? ', 18:00' : ', 6 pm') : fClose(S.ev.week); }
   function present(p) { return !p.noshow; }
   function going() { return S.players.length + (S.me.status === 'in' ? 1 : 0); }
   function left() { return Math.max(0, S.ev.cap - going()); }
@@ -83,7 +89,8 @@
       '<div style="display:flex;justify-content:space-between;align-items:center">' + LOGO + langSwitch() + '</div>' +
       '<h1 class="h-caps">' + t('start_title') + '</h1>' +
       '<p class="p muted">' + t('start_sub') + '</p>' +
-      '<button class="row start-row" data-go="p-chat"><span><b>' + t('start_player') + '</b><span class="sub">' + t('start_player_sub') + '</span></span><span class="r">→</span></button>' +
+      '<button class="row start-row" data-go="p-home"><span><b>' + t('start_player') + '</b><span class="sub">' + t('start_player_sub') + '</span></span><span class="r">→</span></button>' +
+      '<button class="row start-row" data-go="p-chat"><span><b>' + t('start_wa') + '</b><span class="sub">' + t('start_wa_sub') + '</span></span><span class="r">→</span></button>' +
       '<button class="row start-row" data-go="o-signup"><span><b>' + t('start_org') + '</b><span class="sub">' + t('start_org_sub') + '</span></span><span class="r">→</span></button>' +
       '<a class="row start-row" href="landing.html?lang=' + lang + '" style="text-decoration:none"><span><b>' + t('start_land') + '</b><span class="sub">' + t('start_land_sub') + '</span></span><span class="r">↗</span></a>' +
       '<a class="row start-row" href="instagram/index.html" style="text-decoration:none"><span><b>' + t('start_ig') + '</b><span class="sub">' + t('start_ig_sub') + '</span></span><span class="r">↗</span></a>' +
@@ -94,6 +101,61 @@
   }
 
   /* ---------- HRÁČ ---------- */
+
+  /* ---------- HRÁČ: homepage s výběrem turnajů ---------- */
+  var HE = [
+    { id: 'pa', nm: null, format: 'Americano', when: null, start: '18:00', venue: 'Padel Klub Novosedlice', city: 'Teplice', address: 'Trnovanská 123, Teplice', price: 200, cap: 16, n: 9, vibe: 'social', level: 'all', photo: 'court-orange-close.jpg', slug: 'patecni-americano', org: null },
+    { id: 'mx', nm: { cs: 'Sobotní Mexicano', en: 'Saturday Mexicano' }, format: 'Mexicano', when: { d: 31, m: 10, dow: 5 }, start: '10:00', venue: 'Padel Písečná', city: 'Teplice', address: 'Písečná 5, Teplice', price: 250, cap: 16, n: 14, vibe: 'comp', level: 'mid', photo: 'court-serve.jpg', slug: 'sobotni-mexicano', org: 'Padel Písečná' },
+    { id: 'ho', nm: { cs: 'Holky na kurt', en: 'Girls on court' }, format: 'Americano', when: { d: 1, m: 11, dow: 6 }, start: '17:00', venue: 'Padel Arena Ústí', city: 'Ústí n. L.', address: 'Masarykova 40, Ústí nad Labem', price: 0, cap: 12, n: 6, vibe: 'social', level: 'beg', photo: 'court-reach.jpg', slug: 'holky-na-kurt', org: 'Padel Holky Ústí' },
+    { id: 'tm', nm: { cs: 'Turnaj mistrů', en: 'Masters cup' }, format: 'Round Robin', when: { d: 4, m: 11, dow: 2 }, start: '19:00', venue: 'Padel Klub Novosedlice', city: 'Teplice', address: 'Trnovanská 123, Teplice', price: 300, cap: 16, n: 16, vibe: 'comp', level: 'adv', photo: 'court-dark-run.jpg', slug: 'turnaj-mistru', org: 'Kuba komunity' },
+    { id: 'ra', nm: { cs: 'Ranní Americano', en: 'Morning Americano' }, format: 'Americano', when: { d: 5, m: 11, dow: 3 }, start: '07:00', venue: 'Padel Club Hostivař', city: 'Praha', address: 'Švehlova 32, Praha 10', price: 180, cap: 8, n: 4, vibe: 'social', level: 'all', photo: 'court-blur-run.jpg', slug: 'ranni-americano', org: 'Ranní padel Praha' },
+    { id: 'pl', nm: { cs: 'Pardubická liga · 3. kolo', en: 'Pardubice league · round 3' }, format: 'Round Robin', when: { d: 7, m: 11, dow: 5 }, start: '09:00', venue: 'Padel Park Pardubice', city: 'Pardubice', address: 'Hlaváčova 12, Pardubice', price: 350, cap: 16, n: 10, vibe: 'comp', level: 'mid', photo: 'court-blue-orange.jpg', slug: 'pardubicka-liga', org: 'Padel liga Pardubice' }
+  ];
+  var HE_PAST = [
+    { nm: 'Mixy Americano', when: { d: 23, m: 10, dow: 4 }, win: 'Tereza H. & Ondřej P.' },
+    { nm: 'Libiks Americano', when: { d: 6, m: 10, dow: 1 }, win: 'Lukáš D. & Klára R.' }
+  ];
+  var CITIES = ['Teplice', 'Ústí n. L.', 'Praha', 'Pardubice'];
+  function heWhen(e) { return e.when || { d: dm(S.ev.week).d, m: dm(S.ev.week).m, dow: 4 }; }
+  function heGoing(e) { return e.id === S.pick ? going() : e.n; }
+  function heShow(e) {
+    var f = S.hf, w = heWhen(e), day = w.m === 10 ? w.d : 31 + w.d;
+    if (f.city !== 'all' && e.city !== f.city) return false;
+    if (f.when === 'week' && day > 32) return false;
+    if (f.when === 'wkend' && w.dow < 5) return false;
+    if (f.free && (e.id === S.pick ? S.ev.price : e.price) > 0) return false;
+    return true;
+  }
+  function heCard(e) {
+    var cur = e.id === S.pick, n = heGoing(e), cap = cur ? S.ev.cap : e.cap, l = Math.max(0, cap - n), price = cur ? S.ev.price : e.price;
+    var nm = cur ? evName() : (e.nm ? e.nm[lang] : t('evName', { f: e.format }));
+    var mine = cur && S.me.status === 'in';
+    var foot = mine ? '<span class="hc-st ok">' + t('b_in') + '</span>' : l === 0 ? '<span class="hc-st">' + t('h_full') + '</span>' : '<span class="hc-st' + (l <= 2 ? ' hot' : '') + '">' + n + '/' + cap + ' · ' + P('spotsLeft', l) + '</span>';
+    return '<button class="hcard" data-act="pick" data-arg="' + e.id + '"><div class="hc-img"><img src="' + IMG + e.photo + '" alt="" loading="lazy"><span class="pill glassy">' + t('v_' + e.vibe) + '</span><span class="hc-price">' + kc(price) + '</span></div>' +
+      '<div class="hc-b"><div class="hc-date">' + cap1(wShort(heWhen(e))) + ' · ' + (cur ? S.ev.start : e.start) + '</div><b class="hc-t">' + esc(nm) + '</b><div class="hc-m">' + esc(cur ? S.ev.venue : e.venue) + ' · ' + esc(e.city) + '</div>' +
+      '<div class="hc-tags"><span>' + esc(e.format) + '</span><span>' + t('lv_' + e.level) + '</span></div>' +
+      '<div class="hc-cap"><i style="width:' + Math.round(n / cap * 100) + '%"></i></div>' +
+      '<div class="hc-f">' + foot + '<span class="hc-go">' + t(mine ? 'h_detail' : l === 0 ? 'h_go_wait' : 'h_go') + ' ›</span></div></div></button>';
+  }
+  function hChip(k, v, label) { var on = S.hf[k] === v; return '<button class="hchip' + (on ? ' on' : '') + '" data-act="hf" data-arg="' + k + ':' + v + '" aria-pressed="' + on + '">' + label + '</button>'; }
+  R['p-home'] = function () {
+    var list = HE.filter(heShow);
+    list.sort(function (a, b) { var x = heWhen(a), y = heWhen(b); return (x.m * 40 + x.d) - (y.m * 40 + y.d); });
+    var f = S.hf, filtered = f.city !== 'all' || f.when !== 'all' || f.free;
+    return screen('', status() + top(LOGO, '', ib('☰', 'data-act="sheet" data-arg="pmenu"', 'menu')) +
+      '<div class="scroll">' +
+      '<div class="h-hero"><h1 class="h-caps">' + t('h_title') + '</h1><p class="p muted">' + t('h_sub') + '</p></div>' +
+      '<div class="h-filters"><div class="hchips" role="group" aria-label="' + t('h_city') + '">' + hChip('city', 'all', t('h_all')) + CITIES.map(function (c) { return hChip('city', c, c); }).join('') + '</div>' +
+      '<div class="hchips" role="group" aria-label="' + t('h_when') + '">' + hChip('when', 'all', t('h_any')) + hChip('when', 'week', t('h_week')) + hChip('when', 'wkend', t('h_wkend')) +
+      '<button class="hchip' + (f.free ? ' on' : '') + '" data-act="hf" data-arg="free:1" aria-pressed="' + f.free + '">' + t('h_free') + '</button></div></div>' +
+      '<div class="h-sec"><div class="lbl">' + t('h_upcoming') + ' · ' + P('h_count', list.length) + '</div>' + (filtered ? '<button class="link" data-act="hf" data-arg="reset">' + t('h_reset') + '</button>' : '') + '</div>' +
+      (list.length ? '<div class="hgrid">' + list.map(heCard).join('') + '</div>' : '<div class="empty"><p>' + t('h_none') + '</p><button class="link" data-act="hf" data-arg="reset">' + t('h_reset') + '</button></div>') +
+      '<div class="acc' + (S.pastOpen ? ' open' : '') + '"><button data-act="pastOpen"><span>' + t('h_past') + '</span><span class="chev">▾</span></button><div class="inner">' +
+      HE_PAST.map(function (p) { return '<button class="row" data-act="toast" data-arg="h_res_t"><span><b>' + esc(p.nm) + '</b><span class="sub">' + cap1(wShort(p.when)) + ' · ' + t('h_won', { w: esc(p.win) }) + '</span></span><span class="r">' + t('h_res') + ' ▸</span></button>'; }).join('') + '</div></div>' +
+      '<button class="row h-org" data-go="o-signup"><span><b>' + t('h_org') + '</b><span class="sub">' + t('h_org_sub') + '</span></span><span class="r">→</span></button>' +
+      '</div>');
+  };
+
   R['p-chat'] = function () {
     return screen('wa', status('18:40') +
       '<div class="top">' + ib('←', 'data-go="start"', 'back') + '<div class="ttl wa-ttl">Padel Teplice 🎾<br><span>' + t('chat_members') + '</span></div><span class="ib ghost"></span></div>' +
@@ -128,16 +190,17 @@
     else if (st === 'full') dock = '<button class="cta navy" data-act="sheet" data-arg="waitlist">' + t('cta_wait') + '</button><p class="fine">' + t('wait_fine') + '</p>';
     else if (st === 'in') dock = '<button class="cta" data-act="share" data-arg="player">' + t('cta_invite') + '</button><button class="link" data-act="sheet" data-arg="cancel">' + t('cant_come') + '</button>';
     else dock = '<button class="cta" data-act="share" data-arg="player">' + t('cta_invite') + '</button><button class="link" data-act="leaveWait">' + t('leave_wait') + '</button>';
-    return screen('', status() + top(LOGO, '', ib('☰', 'data-act="sheet" data-arg="pmenu"', 'menu')) +
+    return screen('', status() + top('<button class="logo" data-go="p-home" aria-label="' + t('all_events') + '"><i></i>Padel League</button>', '', ib('☰', 'data-act="sheet" data-arg="pmenu"', 'menu')) +
       '<div class="scroll">' +
+      '<button class="back-all" data-go="p-home">← ' + t('all_events') + '</button>' +
       '<div class="photo grain"><img src="' + IMG + S.ev.photo + '" alt=""><div class="badge">' + badge + '</div>' +
       '<div class="over-title">' + esc(evName()) + '</div>' +
-      '<div class="glass">' + glassKV([[t('k_datetime'), evDate() + ' · ' + S.ev.start], [t('k_entry'), kc(S.ev.price)], [t('k_location'), S.ev.venue, 1], [t('k_format'), S.ev.format], [t('k_level'), t('all_levels')]]) + '</div></div>' +
+      '<div class="glass">' + glassKV([[t('k_datetime'), evDate() + ' · ' + S.ev.start], [t('k_entry'), kc(S.ev.price)], [t('k_location'), S.ev.venue, 1], [t('k_format'), S.ev.format], [t('k_level'), S.ev.level && S.ev.level !== 'all' ? t('lv_' + S.ev.level) : t('all_levels')]]) + '</div></div>' +
       '<div class="going"><div class="ring" style="--p:' + pct() + '"><span>' + n + '/' + S.ev.cap + '</span></div><div><div class="t">' + line + '</div><div class="avatars">' + who + '</div></div></div>' +
       '<div><div class="lbl" style="margin:2px 2px 8px">' + t('who_playing') + '</div>' + namesBlock() + '</div>' +
       '<div class="acc' + (S.acc ? ' open' : '') + '"><button data-act="acc"><span>' + t('details') + '</span><span class="chev">▾</span></button><div class="inner"><dl class="dl">' +
-      '<dt>' + t('d_org') + '</dt><dd>' + esc(S.community) + '</dd><dt>' + t('d_addr') + '</dt><dd>' + esc(S.ev.address) + '</dd><dt>' + t('d_time') + '</dt><dd>' + fLong(S.ev.week) + ', ' + S.ev.start + '–20:00</dd>' +
-      '<dt>' + t('d_format') + '</dt><dd>' + t('d_format_txt') + '</dd><dt>' + t('d_close') + '</dt><dd>' + fClose(S.ev.week) + '</dd><dt>' + t('d_cancel') + '</dt><dd>' + t('d_cancel_txt') + '</dd></dl>' +
+      '<dt>' + t('d_org') + '</dt><dd>' + esc(S.ev.org || S.community) + '</dd><dt>' + t('d_addr') + '</dt><dd>' + esc(S.ev.address) + '</dd><dt>' + t('d_time') + '</dt><dd>' + evLong() + ', ' + S.ev.start + '–' + endTime() + '</dd>' +
+      '<dt>' + t('d_format') + '</dt><dd>' + t({ Mexicano: 'd_format_mx', 'Round Robin': 'd_format_rr' }[S.ev.format] || 'd_format_txt') + '</dd><dt>' + t('d_close') + '</dt><dd>' + evClose() + '</dd><dt>' + t('d_cancel') + '</dt><dd>' + t('d_cancel_txt') + '</dd></dl>' +
       '<button class="link" style="text-align:left" data-act="toast" data-arg="added_cal">' + t('add_cal') + '</button></div></div>' +
       '</div><div class="dock">' + dock + '</div>');
   };
@@ -487,6 +550,7 @@
   SH.pmenu = function () {
     return '<div class="grab"></div>' + '<div style="display:flex;justify-content:flex-end">' + langSwitch() + '</div>' +
       '<button class="row" data-act="toast" data-arg="m_login_t"><span>' + t('m_login') + '</span><span class="r">' + t('m_optional') + '</span></button>' +
+      '<button class="row" data-go="p-home"><span>' + t('all_events') + '</span><span class="r">▸</span></button>' +
       '<button class="row" data-go="p-reminder"><span>' + t('m_reminder') + '</span><span class="r">' + t('m_proto') + '</span></button>' +
       '<button class="row" data-act="toast" data-arg="m_thanks"><span>' + t('m_report') + '</span><span class="r">▸</span></button>' +
       '<button class="link" data-act="close">' + t('close') + '</button>';
@@ -540,6 +604,24 @@
   var A = {
     lang: function (a) { setLang(a); syncPanelLang(); },
     sheet: function (a) { S.sheet = a; render(); },
+    hf: function (a) {
+      if (a === 'reset') S.hf = { city: 'all', when: 'all', free: false };
+      else if (a === 'free:1') S.hf.free = !S.hf.free;
+      else { var p = a.split(':'); S.hf[p[0]] = p[1]; }
+      render();
+    },
+    pastOpen: function () { S.pastOpen = !S.pastOpen; render(); },
+    pick: function (id) {
+      if (id !== S.pick) {
+        var e = HE.filter(function (x) { return x.id === id; })[0], b = fresh().ev;
+        ['format', 'start', 'venue', 'address', 'price', 'cap', 'photo', 'slug', 'level'].forEach(function (k) { S.ev[k] = e[k]; });
+        S.ev.nm = e.nm; S.ev.when = e.when; S.ev.org = e.org; S.ev.custom = null;
+        if (id === 'pa') { S.ev.week = b.week; S.ev.courts = b.courts; }
+        S.players = mkPlayers(Math.min(e.n, e.cap)); S.waitlist = e.n >= e.cap ? [NAMES[16], NAMES[17], NAMES[18]] : [];
+        S.me.status = null; S.sched = null; S.pick = id;
+      }
+      go('p-event');
+    },
     close: closeSheet,
     acc: function () { S.acc = !S.acc; render(); },
     allNames: function () { S.allNames = true; render(); },
@@ -591,6 +673,7 @@
       if (d.price > 0 && S.stripe !== 'active') return;
       var edit = d.edit;
       ['custom', 'format', 'week', 'start', 'venue', 'courts', 'cap', 'price'].forEach(function (k) { S.ev[k] = d[k]; });
+      S.ev.nm = null; S.ev.when = null; S.ev.org = null; S.ev.level = 'all'; S.pick = 'pa';
       S.draft = null; S.more = false;
       if (edit) { if (S.sched && !anyScore()) buildSched(); toast(t('n_saved')); go('o-manage'); return; }
       S.players = []; S.waitlist = []; S.sched = null; S.posted = false; S.me.status = null;
@@ -673,6 +756,7 @@
     if (k === 'auth') return 'app.padelleague.eu/' + (r === 'o-signup' ? 'registrace' : 'nova-komunita');
     if (k === 'org') return 'app.padelleague.eu/' + slug + '/' + ({ 'o-home': '', 'o-new': 'novy-event', 'o-live': 'event/' + S.ev.slug, 'o-manage': 'event/' + S.ev.slug + '/hraci', 'o-schedule': 'event/' + S.ev.slug + '/rozpis', 'o-play': 'event/' + S.ev.slug + '/zive', 'o-after': 'event/' + S.ev.slug + '/souhrn', 'o-after-d': 'event/' + S.ev.slug + '/souhrn', 'o-next': 'dalsi-event', 'o-card': 'event/' + S.ev.slug + '/karta' }[r] || '');
     if (r === 'start') return 'padelleague.eu/prototyp';
+    if (r === 'p-home') return 'padelleague.eu';
     return 'padelleague.eu/e/' + S.ev.slug;
   }
   function deskShell(r, inner) {
@@ -692,7 +776,7 @@
         '</aside><div class="dk-main r-' + r + '">' + inner + '</div></div>';
     }
     if (k === 'auth') return '<div class="dk-auth"><div class="dk-main r-' + r + '">' + inner + '</div></div>';
-    return '<div class="dk-site"><header class="dk-head"><span class="logo"><i></i>Padel League</span><span class="dk-head-r">' + langSwitch() + '<button class="dk-login" data-act="toast" data-arg="m_login_t">' + t('m_login') + '</button></span></header><div class="dk-main r-' + r + '">' + inner + '</div></div>';
+    return '<div class="dk-site"><header class="dk-head"><button class="logo" data-go="p-home"><i></i>Padel League</button><nav class="dk-nav"><button class="' + (r === 'p-home' ? 'on' : '') + '" data-go="p-home">' + t('nav_events') + '</button><button data-go="o-signup">' + t('nav_org') + '</button></nav><span class="dk-head-r">' + langSwitch() + '<button class="dk-login" data-act="toast" data-arg="m_login_t">' + t('m_login') + '</button></span></header><div class="dk-main r-' + r + '">' + inner + '</div></div>';
   }
   function route() { var h = location.hash.replace(/^#\/?/, ''); return R[h] ? h : 'start'; }
   function render() {
