@@ -336,5 +336,8 @@ button.row:hover{border-color:#C9D5DC}
 .why b{color:#fff}
 
 /* podtitulek uvnitř řádku se zalamuje (úvodní obrazovka) */
-.row > span .r{white-space:normal;display:block;margin-top:3px;line-height:1.35}
-.row > span{min-width:0}
+.start-row{align-items:center}
+.start-row > span:first-child{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.start-row b{display:block}
+.start-row .sub{display:block;margin-top:3px;font-size:13px;line-height:1.35;color:var(--muted);white-space:normal}
+.start-row > .r{flex:none}

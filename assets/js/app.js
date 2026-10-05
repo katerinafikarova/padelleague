@@ -83,9 +83,9 @@
       '<div style="display:flex;justify-content:space-between;align-items:center">' + LOGO + langSwitch() + '</div>' +
       '<h1 class="h-caps">' + t('start_title') + '</h1>' +
       '<p class="p muted">' + t('start_sub') + '</p>' +
-      '<button class="row" data-go="p-chat"><span><b>' + t('start_player') + '</b><br><span class="r">' + t('start_player_sub') + '</span></span><span class="r">→</span></button>' +
-      '<button class="row" data-go="o-signup"><span><b>' + t('start_org') + '</b><br><span class="r">' + t('start_org_sub') + '</span></span><span class="r">→</span></button>' +
-      '<a class="row" href="landing.html?lang=' + lang + '" style="text-decoration:none"><span><b>' + t('start_land') + '</b><br><span class="r">' + t('start_land_sub') + '</span></span><span class="r">↗</span></a>' +
+      '<button class="row start-row" data-go="p-chat"><span><b>' + t('start_player') + '</b><span class="sub">' + t('start_player_sub') + '</span></span><span class="r">→</span></button>' +
+      '<button class="row start-row" data-go="o-signup"><span><b>' + t('start_org') + '</b><span class="sub">' + t('start_org_sub') + '</span></span><span class="r">→</span></button>' +
+      '<a class="row start-row" href="landing.html?lang=' + lang + '" style="text-decoration:none"><span><b>' + t('start_land') + '</b><span class="sub">' + t('start_land_sub') + '</span></span><span class="r">↗</span></a>' +
       '</div>');
   };
   function langSwitch() {
