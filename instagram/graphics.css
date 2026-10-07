@@ -221,3 +221,8 @@
 .s-ach{display:flex;justify-content:center;margin:20px 0}
 .s-ach .g-racket{width:420px}
 .s-answer{background:var(--navy);color:#fff;border-radius:40px;padding:50px 56px;font:700 52px/1.25 var(--f);margin-top:20px;max-width:900px}
+
+/* Kolo 2: fotka má být fotka, ne navy plocha – lehčí neutrální stín */
+.g-shade{background:linear-gradient(180deg,rgba(8,14,18,.38) 0%,rgba(8,14,18,0) 32%,rgba(8,14,18,0) 55%,rgba(8,14,18,.62) 100%)}
+.g-shade.soft{background:linear-gradient(180deg,rgba(8,14,18,0) 45%,rgba(8,14,18,.5) 100%)}
+.g-shade.strong{background:rgba(8,14,18,.42)}

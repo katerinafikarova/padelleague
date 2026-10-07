@@ -6,7 +6,7 @@
 <title>PadelLeague · Pošli odkaz</title>
 <meta name="description" content="Nikdy víc nehoníš peníze ani jména. Pošli jeden odkaz, hráči se přihlásí a zaplatí sami.">
 <meta name="theme-color" content="#034867">
-<link rel="stylesheet" href="assets/css/app.css?v=10">
+<link rel="stylesheet" href="assets/css/app.css?v=15">
 <style>
   body{background:var(--ground);color:var(--ink);font-size:17px;line-height:1.55}
   .lp{max-width:1120px;margin:0 auto;padding-inline:20px}
@@ -18,15 +18,15 @@
   .nav .lang-sw button.on{background:#fff;color:var(--navy)}
   .btn{display:inline-block;background:var(--orange);color:#fff;text-decoration:none;font:900 15px/1 var(--f-display);text-transform:uppercase;letter-spacing:.05em;padding:17px 24px;border-radius:16px;box-shadow:0 12px 26px -12px rgba(249,115,22,.85)}
   .btn.sm{padding:11px 14px;font-size:12.5px;box-shadow:none}
-  .hero{background:var(--navy);color:#fff;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:40px 40px}
+  .hero{background:#fff;color:var(--ink);border-bottom:1px solid var(--line)}
   .hero .lp{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding-block:64px 72px}
-  .hero h1{margin:0;font:900 clamp(38px,6vw,78px)/.95 var(--f-display);text-transform:uppercase;text-wrap:balance}
-  .hero h1 em{font-style:normal;color:var(--orange)}
-  .hero p{margin:22px 0 30px;max-width:46ch;color:#D2E2EA;font-size:19px}
-  .hero .meta{margin-top:16px;font-size:14px;color:#A9C0CC}
+  .hero h1{margin:0;font:900 clamp(38px,6vw,78px)/.95 var(--f-display);text-transform:uppercase;text-wrap:balance;color:var(--navy)}
+  .hero h1 em{font-style:normal}
+  .hero p{margin:22px 0 30px;max-width:46ch;color:var(--muted);font-size:19px}
+  .hero .meta{margin-top:16px;font-size:14px;color:var(--muted)}
   .hero .photo{min-height:440px}
   section.s{padding-block:76px}
-  .eyebrow{font:700 12px/1 var(--f-body);letter-spacing:.16em;text-transform:uppercase;color:var(--orange-ink)}
+  .eyebrow{font:700 12px/1 var(--f-body);letter-spacing:.16em;text-transform:uppercase;color:var(--navy)}
   h2.t{margin:12px 0 0;font:900 clamp(30px,4vw,48px)/1 var(--f-display);text-transform:uppercase;text-wrap:balance;max-width:20ch}
   .ba{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:36px}
   .ba>div{border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:12px}
@@ -37,7 +37,7 @@
   .example{font-size:12px;color:var(--muted)}
   .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px;counter-reset:st}
   .stp{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;counter-increment:st}
-  .stp::before{content:counter(st);display:block;font:900 44px/1 var(--f-display);color:var(--orange);margin-bottom:14px}
+  .stp::before{content:counter(st);display:block;font:900 44px/1 var(--f-display);color:var(--navy);margin-bottom:14px}
   .stp b{display:block;font:900 18px/1.1 var(--f-display);text-transform:uppercase;margin-bottom:6px}
   .stp p{margin:0;color:var(--muted);font-size:15.5px}
   .see{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:center}
@@ -45,7 +45,17 @@
   .see .phone-mini .in{border-radius:36px;overflow:hidden;background:var(--ground);padding:14px;display:flex;flex-direction:column;gap:12px}
   .see ul{margin:20px 0 0;padding-left:20px;color:var(--muted)}
   .see li{margin-bottom:8px}
-  .final{background:var(--navy);color:#fff;border-radius:30px;padding:56px 32px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:36px 36px}
+  .final{position:relative;overflow:hidden;color:#fff;border-radius:30px;padding:72px 32px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px;background:#0b2a3a}
+  .final>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .final::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,47,68,.25),rgba(2,47,68,.7))}
+  .final>*:not(img){position:relative;z-index:1}
+  .later{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px}
+  .later>div{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+  .later img{width:100%;height:150px;object-fit:cover;display:block}
+  .later .in{padding:20px 22px 24px}
+  .later b{display:block;font:900 18px/1.1 var(--f-display);text-transform:uppercase;color:var(--navy);margin-bottom:6px}
+  .later p{margin:0;color:var(--muted);font-size:15.5px}
+  .lead-in{margin:14px 0 0;max-width:56ch;color:var(--muted)}
   .final h2{margin:0;font:900 clamp(30px,4.6vw,56px)/.95 var(--f-display);text-transform:uppercase;text-wrap:balance;max-width:18ch}
   .faq{max-width:760px;margin:48px auto 0;display:flex;flex-direction:column;gap:10px}
   .faq details{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px}
@@ -57,7 +67,8 @@
     .hero .lp,.see{grid-template-columns:1fr;gap:32px}
     .hero .lp{padding-block:40px 48px}
     .hero .photo{min-height:340px}
-    .ba,.steps{grid-template-columns:1fr}
+    .ba,.steps,.later{grid-template-columns:1fr}
+    .final{padding:56px 22px}
     section.s{padding-block:56px}
     .nav .hide-m{display:none}
   }
@@ -69,16 +80,16 @@
   <span style="display:flex;gap:14px;align-items:center">
     <a class="sm hide-m" href="#how" data-en="How it works">Jak to funguje</a><a class="sm hide-m" href="#faq" data-en="FAQ">Otázky</a>
     <span class="lang-sw" role="group" aria-label="Jazyk"><button data-lang="cs">CZ</button><button data-lang="en">EN</button></span>
-    <a class="btn sm" href="index.html#/o-signup" data-cta data-en="Start free">Začít zdarma</a>
+    <a class="btn sm" href="index.html#/o-new" data-cta data-en="First event free">První event zdarma</a>
   </span>
 </div></header>
 
 <section class="hero"><div class="lp">
   <div>
     <h1 data-en="Never chase money or names <em>again.</em>">Nikdy víc nehoníš peníze ani <em>jména.</em></h1>
-    <p data-en="Send one link to your group. Players sign up and pay by card. You get the list, the money and the schedule for your Americano night.">Pošli do skupiny jeden odkaz. Hráči se přihlásí a rovnou zaplatí kartou. Seznam, peníze i rozpis máš pohromadě.</p>
-    <a class="btn" href="index.html#/o-signup" data-cta data-en="Create your community · free">Vytvoř komunitu · zdarma</a>
-    <div class="meta" data-en="Free to start · Players don't need an account · Payments by Stripe">Začneš zdarma · Hráči nepotřebují účet · Platby přes Stripe</div>
+    <p data-en="Create your first Americano in a few minutes and play it this week. Send one link to your group: players sign up themselves and you see who's coming and who has paid.">Založ první Americano za pár minut a odehraj ho ještě tento týden. Pošli do skupiny jeden odkaz: hráči se přihlásí sami a ty vidíš, kdo jde a kdo zaplatil.</p>
+    <a class="btn" href="index.html#/o-new" data-cta data-en="Create your first event · free">Vytvoř první event · zdarma</a>
+    <div class="meta" data-en="Free · Players don't need an account · Pay on site, or by card via Stripe">Zdarma · Hráči nepotřebují účet · Platba na místě, nebo kartou přes Stripe</div>
   </div>
   <div class="photo grain">
     <img src="assets/img/court-orange-close.jpg" alt="Hráč padelu v oranžovém triku těsně před úderem" data-en-alt="Padel player in an orange shirt about to hit the ball">
@@ -109,7 +120,7 @@
       <div class="row"><span>Salman K.</span><span class="pill paid" data-en="Paid">Zaplaceno</span></div>
       <div class="row"><span>Mostafa A.</span><span class="pill paid" data-en="Paid">Zaplaceno</span></div>
       <div class="row"><span>Adam H.</span><span class="pill site" data-en="On site">Na místě</span></div>
-      <ul><li data-en="One clean list, updated by players">Jeden přehledný seznam, který doplňují hráči sami</li><li data-en="Paid by card when they sign up">Zaplaceno kartou hned při přihlášení</li><li data-en="Rounds and courts built for you">Kola a kurty se sestaví samy</li></ul>
+      <ul><li data-en="One clean list, updated by players">Jeden přehledný seznam, který doplňují hráči sami</li><li data-en="You see who has paid next to every name">U každého jména vidíš, jestli zaplatil</li><li data-en="Rounds and courts built for you">Kola a kurty se sestaví samy</li></ul>
       <p class="example" data-en="Example data, not a real event.">Ukázková data, ne skutečný event.</p>
     </div>
   </div>
@@ -117,11 +128,22 @@
 
 <section class="s" id="how" style="padding-top:0"><div class="lp">
   <p class="eyebrow" data-en="How it works">Jak to funguje</p>
-  <h2 class="t" data-en="Three steps, every week.">Tři kroky, každý týden.</h2>
+  <h2 class="t" data-en="Your first event this week.">První event ještě tento týden.</h2>
   <div class="steps">
-    <div class="stp"><b data-en="Create an event">Vytvoř event</b><p data-en="Pick Americano, Mexicano, Round Robin or Playoff. Set the date, courts, spots and price. About a minute.">Vyber Americano, Mexicano, Round Robin nebo Playoff. Nastav datum, kurty, počet míst a cenu. Zabere to asi minutu.</p></div>
+    <div class="stp"><b data-en="Create an event">Vytvoř event</b><p data-en="Americano, Mexicano, Round Robin, Playoff and more, 8 formats in total. Date, place, players and price. A few minutes, no community needed.">Americano, Mexicano, Round Robin, Playoff a další, celkem 8 formátů. Termín, místo, hráči a cena. Pár minut, komunitu zakládat nemusíš.</p></div>
     <div class="stp"><b data-en="Send the link">Pošli odkaz</b><p data-en="Drop it in your WhatsApp group. Players see who's going, sign up and pay. No app, no account.">Vlož ho do WhatsApp skupiny. Hráči vidí, kdo jde, přihlásí se a zaplatí. Bez aplikace a bez účtu.</p></div>
-    <div class="stp"><b data-en="Play and repeat">Hraj a opakuj</b><p data-en="Rounds and courts are ready. After the night you see the money and results, and copy the event to next week.">Kola a kurty jsou připravené. Po večeru vidíš peníze a výsledky a event jedním klepnutím zkopíruješ na další týden.</p></div>
+    <div class="stp"><b data-en="Play it">Odehraj ho</b><p data-en="Rounds and courts are built after sign-ups close. Scores go in with one hand on court. Afterwards you see the money, attendance and results.">Rozpis kol a kurtů se sestaví po uzávěrce. Skóre zadáš na kurtu jednou rukou. Po eventu vidíš peníze, docházku i pořadí.</p></div>
+  </div>
+</div></section>
+
+<section class="s" style="padding-top:0"><div class="lp">
+  <p class="eyebrow" data-en="After your first event">Po prvním eventu</p>
+  <h2 class="t" data-en="Then add the rest.">Pak přidej zbytek.</h2>
+  <p class="lead-in" data-en="None of this is needed to start. It unlocks once you've played your first event.">Nic z toho k začátku nepotřebuješ. Odemkne se, až odehraješ první event.</p>
+  <div class="later">
+    <div><img src="assets/img/court-blur-run.jpg" alt=""><div class="in"><b data-en="Community">Komunita</b><p data-en="Players from your events see the next ones first and join in one tap.">Hráči z tvých eventů uvidí další eventy jako první a přihlásí se jedním klepnutím.</p></div></div>
+    <div><img src="assets/img/court-serve.jpg" alt=""><div class="in"><b data-en="Card payments">Platby kartou</b><p data-en="Connect Stripe and players pay when they sign up. Until then they pay on site.">Připojíš Stripe a hráči zaplatí rovnou při přihlášení. Do té doby platí na místě.</p></div></div>
+    <div><img src="assets/img/court-dark-run.jpg" alt=""><div class="in"><b data-en="Leaderboard">Žebříček</b><p data-en="Points from every event add up into a season table on their own.">Body z každého eventu se samy sečtou do tabulky sezóny.</p></div></div>
   </div>
 </div></section>
 
@@ -142,13 +164,15 @@
 
 <section class="s" style="padding-top:0"><div class="lp">
   <div class="final">
+    <img src="assets/img/court-orange-close.jpg" alt="">
     <h2 data-en="Send the link. The rest happens on its own.">Pošli odkaz. Zbytek se stane sám.</h2>
-    <a class="btn" href="index.html#/o-signup" data-cta data-en="Create your community · free">Vytvoř komunitu · zdarma</a>
-    <span style="font-size:14px;color:#A9C0CC" data-en="Your first event is ready in about two minutes.">První event máš hotový asi za dvě minuty.</span>
+    <a class="btn" href="index.html#/o-new" data-cta data-en="Create your first event · free">Vytvoř první event · zdarma</a>
+    <span style="font-size:14px;color:#E3EEF3" data-en="Ready in a few minutes. Play it this week.">Hotový za pár minut. Odehraješ ho ještě tento týden.</span>
   </div>
   <div class="faq" id="faq">
     <details><summary data-en="What does it cost?">Kolik to stojí?</summary><p data-en="Free to start. You pay a small fee per card payment. Stripe's card fee is separate. See pricing.">Začneš zdarma. Z každé platby kartou si bereme malý poplatek, poplatek Stripe za zpracování karty je zvlášť. Podrobnosti najdeš v ceníku.</p></details>
-    <details><summary data-en="How do I get the money?">Jak dostanu peníze?</summary><p data-en="Players pay by card when they sign up. Stripe sends it to your bank account every week.">Hráči platí kartou při přihlášení. Stripe ti je jednou týdně pošle na účet.</p></details>
+    <details><summary data-en="Do I have to set up a community?">Musím zakládat komunitu?</summary><p data-en="No. You start with a single event. Community, card payments and a leaderboard can come later, when you want them.">Ne. Začneš jedním eventem. Komunitu, platby kartou a žebříček přidáš později, až budeš chtít.</p></details>
+    <details><summary data-en="How do I get the money?">Jak dostanu peníze?</summary><p data-en="By default players pay on site, cash or transfer, and you tick off who paid. If you want, connect Stripe and players pay by card when they sign up. Stripe sends the money to your account every week.">Výchozí je platba na místě, hotově nebo převodem, a v seznamu si odškrtáš, kdo zaplatil. Když chceš, připojíš Stripe a hráči zaplatí kartou rovnou při přihlášení. Stripe ti peníze jednou týdně pošle na účet.</p></details>
     <details><summary data-en="What if a player wants to pay cash?">Co když chce hráč platit hotově?</summary><p data-en="Mark them as &quot;On site&quot; in your list. You'll still see who still owes you.">Označ ho v seznamu jako „Na místě“. Pořád uvidíš, kdo ti ještě dluží.</p></details>
   </div>
   <footer><span>© 2026 PadelLeague · hello@padelleague.eu</span><span><a href="#" data-en="Pricing">Ceník</a> · <a href="#" data-en="Terms">Podmínky</a> · <a href="#" data-en="Privacy">Soukromí</a></span></footer>
@@ -171,7 +195,7 @@
     imgs.forEach(function (n) { n.alt = n.getAttribute(lang === 'en' ? 'data-en-alt' : 'data-cs-alt'); });
     document.title = meta[lang][0];
     document.querySelector('meta[name=description]').setAttribute('content', meta[lang][1]);
-    document.querySelectorAll('[data-cta]').forEach(function (a) { a.href = 'index.html?lang=' + lang + '#/o-signup'; });
+    document.querySelectorAll('[data-cta]').forEach(function (a) { a.href = 'index.html?lang=' + lang + '#/o-new'; });
     document.querySelectorAll('[data-player]').forEach(function (a) { a.href = 'index.html?lang=' + lang + '#/p-event'; });
     document.querySelectorAll('[data-lang]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-lang') === lang); });
   }

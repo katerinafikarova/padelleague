@@ -4,6 +4,8 @@ Profil po zhruba 3 měsících provozu: hlavička a bio, 6 highlights, aktivní 
 
 Celé česky, písmo Satoshi, barvy a grid podle JVS.
 
+**Kolo 2:** mřížka je seřazená do rytmu navy / fotka / oranžová / bílá (žádné dva stejné tóny vedle sebe ani pod sebou), fotky mají lehčí neutrální stín místo navy překryvu, highlights se střídají ve stejných barvách a všude je „event“ místo „turnaj“.
+
 **Dvě zobrazení:** výchozí je **počítač** (instagram.com v okně prohlížeče: detail příspěvku jako modální okno, stories na celou obrazovku). Nahoře nad oknem se přepíná na **mobil** (aplikace v telefonu). Volba se pamatuje, odkaz `?mode=mobile` nebo `?mode=desktop` ji vynutí. Na telefonu se vždy ukáže mobilní verze.
 
 ## Jak otevřít

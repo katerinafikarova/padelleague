@@ -35,12 +35,12 @@
   function fresh() {
     return {
       ev: { custom: null, format: 'Americano', week: 0, start: '18:00', venue: 'Padel Klub Novosedlice', address: 'Trnovanská 123, Teplice',
-        courts: 4, cap: 16, price: 200, slug: 'patecni-americano', photo: 'court-orange-close.jpg' },
+        courts: 4, cap: 16, price: 200, slug: 'patecni-americano', photo: 'court-orange-close.jpg', pay: 'card', type: 'social' },
       players: mkPlayers(9), waitlist: [],
       me: { name: 'Jana Malá', contact: '+420 777 123 456', status: null },
-      method: 'apple', stripe: 'none', stripeBack: 'o-new', community: 'Kuba komunity', city: 'Teplice',
+      method: 'apple', stripe: 'active', orgName: 'Kuba', hasComm: false, account: false, orgMode: false, wz: 0, pendingPub: false, stripeBack: 'o-new', community: 'Kuba komunity', city: 'Teplice',
       draft: null, more: false, acc: false, allNames: false, shuffle: 0,
-      sched: null, play: { round: 0, scores: [] }, last: null, invitePrev: true,
+      sched: null, play: { round: 0, scores: [] }, last: null,
       sheet: null, ctx: 'player', pick: 'pa', hf: { city: 'all', when: 'all', free: false }, scoreTarget: null, toast: null, stripeStep: 0, posted: false
     };
   }
@@ -84,16 +84,13 @@
 
   /* ---------- START ---------- */
   R.start = function () {
-    return screen('dark', status() +
-      '<div class="scroll" style="padding-top:26px;gap:18px">' +
+    function row(go, k, ext) { return (ext ? '<a class="row start-row" href="' + go + '" style="text-decoration:none">' : '<button class="row start-row" data-go="' + go + '">') + '<span><b>' + t(k) + '</b><span class="sub">' + t(k + '_sub') + '</span></span><span class="r">' + (ext ? '↗' : '→') + '</span>' + (ext ? '</a>' : '</button>'); }
+    return screen('', status() +
+      '<div class="scroll" style="padding-top:26px;gap:14px">' +
       '<div style="display:flex;justify-content:space-between;align-items:center">' + LOGO + langSwitch() + '</div>' +
-      '<h1 class="h-caps">' + t('start_title') + '</h1>' +
+      '<h1 class="h-caps" style="color:var(--navy)">' + t('start_title') + '</h1>' +
       '<p class="p muted">' + t('start_sub') + '</p>' +
-      '<button class="row start-row" data-go="p-home"><span><b>' + t('start_player') + '</b><span class="sub">' + t('start_player_sub') + '</span></span><span class="r">→</span></button>' +
-      '<button class="row start-row" data-go="p-chat"><span><b>' + t('start_wa') + '</b><span class="sub">' + t('start_wa_sub') + '</span></span><span class="r">→</span></button>' +
-      '<button class="row start-row" data-go="o-signup"><span><b>' + t('start_org') + '</b><span class="sub">' + t('start_org_sub') + '</span></span><span class="r">→</span></button>' +
-      '<a class="row start-row" href="landing.html?lang=' + lang + '" style="text-decoration:none"><span><b>' + t('start_land') + '</b><span class="sub">' + t('start_land_sub') + '</span></span><span class="r">↗</span></a>' +
-      '<a class="row start-row" href="instagram/index.html" style="text-decoration:none"><span><b>' + t('start_ig') + '</b><span class="sub">' + t('start_ig_sub') + '</span></span><span class="r">↗</span></a>' +
+      row('landing.html?lang=' + lang, 'start_land', 1) + row('o-new', 'start_org') + row('p-home', 'start_player') + row('p-chat', 'start_wa') + row('instagram/index.html', 'start_ig', 1) +
       '</div>');
   };
   function langSwitch() {
@@ -107,7 +104,7 @@
     { id: 'pa', nm: null, format: 'Americano', when: null, start: '18:00', venue: 'Padel Klub Novosedlice', city: 'Teplice', address: 'Trnovanská 123, Teplice', price: 200, cap: 16, n: 9, vibe: 'social', level: 'all', photo: 'court-orange-close.jpg', slug: 'patecni-americano', org: null },
     { id: 'mx', nm: { cs: 'Sobotní Mexicano', en: 'Saturday Mexicano' }, format: 'Mexicano', when: { d: 31, m: 10, dow: 5 }, start: '10:00', venue: 'Padel Písečná', city: 'Teplice', address: 'Písečná 5, Teplice', price: 250, cap: 16, n: 14, vibe: 'comp', level: 'mid', photo: 'court-serve.jpg', slug: 'sobotni-mexicano', org: 'Padel Písečná' },
     { id: 'ho', nm: { cs: 'Holky na kurt', en: 'Girls on court' }, format: 'Americano', when: { d: 1, m: 11, dow: 6 }, start: '17:00', venue: 'Padel Arena Ústí', city: 'Ústí n. L.', address: 'Masarykova 40, Ústí nad Labem', price: 0, cap: 12, n: 6, vibe: 'social', level: 'beg', photo: 'court-reach.jpg', slug: 'holky-na-kurt', org: 'Padel Holky Ústí' },
-    { id: 'tm', nm: { cs: 'Turnaj mistrů', en: 'Masters cup' }, format: 'Round Robin', when: { d: 4, m: 11, dow: 2 }, start: '19:00', venue: 'Padel Klub Novosedlice', city: 'Teplice', address: 'Trnovanská 123, Teplice', price: 300, cap: 16, n: 16, vibe: 'comp', level: 'adv', photo: 'court-dark-run.jpg', slug: 'turnaj-mistru', org: 'Kuba komunity' },
+    { id: 'tm', nm: { cs: 'Středeční liga', en: 'Wednesday league' }, format: 'Round Robin', when: { d: 4, m: 11, dow: 2 }, start: '19:00', venue: 'Padel Klub Novosedlice', city: 'Teplice', address: 'Trnovanská 123, Teplice', price: 300, cap: 16, n: 16, vibe: 'comp', level: 'adv', photo: 'court-dark-run.jpg', slug: 'stredecni-liga', org: 'Kuba komunity' },
     { id: 'ra', nm: { cs: 'Ranní Americano', en: 'Morning Americano' }, format: 'Americano', when: { d: 5, m: 11, dow: 3 }, start: '07:00', venue: 'Padel Club Hostivař', city: 'Praha', address: 'Švehlova 32, Praha 10', price: 180, cap: 8, n: 4, vibe: 'social', level: 'all', photo: 'court-blur-run.jpg', slug: 'ranni-americano', org: 'Ranní padel Praha' },
     { id: 'pl', nm: { cs: 'Pardubická liga · 3. kolo', en: 'Pardubice league · round 3' }, format: 'Round Robin', when: { d: 7, m: 11, dow: 5 }, start: '09:00', venue: 'Padel Park Pardubice', city: 'Pardubice', address: 'Hlaváčova 12, Pardubice', price: 350, cap: 16, n: 10, vibe: 'comp', level: 'mid', photo: 'court-blue-orange.jpg', slug: 'pardubicka-liga', org: 'Padel liga Pardubice' }
   ];
@@ -152,7 +149,7 @@
       (list.length ? '<div class="hgrid">' + list.map(heCard).join('') + '</div>' : '<div class="empty"><p>' + t('h_none') + '</p><button class="link" data-act="hf" data-arg="reset">' + t('h_reset') + '</button></div>') +
       '<div class="acc' + (S.pastOpen ? ' open' : '') + '"><button data-act="pastOpen"><span>' + t('h_past') + '</span><span class="chev">▾</span></button><div class="inner">' +
       HE_PAST.map(function (p) { return '<button class="row" data-act="toast" data-arg="h_res_t"><span><b>' + esc(p.nm) + '</b><span class="sub">' + cap1(wShort(p.when)) + ' · ' + t('h_won', { w: esc(p.win) }) + '</span></span><span class="r">' + t('h_res') + ' ▸</span></button>'; }).join('') + '</div></div>' +
-      '<button class="row h-org" data-go="o-signup"><span><b>' + t('h_org') + '</b><span class="sub">' + t('h_org_sub') + '</span></span><span class="r">→</span></button>' +
+      '<button class="row h-org" data-go="o-new"><span><b>' + t('h_org') + '</b><span class="sub">' + t('h_org_sub') + '</span></span><span class="r">→</span></button>' +
       '</div>');
   };
 
@@ -181,12 +178,12 @@
 
   R['p-event'] = function () {
     var st = evState(), l = left(), n = going();
-    var badge = { open: '<span class="pill glassy">' + t('b_open') + '</span>', last: '<span class="pill hot">' + t('b_last', { n: l }) + '</span>', full: '<span class="pill glassy">' + t('b_full') + '</span>',
+    var badge = { open: '<span class="pill glassy">' + t('b_open') + '</span>', last: '<span class="pill glassy"><b>' + t('b_last', { n: l }) + '</b></span>', full: '<span class="pill glassy">' + t('b_full') + '</span>',
       'in': '<span class="pill ok">' + t('b_in') + '</span>', wait: '<span class="pill wait">' + t('b_wait', { n: S.waitlist.indexOf(S.me.name) + 1 }) + '</span>' }[st];
     var who = S.players.slice(0, 5).map(function (p) { return '<span class="av">' + initials(p.n) + '</span>'; }).join('') + (n > 5 ? '<span class="av">+' + (n - 5) + '</span>' : '');
     var line = (st === 'full' || st === 'wait') ? t('full_waiting', { w: S.waitlist.length }) : t('going', { n: n }) + ' · ' + P('spotsLeft', l);
     var dock;
-    if (st === 'open' || st === 'last') dock = '<button class="cta" data-act="sheet" data-arg="register">' + (S.ev.price ? t(st === 'last' ? 'cta_last' : 'cta_pay', { price: kc(S.ev.price) }) : t('cta_free')) + '</button>';
+    if (st === 'open' || st === 'last') dock = '<button class="cta" data-act="sheet" data-arg="register">' + (!S.ev.price ? t('cta_free') : cardPay() ? t(st === 'last' ? 'cta_last' : 'cta_pay', { price: kc(S.ev.price) }) : t('cta_site', { price: kc(S.ev.price) })) + '</button>';
     else if (st === 'full') dock = '<button class="cta navy" data-act="sheet" data-arg="waitlist">' + t('cta_wait') + '</button><p class="fine">' + t('wait_fine') + '</p>';
     else if (st === 'in') dock = '<button class="cta" data-act="share" data-arg="player">' + t('cta_invite') + '</button><button class="link" data-act="sheet" data-arg="cancel">' + t('cant_come') + '</button>';
     else dock = '<button class="cta" data-act="share" data-arg="player">' + t('cta_invite') + '</button><button class="link" data-act="leaveWait">' + t('leave_wait') + '</button>';
@@ -199,7 +196,7 @@
       '<div class="going"><div class="ring" style="--p:' + pct() + '"><span>' + n + '/' + S.ev.cap + '</span></div><div><div class="t">' + line + '</div><div class="avatars">' + who + '</div></div></div>' +
       '<div><div class="lbl" style="margin:2px 2px 8px">' + t('who_playing') + '</div>' + namesBlock() + '</div>' +
       '<div class="acc' + (S.acc ? ' open' : '') + '"><button data-act="acc"><span>' + t('details') + '</span><span class="chev">▾</span></button><div class="inner"><dl class="dl">' +
-      '<dt>' + t('d_org') + '</dt><dd>' + esc(S.ev.org || S.community) + '</dd><dt>' + t('d_addr') + '</dt><dd>' + esc(S.ev.address) + '</dd><dt>' + t('d_time') + '</dt><dd>' + evLong() + ', ' + S.ev.start + '–' + endTime() + '</dd>' +
+      '<dt>' + t('d_org') + '</dt><dd>' + esc(S.ev.org || orgLabel()) + '</dd><dt>' + t('d_addr') + '</dt><dd>' + esc(S.ev.address) + '</dd><dt>' + t('d_time') + '</dt><dd>' + evLong() + ', ' + S.ev.start + '–' + endTime() + '</dd>' +
       '<dt>' + t('d_format') + '</dt><dd>' + t({ Mexicano: 'd_format_mx', 'Round Robin': 'd_format_rr' }[S.ev.format] || 'd_format_txt') + '</dd><dt>' + t('d_close') + '</dt><dd>' + evClose() + '</dd><dt>' + t('d_cancel') + '</dt><dd>' + t('d_cancel_txt') + '</dd></dl>' +
       '<button class="link" style="text-align:left" data-act="toast" data-arg="added_cal">' + t('add_cal') + '</button></div></div>' +
       '</div><div class="dock">' + dock + '</div>');
@@ -208,14 +205,13 @@
   R['p-in'] = function () {
     var list = [S.me.name].concat(S.players.slice(-2).reverse().map(function (p) { return p.n; }));
     var n = going();
-    return screen('dark', status() + top(ib('✕', 'data-go="p-event"', 'close')) +
-      '<div class="scroll" style="gap:18px;padding-top:6px">' +
-      '<div class="check" aria-hidden="true">✓</div>' +
-      '<h1 class="h-caps">' + t('in_title', { name: esc(S.me.name.split(' ')[0]) }) + '</h1>' +
-      '<div class="glass" style="background:rgba(255,255,255,.08)">' + glassKV([[t('k_event'), evName()], [t('k_paid'), kc(S.ev.price)], [t('k_when'), evDate() + ' · ' + S.ev.start + ' · ' + S.ev.venue, 1]]) + '</div>' +
+    return screen('', status() + top(ib('✕', 'data-go="p-event"', 'close')) +
+      '<div class="scroll" style="gap:16px;padding-top:6px">' +
+      '<div style="display:flex;align-items:center;gap:14px"><div class="check" aria-hidden="true">✓</div><h1 class="h-caps" style="color:var(--navy)">' + t('in_title', { name: esc(S.me.name.split(' ')[0]) }) + '</h1></div>' +
+      '<div class="photo grain" style="min-height:230px"><img src="' + IMG + S.ev.photo + '" alt=""><div class="glass">' + glassKV([[t('k_event'), evName()], cardPay() || !S.ev.price ? [t('k_paid'), kc(S.ev.price)] : [t('k_pay'), t('pay_onsite_v', { price: kc(S.ev.price) })], [t('k_when'), evDate() + ' · ' + S.ev.start + ' · ' + S.ev.venue, 1]]) + '</div></div>' +
       '<div><div class="lbl" style="margin-bottom:8px">' + t('who_count', { n: n, cap: S.ev.cap }) + '</div><div style="display:flex;flex-direction:column;gap:6px">' +
       list.map(function (nm, i) { return '<div class="ln' + (i === 0 ? ' me' : '') + '"><span>' + (n - i) + ' · ' + esc(nm) + '</span><span>' + (i === 0 ? t('you') : '') + '</span></div>'; }).join('') + '</div></div>' +
-      '<p class="p muted" style="font-size:13.5px">' + t('in_note') + '</p>' +
+      '<p class="p muted" style="font-size:14.5px">' + t('in_note') + '</p>' +
       '</div><div class="dock"><button class="cta" data-act="share" data-arg="player">' + t('cta_invite') + '</button><button class="link" data-act="toast" data-arg="added_cal">' + t('add_cal') + '</button></div>');
   };
 
@@ -232,10 +228,22 @@
       '</div>');
   };
 
-  /* ---------- ORGANIZÁTOR ---------- */
+  /* ---------- ORGANIZÁTOR ----------
+     Vstupenka je event, ne komunita: první obrazovka je Vytvoř event (průvodce ve 4 krocích jako v aplikaci),
+     účet až při zveřejnění, komunita, Stripe a žebříček až po prvním odehraném eventu. */
+  function orgLabel() { return S.hasComm ? S.community : S.orgName; }
+  function draftName() { var d = S.draft; return d ? (d.custom || t('evName', { f: d.format })) : evName(); }
+  function cardPay() { return S.ev.price > 0 && S.ev.pay === 'card' && S.stripe === 'active'; }
+  function orgReset() {
+    S.orgMode = true; S.account = false; S.hasComm = false; S.stripe = 'none'; S.ev.pay = 'site';
+    S.last = null; S.draft = null; S.wz = 0;
+  }
+
   R['o-signup'] = function () {
-    return screen('', status() + top(ib('←', 'data-go="start"', 'back'), '', langSwitch()) +
-      '<div class="scroll" style="gap:16px;padding-top:10px">' + LOGO +
+    var d = S.draft || { photo: S.ev.photo, week: S.ev.week, start: S.ev.start };
+    return screen('', status() + top(ib('←', 'data-go="o-new"', 'back'), '', langSwitch()) +
+      '<div class="scroll" style="gap:16px;padding-top:6px">' +
+      '<div class="mini-ev"><img src="' + IMG + d.photo + '" alt=""><span><b>' + esc(draftName()) + '</b><small>' + fDate(d.week) + ' · ' + d.start + '</small></span><span class="pill ok">' + t('su_ready') + '</span></div>' +
       '<h1 class="h-caps" style="font-size:30px">' + t('su_title') + '</h1>' +
       '<p class="p muted">' + t('su_sub') + '</p>' +
       '<button class="row" data-act="signup" style="justify-content:center;background:#000;color:#fff;border-color:#000"><b>' + t('su_apple') + '</b></button>' +
@@ -244,71 +252,86 @@
       '<label class="field"><span class="lbl">E-mail</span><input id="su-email" type="email" value="kuba@padelteplice.cz"></label>' +
       '<label class="field"><span class="lbl">' + t('su_pass') + '</span><input id="su-pass" type="password" value="prototyp"></label>' +
       '<p class="fine">' + t('su_fine') + '</p>' +
-      '</div><div class="dock"><button class="cta" data-act="signup">' + t('su_cta') + '</button><button class="link" data-act="toast" data-arg="su_have_t">' + t('su_have') + '</button></div>');
+      '</div><div class="dock"><button class="cta" data-act="signup">' + t('su_cta') + '</button><button class="link" data-act="signup">' + t('su_have') + '</button></div>');
   };
 
+  /* Komunita přichází až po prvním odehraném eventu */
   R['o-community'] = function () {
-    return screen('', status() + top(ib('←', 'data-go="o-signup"', 'back'), t('co_step')) +
+    var n = S.last ? S.last.showed : Math.max(S.players.length, 12);
+    return screen('', status() + top(ib('←', 'data-go="o-after"', 'back'), t('co_step')) +
       '<div class="scroll" style="gap:14px;padding-top:6px">' +
+      '<div class="photo grain" style="min-height:170px"><img src="' + IMG + 'court-blur-run.jpg" alt=""><div class="badge"><span class="pill glassy">' + P('co_players', n) + '</span></div></div>' +
       '<h1 class="h-mid" style="font-size:26px">' + t('co_title') + '</h1>' +
+      '<ul class="ticks"><li>' + t('co_b1') + '</li><li>' + t('co_b2') + '</li><li>' + t('co_b3') + '</li></ul>' +
       '<label class="field"><span class="lbl">' + t('co_name') + '</span><input id="c-name" value="' + esc(S.community) + '"></label>' +
       '<label class="field"><span class="lbl">' + t('co_city') + '</span><input id="c-city" value="' + esc(S.city) + '"></label>' +
       '<p class="fine" style="text-align:left">' + t('co_fine') + '</p>' +
-      '</div><div class="dock"><button class="cta" data-act="community">' + t('co_cta') + '</button></div>');
+      '</div><div class="dock"><button class="cta" data-act="community">' + t('co_cta') + '</button><button class="link" data-go="o-after">' + t('co_later') + '</button></div>');
   };
+
+  /* Co dál po prvním eventu: komunita, platby kartou, žebříček */
+  function nextSteps() {
+    var out = '';
+    if (!S.hasComm) out += '<button class="step-card" data-go="o-community"><i>◎</i><span><b>' + t('ns_comm') + '</b><small>' + t('ns_comm_s') + '</small></span><em>→</em></button>';
+    if (S.stripe !== 'active') out += '<button class="step-card" data-act="connectStripe" data-arg="' + route() + '"><i>Kč</i><span><b>' + t('ns_stripe') + '</b><small>' + t('ns_stripe_s') + '</small></span><em>→</em></button>';
+    out += '<button class="step-card" data-act="toast" data-arg="ns_lead_t"><i>▲</i><span><b>' + t('ns_lead') + '</b><small>' + t('ns_lead_s') + '</small></span><em>→</em></button>';
+    return out;
+  }
 
   R['o-home'] = function () {
     var n = going();
-    var lastRow = S.last ? '<button class="row" data-go="o-after"><span>' + t('h_last_row', { money: kc(S.last.collected), s: S.last.showed, w: esc(short(S.last.winner)) }) + '</span><span class="r">▸</span></button>'
-      : '<button class="row" data-act="toast" data-arg="h_last_t"><span>' + t('h_last_row', { money: '3 200 Kč', s: 15, w: 'Lukáš D.' }) + '</span><span class="r">▸</span></button>';
-    return screen('', status() + top('<span class="logo"><i></i>' + esc(S.community) + '</span>', '', ib('☰', 'data-act="sheet" data-arg="omenu"', 'menu')) +
+    var last = S.last ? '<div class="lbl" style="margin-top:6px">' + t('h_last') + '</div><button class="row" data-go="o-after"><span>' + t('h_last_row', { money: kc(S.last.collected), s: S.last.showed, w: esc(short(S.last.winner)) }) + '</span><span class="r">▸</span></button>' +
+      '<div class="lbl" style="margin-top:6px">' + t('nx_steps') + '</div>' + nextSteps() : '<p class="fine" style="text-align:left">' + t('h_first') + '</p>';
+    return screen('', status() + top('<span class="logo"><i></i>' + esc(S.hasComm ? S.community : 'Padel League') + '</span>', '', ib('☰', 'data-act="sheet" data-arg="omenu"', 'menu')) +
       '<div class="scroll" style="gap:12px">' +
       '<div class="lbl">' + t('h_next') + '</div>' +
       '<button class="card-ev grain" data-go="o-manage"><img src="' + IMG + S.ev.photo + '" alt=""><div class="glass"><div class="sring" style="--p:' + pct() + '"><span>' + n + '/' + S.ev.cap + '</span></div>' +
       '<div class="kv"><div class="v">' + esc(evName()) + '</div><div class="l" style="margin-top:4px">' + evDate() + ' · ' + (left() ? P('spotsLeft', left()) : t('b_full')) + '</div></div></div></button>' +
-      '<button class="row" data-act="share" data-arg="org"><span>' + t('h_share') + '</span><span class="r">⤴</span></button>' +
-      '<div class="lbl" style="margin-top:6px">' + t('h_last') + '</div>' + lastRow +
-      (S.stripe !== 'active' ? '<button class="row" data-act="connectStripe" data-arg="o-home"><span>' + t('h_stripe') + '</span><span class="pill wait">' + t('h_connect') + '</span></button>' : '') +
-      '<button class="row" data-act="sheet" data-arg="omenu"><span>' + t('h_menu') + '</span><span class="r">▸</span></button>' +
+      '<button class="row" data-act="share" data-arg="org"><span>' + t('h_share') + '</span><span class="r">⤴</span></button>' + last +
       '</div><div class="dock"><button class="cta" data-act="newEvent">' + t('h_new') + '</button></div>');
   };
 
+  /* Průvodce Vytvoř event: kroky a pořadí podle aplikace, tady jen vizuální vrstva */
   var FORMATS = [['Americano', 'f_am'], ['Mexicano', 'f_mx'], ['Round Robin', 'f_rr'], ['Playoff', 'f_po']];
-  function newDraft(w) { return { custom: S.ev.custom, format: S.ev.format, week: w, start: S.ev.start, venue: S.ev.venue, courts: S.ev.courts, cap: S.ev.cap, price: S.ev.price }; }
+  var WZ = ['wz1', 'wz2', 'wz3', 'wz4'];
+  var PHOTOS = ['court-orange-close.jpg', 'court-serve.jpg', 'court-reach.jpg', 'court-blue-orange.jpg'];
+  function newDraft(w) { return { custom: S.ev.custom, format: S.ev.format, week: w, start: S.ev.start, venue: S.ev.venue, courts: S.ev.courts, cap: S.ev.cap, price: S.ev.price, pay: S.ev.pay || 'site', type: S.ev.type || 'social', photo: S.ev.photo }; }
   R['o-new'] = function () {
-    var d = S.draft || (S.draft = newDraft(S.ev.week));
-    var paidBlocked = d.price > 0 && S.stripe !== 'active';
-    var stripeBlock = d.price > 0 ? (S.stripe === 'active' ? '<div class="row"><span>' + t('n_card_active') + '</span><span class="pill ok">' + t('active') + '</span></div>'
-      : '<div class="stripe-card"><span class="lbl">' + t('st_lbl') + '</span><div class="h-mid">' + t('st_h') + '</div><p class="p" style="font-size:13px;opacity:.88">' + t('st_p') + '</p>' +
-        '<button class="cta" data-act="connectStripe" data-arg="o-new">' + t(S.stripe === 'pending' ? 'st_btn2' : 'st_btn') + '</button>' +
-        '<button class="link" style="color:#C7DAE4" data-act="paySite">' + t('st_site') + '</button></div>') : '';
-    var dname = d.custom || t('evName', { f: d.format });
-    var more = S.more ? '<div class="acc open"><button data-act="more"><span>' + t('n_more') + '</span><span class="chev">▾</span></button><div class="inner">' +
-      '<label class="field"><span class="lbl">' + t('n_name') + '</span><input id="d-name" value="' + esc(dname) + '"></label>' +
-      '<div><div class="lbl" style="margin-bottom:6px">' + t('n_type') + '</div><div class="choice"><button class="on">Social</button><button>Competitive</button><button>Training</button></div></div>' +
-      '<div><div class="lbl" style="margin-bottom:6px">' + t('n_vis') + '</div><div class="choice"><button class="on">' + t('v_link') + '</button><button>' + t('v_pub') + '</button><button>' + t('v_com') + '</button></div></div>' +
-      '<div class="two"><label class="field"><span class="lbl">' + t('k_level') + '</span><select><option>' + t('all_levels') + '</option><option>1–3</option><option>3–5</option><option>5–7</option></select></label><label class="field"><span class="lbl">' + t('n_gender') + '</span><select><option>' + t('g_mix') + '</option><option>' + t('g_m') + '</option><option>' + t('g_w') + '</option></select></label></div>' +
-      '<label class="field"><span class="lbl">' + t('n_dead') + '</span><select><option>' + t('dl_24') + '</option><option>' + t('dl_none') + '</option><option>' + t('dl_3') + '</option></select></label>' +
-      '<label class="field"><span class="lbl">' + t('n_desc') + '</span><textarea rows="2" placeholder="' + t('n_desc_ph') + '"></textarea></label>' +
-      '<label class="field"><span class="lbl">' + t('n_cancel') + '</span><input value="' + t('n_cancel_v') + '"></label>' +
-      '<button class="row" data-act="toast" data-arg="n_banner_t"><span>' + t('n_banner') + '</span><span class="r">' + t('n_banner_r') + '</span></button>' +
-      '</div></div>' : '<button class="row" data-act="more"><span>' + t('n_more') + '</span><span class="r">' + t('n_more_r') + ' ▸</span></button>';
-    return screen('', status() + top(ib('✕', 'data-go="o-home"', 'close'), d.edit ? t('n_edit') : t('n_title'), '<button class="link" style="color:var(--orange-ink);font-weight:700;text-decoration:none" data-act="sheet" data-arg="preview">' + t('n_preview') + '</button>') +
-      '<div class="scroll" style="gap:12px">' +
-      '<div class="lbl">' + t('k_format') + '</div><div class="formats">' + FORMATS.map(function (f) { return '<button class="fm' + (d.format === f[0] ? ' on' : '') + '" data-act="format" data-arg="' + f[0] + '"><b>' + f[0] + '</b><span>' + t(f[1]) + '</span></button>'; }).join('') + '</div>' +
+    var d = S.draft || (S.draft = newDraft(S.ev.week)), st = S.wz;
+    var bar = '<div class="wz" role="list">' + WZ.map(function (k, i) { return '<button role="listitem" class="' + (i === st ? 'on' : i < st ? 'done' : '') + '" data-act="wz" data-arg="' + i + '"' + (i === st ? ' aria-current="step"' : '') + '><i>' + (i < st ? '✓' : i + 1) + '</i><span>' + t(k) + '</span></button>'; }).join('') + '</div>';
+    function opt(k, h, s, tag) { return '<button class="opt' + (d.pay === k ? ' on' : '') + '" data-act="dpay" data-arg="' + k + '"><i></i><span><b>' + h + (tag ? ' <em>' + tag + '</em>' : '') + '</b><small>' + s + '</small></span></button>'; }
+    var body;
+    if (st === 0) body = '<h1 class="h-mid wz-h">' + t('wz1_h') + '</h1>' +
+      '<div class="formats">' + FORMATS.map(function (f) { return '<button class="fm' + (d.format === f[0] ? ' on' : '') + '" data-act="format" data-arg="' + f[0] + '"><b>' + f[0] + '</b><span>' + t(f[1]) + '</span></button>'; }).join('') + '</div>' +
+      '<button class="row" data-act="toast" data-arg="n_formats_t"><span>' + t('n_formats') + '</span><span class="r">▸</span></button>' +
+      '<div><div class="lbl" style="margin-bottom:8px">' + t('n_type') + '</div><div class="choice">' + [['social', 'v_social'], ['comp', 'v_comp'], ['train', 'v_train']].map(function (x) { return '<button class="' + (d.type === x[0] ? 'on' : '') + '" data-act="dtype" data-arg="' + x[0] + '">' + t(x[1]) + '</button>'; }).join('') + '</div></div>' +
+      '<label class="field"><span class="lbl">' + t('n_name') + '</span><input id="d-name" value="' + esc(draftName()) + '"></label>';
+    else if (st === 1) body = '<h1 class="h-mid wz-h">' + t('wz2_h') + '</h1>' +
       '<label class="field"><span class="lbl">' + t('n_when') + '</span><select id="d-week">' + [0, 1, 2].map(function (o) { var w = S.ev.week + o; return '<option value="' + w + '"' + (w === d.week ? ' selected' : '') + '>' + fDate(w) + '</option>'; }).join('') + '</select></label>' +
       '<div class="two"><label class="field"><span class="lbl">' + t('n_start') + '</span><select id="d-start">' + ['18:00', '19:00', '20:00'].map(function (v) { return '<option' + (v === d.start ? ' selected' : '') + '>' + v + '</option>'; }).join('') + '</select></label><div class="field"><span class="lbl">' + t('n_courts') + '</span><div class="stepper"><button data-act="step" data-arg="courts:-1" aria-label="−">−</button><b>' + d.courts + '</b><button data-act="step" data-arg="courts:1" aria-label="+">+</button></div></div></div>' +
-      '<label class="field"><span class="lbl">' + t('n_where') + '</span><input id="d-venue" value="' + esc(d.venue) + '"></label>' +
+      '<label class="field"><span class="lbl">' + t('n_where') + '</span><input id="d-venue" value="' + esc(d.venue) + '"></label>';
+    else if (st === 2) body = '<h1 class="h-mid wz-h">' + t('wz3_h') + '</h1>' +
       '<div class="two"><div class="field"><span class="lbl">' + t('n_players') + '</span><div class="stepper"><button data-act="step" data-arg="cap:-4" aria-label="−">−</button><b>' + d.cap + '</b><button data-act="step" data-arg="cap:4" aria-label="+">+</button></div></div>' +
       '<div class="field"><span class="lbl">' + t('k_entry') + '</span><div class="stepper"><button data-act="step" data-arg="price:-50" aria-label="−">−</button><b>' + kc(d.price) + '</b><button data-act="step" data-arg="price:50" aria-label="+">+</button></div></div></div>' +
-      stripeBlock + more +
-      '</div><div class="dock">' + (paidBlocked ? '<p class="fine">' + t('n_blocked') + '</p>' : '') +
-      '<button class="cta" data-act="publish"' + (paidBlocked ? ' disabled' : '') + '>' + (d.edit ? t('n_save') : t('n_publish')) + '</button></div>');
+      (d.price > 0 ? '<div class="lbl">' + t('n_pay') + '</div><div class="opts">' + opt('site', t('pay_site_h'), t('pay_site_s'), t('default')) + opt('card', t('pay_card_h'), t(S.stripe === 'active' ? 'pay_card_on' : 'pay_card_s')) + '</div>' +
+        (d.pay === 'card' && S.stripe !== 'active' ? '<div class="note-box">' + t('n_card_note') + ' <button class="link" style="display:inline;padding:0" data-act="connectStripe" data-arg="o-new">' + t('st_btn') + ' →</button></div>' : '') : '') +
+      '<label class="field"><span class="lbl">' + t('n_dead') + '</span><select><option>' + t('dl_24') + '</option><option>' + t('dl_none') + '</option><option>' + t('dl_3') + '</option></select></label>' +
+      '<div class="two"><label class="field"><span class="lbl">' + t('k_level') + '</span><select><option>' + t('all_levels') + '</option><option>1–3</option><option>3–5</option><option>5–7</option></select></label><label class="field"><span class="lbl">' + t('n_gender') + '</span><select><option>' + t('g_mix') + '</option><option>' + t('g_m') + '</option><option>' + t('g_w') + '</option></select></label></div>';
+    else body = '<h1 class="h-mid wz-h">' + t('wz4_h') + '</h1>' +
+      '<div class="lbl">' + t('n_banner') + '</div><div class="pics">' + PHOTOS.map(function (p) { return '<button class="' + (d.photo === p ? 'on' : '') + '" data-act="dphoto" data-arg="' + p + '" aria-label="' + t('n_banner') + '"><img src="' + IMG + p + '" alt=""></button>'; }).join('') + '</div>' +
+      '<label class="field"><span class="lbl">' + t('n_desc') + '</span><textarea rows="3" placeholder="' + t('n_desc_ph') + '"></textarea></label>' +
+      '<div><div class="lbl" style="margin-bottom:8px">' + t('n_vis') + '</div><div class="choice"><button class="on">' + t('v_link') + '</button><button>' + t('v_pub') + '</button></div></div>' +
+      '<button class="row" data-act="sheet" data-arg="preview"><span>' + t('n_preview_row') + '</span><span class="r">▸</span></button>';
+    var dock = d.edit ? '<button class="cta" data-act="publish">' + t('n_save') + '</button>' + (st < 3 ? '<button class="link" data-act="wzNext">' + t('wz_next', { s: t(WZ[st + 1]) }) + '</button>' : '')
+      : st < 3 ? '<button class="cta" data-act="wzNext">' + t('wz_next', { s: t(WZ[st + 1]) }) + '</button>' + (st ? '<button class="link" data-act="wz" data-arg="' + (st - 1) + '">' + t('back') + '</button>' : '')
+      : '<button class="cta" data-act="publish">' + t('n_publish') + '</button><p class="fine">' + t('n_always') + '</p>';
+    return screen('', status() + top(ib('✕', 'data-go="' + (S.account ? 'o-home' : 'start') + '"', 'close'), d.edit ? t('n_edit') : t('n_title'), '<button class="link" style="color:var(--navy);font-weight:700;text-decoration:none" data-act="sheet" data-arg="preview">' + t('n_preview') + '</button>') +
+      bar + '<div class="scroll" style="gap:12px;padding-top:4px">' + body + '</div><div class="dock">' + dock + '</div>');
   };
 
   R['o-stripe'] = function () {
     var steps = [
-      [t('sp1'), '<label class="field"><span class="lbl">' + t('sp_name') + '</span><input value="Jakub Líbal"></label><label class="field"><span class="lbl">' + t('sp_dob') + '</span><input value="12. 4. 1990"></label><label class="field"><span class="lbl">' + t('sp_addr') + '</span><input value="Pražská 12, Teplice"></label>'],
+      [t('sp1'), '<label class="field"><span class="lbl">' + t('sp_name') + '</span><input value="Jakub Novák"></label><label class="field"><span class="lbl">' + t('sp_dob') + '</span><input value="12. 4. 1990"></label><label class="field"><span class="lbl">' + t('sp_addr') + '</span><input value="Pražská 12, Teplice"></label>'],
       [t('sp2'), '<label class="field"><span class="lbl">IBAN</span><input value="CZ65 0800 0000 1920 0014 5399"></label><p class="fine" style="text-align:left">' + t('sp_note2') + '</p>']
     ];
     var s = steps[S.stripeStep];
@@ -319,21 +342,21 @@
       '<div class="dock"><button class="cta" style="background:#635BFF;box-shadow:none" data-act="stripeNext">' + t(S.stripeStep ? 'sp_submit' : 'sp_cont') + '</button></div>');
   };
 
-  /* Obrazovka 1: event je venku, rozpis 1. kola a kurty jsou vidět, jeden nudge */
+  /* Po zveřejnění: seznam přihlášených, ne prázdný rozpis. Rozpis vznikne až po uzávěrce. */
+  var PAYK = { paid: 'pay_paid', unpaid: 'pay_unpaid', site: 'pay_site' };
   R['o-live'] = function () {
-    var courts = Math.max(1, S.ev.courts), names = S.players.filter(present).map(function (p) { return short(p.n); }), k = 0, grid = '';
-    function slot() { var n = names[k++]; return n ? '<span class="slot">' + esc(n) + '</span>' : '<span class="slot open">' + t('open_spot') + '</span>'; }
-    for (var c = 0; c < courts; c++) grid += '<div class="court-mini"><div class="lbl">' + t('court', { n: c + 1 }) + '</div><div class="pair">' + slot() + slot() + '</div><div class="vs-mini">vs</div><div class="pair">' + slot() + slot() + '</div></div>';
-    var open = Math.max(0, courts * 4 - names.length);
-    return screen('dark', status() + top(ib('✕', 'data-go="o-manage"', 'close'), '', '<span class="pill ok">' + t('live') + '</span>') +
+    var n = S.players.length;
+    var list = n ? S.players.map(function (p, i) { return '<div class="row"><span>' + (i + 1) + ' · ' + esc(p.n) + '</span><span class="pill ' + p.pay + '">' + t(PAYK[p.pay]) + '</span></div>'; }).join('') +
+      '<button class="row" data-go="o-manage"><b>' + t('l_manage') + '</b><span class="r">▸</span></button>'
+      : '<div class="empty slim"><p>' + t('l_empty') + '</p></div>';
+    return screen('', status() + top(ib('✕', 'data-go="o-home"', 'close'), '', '<span class="pill ok">' + t('live') + '</span>') +
       '<div class="scroll" style="gap:12px;padding-top:2px">' +
       '<div class="lbl">' + t('l_eyebrow') + '</div>' +
-      '<h1 class="h-caps" style="font-size:30px">' + esc(evName()) + '</h1>' +
-      '<p class="p muted" style="font-size:13px">' + t('l_meta', { format: S.ev.format, date: evDate(), start: S.ev.start, courts: P('courts', courts) }) + '</p>' +
-      '<div class="lbl" style="margin-top:2px">' + t('round', { n: 1 }) + '</div><div class="courts-mini">' + grid + '</div>' +
-      '<p class="p muted" style="font-size:12.5px">' + (open ? t('l_open', { open: cap1(P('openSpots', open)) }) : t('l_full')) + '</p>' +
-      '</div><div class="dock"><div class="nudge">' + t('l_nudge') + '</div>' +
-      '<button class="cta" data-act="sendWA">' + t('l_cta') + '</button><button class="link" data-act="share" data-arg="org">' + t('l_link') + '</button></div>');
+      '<div class="mini-ev big"><img src="' + IMG + S.ev.photo + '" alt=""><span><b>' + esc(evName()) + '</b><small>' + t('l_meta', { format: S.ev.format, date: evDate(), start: S.ev.start, courts: P('courts', S.ev.courts) }) + '</small></span></div>' +
+      '<div class="going"><div class="ring" style="--p:' + Math.round(n / S.ev.cap * 100) + '"><span>' + n + '/' + S.ev.cap + '</span></div><div><div class="t">' + t('l_signed', { n: n }) + '</div><div class="s">' + cap1(P('spotsLeft', Math.max(0, S.ev.cap - n))) + ' · ' + kc(S.ev.price) + (S.ev.price ? ' ' + t(cardPay() ? 'l_bycard' : 'l_onsite') : '') + '</div></div></div>' +
+      '<div class="lbl">' + t('l_list') + '</div>' + list +
+      '<div class="note-box">' + t('l_sched', { close: evClose() }) + '</div>' +
+      '</div><div class="dock"><button class="cta" data-act="sendWA">' + t('l_cta') + '</button><button class="link" data-act="share" data-arg="org">' + t('l_link') + '</button></div>');
   };
 
   R['o-wa'] = function () {
@@ -342,10 +365,9 @@
       '<div class="scroll" style="padding-top:14px;gap:10px"><div class="sysmsg">' + t('today') + '</div>' +
       '<div class="bubble out"><div class="prev"><img src="' + IMG + S.ev.photo + '" alt=""><div><b>' + esc(evName()) + '</b>' + evDate() + ' · ' + kc(S.ev.price) + '</div></div>' + esc(chatMsg()) + '<br><span class="wa-link">padelleague.eu/e/' + S.ev.slug + '</span><div class="time">12:13 ✓✓</div></div>' +
       (S.posted ? '<div class="bubble in"><div class="who">Klára</div>' + t('wa_r1') + '<div class="time">12:20</div></div><div class="bubble in"><div class="who">Petr</div>' + t('wa_r2') + '<div class="time">12:41</div></div><div class="bubble in"><div class="who">Filip</div>' + t('wa_r3') + '<div class="time">13:02</div></div>' : '') +
-      '</div><div class="dock">' + (S.posted ? '<button class="cta" data-go="o-manage">' + t('wa_back') + '</button>' : '<button class="cta white" data-act="fastForward">' + t('wa_ff') + '</button><p class="fine">' + t('wa_fine') + '</p>') + '</div>');
+      '</div><div class="dock">' + (S.posted ? '<button class="cta" data-go="o-live">' + t('wa_back') + '</button>' : '<button class="cta white" data-act="fastForward">' + t('wa_ff') + '</button><p class="fine">' + t('wa_fine') + '</p>') + '</div>');
   };
 
-  var PAYK = { paid: 'pay_paid', unpaid: 'pay_unpaid', site: 'pay_site' };
   R['o-manage'] = function () {
     var paid = S.players.filter(function (p) { return p.pay !== 'unpaid'; }).length;
     var rows = S.players.map(function (p, i) {
@@ -353,7 +375,7 @@
         (p.pay === 'unpaid' ? '<button class="r" style="text-decoration:underline" data-act="remind" data-arg="' + i + '">' + t('remind') + '</button>' : '') +
         '<button class="pill ' + p.pay + '" data-act="cyclePay" data-arg="' + i + '">' + t(PAYK[p.pay]) + '</button></span></div>';
     }).join('') || '<div class="empty"><p>' + t('mg_empty') + '</p></div>';
-    var wl = S.waitlist.map(function (n, i) { return '<div class="row"><span>' + (i + 1) + ' · ' + esc(n) + '</span><button class="r" style="color:var(--orange-ink);font-weight:700" data-act="moveIn" data-arg="' + i + '">' + t('move_in') + '</button></div>'; }).join('');
+    var wl = S.waitlist.map(function (n, i) { return '<div class="row"><span>' + (i + 1) + ' · ' + esc(n) + '</span><button class="r" style="color:var(--navy);font-weight:700;text-decoration:underline" data-act="moveIn" data-arg="' + i + '">' + t('move_in') + '</button></div>'; }).join('');
     return screen('', status() + top(ib('←', 'data-go="o-home"', 'back'), esc(evName()) + '<br><span class="muted" style="font:500 11px/1 var(--f-body);letter-spacing:0;text-transform:none">' + evDate() + ' · ' + S.ev.start + '</span>', ib('⋯', 'data-act="sheet" data-arg="evmenu"', 'more')) +
       '<div class="scroll" style="gap:10px">' +
       '<div class="seg3"><div><b>' + S.players.length + '/' + S.ev.cap + '</b><span>' + t('mg_going') + '</span></div><div><b>' + paid + '</b><span>' + t('mg_paid') + '</span></div><div><b>' + S.waitlist.length + '</b><span>' + t('mg_wait') + '</span></div></div>' +
@@ -361,7 +383,7 @@
       '<div class="lbl" style="margin-top:4px">' + t('mg_lbl') + '</div>' + rows +
       (wl ? '<div class="lbl" style="margin-top:6px">' + t('mg_waitlist') + '</div>' + wl : '') +
       '</div><div class="dock">' + (S.players.length < 4 ? '<button class="cta" data-act="share" data-arg="org">' + t('h_share') + '</button>' :
-        '<button class="cta" data-act="buildSchedule">' + t(S.sched ? 'mg_open' : 'mg_build') + '</button>') + '</div>');
+        '<button class="cta" data-act="buildSchedule">' + t(S.sched ? 'mg_open' : 'mg_build') + '</button>' + (S.sched ? '' : '<p class="fine">' + t('mg_build_fine', { close: evClose() }) + '</p>')) + '</div>');
   };
 
   function rng(seed) { return function () { seed = seed + 0x6D2B79F5 | 0; var x = Math.imul(seed ^ seed >>> 15, 1 | seed); x = x + Math.imul(x ^ x >>> 7, 61 | x) ^ x; return ((x ^ x >>> 14) >>> 0) / 4294967296; }; }
@@ -392,17 +414,19 @@
     S.play = { round: 0, scores: out.map(function (rd) { return rd.m.map(function () { return null; }); }) };
   }
 
+  /* Rozpis a Průběh: čitelné na kurtu jednou rukou (měřítko PadelMix) */
+  function teamLines(a) { return '<b>' + esc(short(a[0])) + '</b><b>' + esc(short(a[1])) + '</b>'; }
   R['o-schedule'] = function () {
     var here = S.players.filter(present).length;
     var rds = S.sched.map(function (rd, r) {
-      return '<div class="round"><h4><span>' + t('round', { n: r + 1 }) + '</span><span class="muted" style="font:500 11px/1 var(--f-body);text-transform:none">' + P('courts', rd.m.length) + '</span></h4>' +
-        rd.m.map(function (mt, c) { return '<div class="match"><span>' + esc(short(mt.a[0])) + '<br>' + esc(short(mt.a[1])) + '</span><span class="vs">' + t('court', { n: c + 1 }) + '</span><span class="b">' + esc(short(mt.b[0])) + '<br>' + esc(short(mt.b[1])) + '</span></div>'; }).join('') +
-        (rd.rest.length ? '<div class="rest">' + t('resting') + rd.rest.map(short).map(esc).join(', ') + '</div>' : '') + '</div>';
+      return '<section class="rz"><h3>' + t('round', { n: r + 1 }) + '</h3>' +
+        rd.m.map(function (mt, c) { return '<div class="rz-m"><span class="rz-c" aria-label="' + t('court', { n: c + 1 }) + '">' + (c + 1) + '</span><div class="rz-t">' + teamLines(mt.a) + '</div><span class="rz-vs">vs</span><div class="rz-t b">' + teamLines(mt.b) + '</div></div>'; }).join('') +
+        (rd.rest.length ? '<div class="rz-rest">' + t('resting') + rd.rest.map(short).map(esc).join(', ') + '</div>' : '') + '</section>';
     }).join('');
     return screen('', status() + top(ib('←', 'data-go="o-manage"', 'back'), t('sc_title'), ib('↻', 'data-act="reshuffle"', 'shuffle')) +
-      '<div class="scroll" style="gap:10px">' +
-      '<button class="row" data-act="sheet" data-arg="attend"><span>' + t('sc_att', { n: here, t: S.players.length }) + '</span><span class="r">' + t('sc_check') + '</span></button>' +
-      '<p class="p muted" style="font-size:13.5px">' + t('sc_meta', { players: P('players', here), courts: P('courts', S.sched[0].m.length) }) + '</p>' + rds +
+      '<div class="scroll" style="gap:12px">' +
+      '<button class="row big" data-act="sheet" data-arg="attend"><span>' + t('sc_att', { n: here, t: S.players.length }) + '</span><span class="r">' + t('sc_check') + '</span></button>' +
+      '<p class="p muted" style="font-size:15px">' + t('sc_meta', { players: P('players', here), courts: P('courts', S.sched[0].m.length) }) + '</p>' + rds +
       '</div><div class="dock"><button class="cta" data-act="startPlay">' + t('sc_start') + '</button></div>');
   };
 
@@ -413,17 +437,16 @@
     var tabs = S.sched.map(function (_, i) { return '<button class="' + (i === r ? 'on' : (roundDone(i) ? 'done' : '')) + '" data-act="round" data-arg="' + i + '">' + t('round', { n: i + 1 }) + (roundDone(i) ? ' ✓' : '') + '</button>'; }).join('');
     var courts = rd.m.map(function (mt, c) {
       var sc = S.play.scores[r][c];
-      return '<div class="court"><div style="display:flex;justify-content:space-between"><span class="lbl">' + t('court', { n: c + 1 }) + '</span>' + (sc ? '<span class="pill ok">' + t('saved') + '</span>' : '') + '</div>' +
-        '<div class="teams"><div class="team">' + esc(short(mt.a[0])) + '<br>' + esc(short(mt.a[1])) + '</div>' +
-        (sc ? '<span class="score-big">' + sc[0] + ':' + sc[1] + '</span>' : '<button class="pill hot" data-act="score" data-arg="' + r + ':' + c + '">' + t('enter_score') + '</button>') +
-        '<div class="team b">' + esc(short(mt.b[0])) + '<br>' + esc(short(mt.b[1])) + '</div></div>' +
-        (sc ? '<button class="link" style="text-align:right" data-act="score" data-arg="' + r + ':' + c + '">' + t('fix_score') + '</button>' : '') + '</div>';
+      return '<button class="pc' + (sc ? ' done' : '') + '" data-act="score" data-arg="' + r + ':' + c + '">' +
+        '<div class="pc-h"><span>' + t('court', { n: c + 1 }) + '</span>' + (sc ? '<span class="pill ok">' + t('saved') + '</span>' : '<span class="pc-tap">' + t('enter_score') + '</span>') + '</div>' +
+        '<div class="pc-row"><span class="pc-n">' + teamLines(mt.a) + '</span><span class="pc-s">' + (sc ? sc[0] : '–') + '</span></div>' +
+        '<div class="pc-row"><span class="pc-n">' + teamLines(mt.b) + '</span><span class="pc-s">' + (sc ? sc[1] : '–') + '</span></div></button>';
     }).join('');
     var todo = S.play.scores[r].filter(function (x) { return !x; }).length;
     var stand = standings().slice(0, 5).map(function (p, i) { return '<div><span>' + (i + 1) + ' · ' + esc(p.n) + '</span><b>' + p.pts + '</b></div>'; }).join('');
     return screen('', status() + top(ib('←', 'data-go="o-schedule"', 'back'), '<span class="pill ok" style="margin-right:6px">' + t('running') + '</span>' + esc(evName()), ib('⋯', 'data-act="toast" data-arg="pl_menu_t"', 'more')) +
-      '<div class="scroll" style="gap:12px"><div class="tabs">' + tabs + '</div>' + courts +
-      '<div class="lbl" style="margin-top:4px">' + t('standings') + '</div><div class="stand">' + stand + '</div>' +
+      '<div class="scroll" style="gap:12px"><div class="tabs rtabs">' + tabs + '</div>' + courts +
+      '<div class="lbl" style="margin-top:4px">' + t('standings') + '</div><div class="stand big">' + stand + '</div>' +
       '</div><div class="dock">' + (allDone() ? '<button class="cta" data-act="finish">' + t('finish') + '</button>' :
         '<button class="cta" disabled>' + t('pl_progress', { r: r + 1, k: P('toScore', todo) }) + '</button><button class="link" data-act="autofill">' + t('demo_fill') + '</button>') + '</div>');
   };
@@ -453,15 +476,19 @@
     buildSched(); fillScores(); S.last = summary();
   }
 
-  /* Obrazovka 3 – mobil */
+  /* Obrazovka 3 – po eventu (mobil): vybráno, nezaplatili, docházka, pořadí, co dál */
   R['o-after'] = function () {
     var L = S.last, st = L.stand;
-    return screen('dark', status() + top(ib('←', 'data-go="o-home"', 'back'), t('af_done', { name: esc(evName()) }), ib('⋯', 'data-act="toast" data-arg="af_menu_t"', 'more')) +
-      '<div class="scroll" style="gap:14px">' +
-      '<div><div class="lbl">' + t('collected') + '</div><div class="money" style="margin-top:6px">' + kc(L.collected) + '</div></div>' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill ok">' + t('af_paid', { p: L.paid, t: L.total }) + '</span><span class="pill site">' + t('af_showed', { s: L.showed, t: L.total }) + '</span>' + (L.owe.length ? '<span class="pill wait">' + t('af_owe', { u: L.owe.length }) + '</span>' : '') + '</div>' +
-      podium(st) +
-      '<div class="stand">' + st.slice(3, 8).map(function (p, i) { return '<div><span>' + (i + 4) + ' · ' + esc(p.n) + '</span><b>' + p.pts + '</b></div>'; }).join('') + '</div>' +
+    var owe = L.owe.map(function (n) { var i = -1; S.players.forEach(function (p, j) { if (p.n === n) i = j; }); return '<div class="row"><span>' + esc(n) + '</span><button class="r" style="text-decoration:underline" data-act="remind" data-arg="' + i + '">' + t('remind') + '</button></div>'; }).join('');
+    return screen('', status() + top(ib('←', 'data-go="o-home"', 'back'), t('af_title'), ib('⋯', 'data-act="toast" data-arg="af_menu_t"', 'more')) +
+      '<div class="scroll" style="gap:12px">' +
+      '<div class="lbl">' + esc(evName()) + ' · ' + fDate(L.week) + '</div>' +
+      '<div class="af-money"><div class="lbl">' + t('collected') + '</div><div class="money">' + kc(L.collected) + '</div>' +
+      '<div class="af-pills"><span class="pill ok">' + t('af_paid', { p: L.paid, t: L.total }) + '</span><span class="pill site">' + t('af_showed', { s: L.showed, t: L.total }) + '</span>' + (L.owe.length ? '<span class="pill wait">' + t('af_owe', { u: L.owe.length }) + '</span>' : '') + '</div></div>' +
+      (owe ? '<div class="lbl">' + t('d_owe') + '</div>' + owe : '') +
+      '<div class="lbl" style="margin-top:4px">' + t('d_final') + '</div>' + podium(st) +
+      '<div class="stand big">' + st.slice(3, 8).map(function (p, i) { return '<div><span>' + (i + 4) + ' · ' + esc(p.n) + '</span><b>' + p.pts + '</b></div>'; }).join('') + '</div>' +
+      '<div class="lbl" style="margin-top:6px">' + t('nx_steps') + '</div>' + nextSteps() +
       '</div><div class="dock"><button class="cta" data-act="nextEvent">' + t('af_next') + '<small>' + t('af_same', { date: fDate(S.ev.week + 1) }) + '</small></button><button class="link" data-go="o-card">' + t('af_card') + '</button></div>');
   };
   function podium(st) {
@@ -469,23 +496,23 @@
     return '<div class="podium" style="margin-top:6px">' + pod('s', 1) + pod('g', 0) + pod('b3', 2) + '</div>';
   }
 
-  /* Obrazovka 3 – desktop */
+  /* Obrazovka 3 – desktop (ponecháno pro srovnání, PC verze je v aplikaci) */
   R['o-after-d'] = function () {
     var L = S.last, st = L.stand, nav = D[lang].d_nav;
     var owe = L.owe.length ? L.owe.map(function (n) { var i = -1; S.players.forEach(function (p, j) { if (p.n === n) i = j; }); return '<div class="d-row"><span>' + esc(n) + '</span><button class="r" style="text-decoration:underline" data-act="remind" data-arg="' + i + '">' + t('remind') + '</button></div>'; }).join('')
       : '<div class="d-row"><span>' + t('d_none_owe') + '</span><span class="pill ok">✓</span></div>';
     var table = st.slice(0, 10).map(function (p, i) { return '<tr><td>' + (i + 1) + '</td><td>' + esc(p.n) + '</td><td class="num">' + p.pts + '</td></tr>'; }).join('');
-    return screen('desk', '<div class="d-bar"><span class="logo"><i></i>' + esc(S.community) + '</span><nav>' + nav.map(function (x, i) { return '<span class="' + (i === 1 ? 'on' : '') + '">' + x + '</span>'; }).join('') + '</nav>' + langSwitch() + '</div>' +
+    return screen('desk', '<div class="d-bar"><span class="logo"><i></i>' + esc(orgLabel()) + '</span><nav>' + nav.map(function (x, i) { return '<span class="' + (i === 1 ? 'on' : '') + '">' + x + '</span>'; }).join('') + '</nav>' + langSwitch() + '</div>' +
       '<div class="d-main"><div class="d-head"><div><div class="lbl">' + fLong(L.week) + ' · ' + esc(S.ev.venue) + '</div><h1 class="h-caps" style="font-size:34px;margin-top:6px">' + t('af_done', { name: esc(evName()) }) + '</h1></div>' +
       '<button class="cta d-cta" data-act="nextEvent">' + t('af_next') + '<small>' + t('af_same', { date: fDate(S.ev.week + 1) }) + '</small></button></div>' +
       '<div class="d-grid"><div class="d-col">' +
-      '<section class="d-card navy"><div class="lbl">' + t('collected') + '</div><div class="money">' + kc(L.collected) + '</div>' +
+      '<section class="d-card"><div class="lbl">' + t('collected') + '</div><div class="money">' + kc(L.collected) + '</div>' +
       '<div class="d-row"><span>' + t('d_bycard') + '</span><b>' + L.card + ' × ' + kc(L.price) + '</b></div><div class="d-row"><span>' + t('d_onsite') + '</span><b>' + L.site + ' × ' + kc(L.price) + '</b></div></section>' +
       '<section class="d-card"><div class="lbl">' + t('d_owe') + '</div>' + owe + '</section>' +
       '<section class="d-card"><div class="lbl">' + t('d_att') + '</div><div class="d-big">' + t('d_att_txt', { s: L.showed, t: L.total }) + '</div>' +
       (L.noshow.length ? '<div class="d-row"><span>' + t('d_noshow') + '</span><b>' + L.noshow.map(esc).join(', ') + '</b></div>' : '<div class="d-row"><span>' + t('d_all_here') + '</span></div>') + '</section>' +
       '</div><div class="d-col">' +
-      '<section class="d-card dark">' + podium(st) + '</section>' +
+      '<section class="d-card">' + podium(st) + '</section>' +
       '<section class="d-card"><div class="lbl">' + t('d_final') + '</div><table class="d-table"><thead><tr><th>#</th><th>' + t('d_player') + '</th><th class="num">' + t('d_points') + '</th></tr></thead><tbody>' + table + '</tbody></table>' +
       '<button class="link" style="text-align:left;margin-top:10px" data-go="o-card">' + t('af_card') + '</button></section>' +
       '</div></div><p class="fine" style="text-align:left;margin-top:14px"><button class="link" style="display:inline" data-go="o-after">← ' + t('d_mobile') + '</button></p></div>');
@@ -495,7 +522,7 @@
     var L = S.last, w = L.stand[0];
     return screen('', status() + top(ib('←', 'data-go="o-after"', 'back'), t('cd_title')) +
       '<div class="scroll"><div class="somecard grain"><img src="' + IMG + 'court-blue-orange.jpg" alt="">' +
-      '<div class="glass">' + glassKV([[t('cd_name'), w.n], [t('k_event'), evName() + ' · ' + S.community], [t('cd_details'), fCard(L.week) + ' · ' + S.city]]) +
+      '<div class="glass">' + glassKV([[t('cd_name'), w.n], [t('k_event'), evName() + ' · ' + orgLabel()], [t('cd_details'), fCard(L.week) + ' · ' + S.city]]) +
       '<div class="kv"><div class="l">' + t('cd_points') + '</div><div class="v" style="font-size:36px;line-height:1">' + w.pts + '</div></div><div class="kv"><div class="l">' + t('cd_result') + '</div><div class="v" style="font-size:32px;line-height:1">' + t('cd_winner') + '</div></div></div>' +
       '<div class="won">#1<small>' + t('cd_of', { n: L.showed }) + '</small></div><div class="some-foot">' + t('cd_foot') + '</div></div></div>' +
       '<div class="dock"><button class="cta" data-act="toast" data-arg="opening_ig">' + t('cd_ig') + '</button><button class="link" data-act="cardAll">' + t('cd_all') + '</button></div>');
@@ -506,22 +533,22 @@
     function row(l, v, ch) { return '<button class="row" data-act="editNext"><span><span class="lbl">' + l + '</span><br>' + (ch ? '<span class="changed">' + v + '</span>' : v) + '</span><span class="r">' + t('edit') + '</span></button>'; }
     return screen('', status() + top(ib('✕', 'data-go="o-after"', 'close'), t('nx_title')) +
       '<div class="scroll" style="gap:10px"><h1 class="h-mid" style="font-size:24px">' + t('nx_h') + '</h1>' +
-      row(t('nx_date'), fDate(w) + ' · ' + S.ev.start + '–20:00', 1) + row(t('nx_format'), S.ev.format + ' · ' + P('players', S.ev.cap)) + row(t('nx_where'), esc(S.ev.venue) + ' · ' + P('courts', S.ev.courts)) + row(t('nx_entry'), kc(S.ev.price) + (S.ev.price ? ' · ' + t('nx_card') : '')) +
-      '<button class="row" style="background:var(--warn-bg);border-color:#FDD3B0" data-act="invitePrev"><span>' + t('nx_invite', { n: S.last ? S.last.total : 16 }) + '</span><span class="sw' + (S.invitePrev ? ' on' : '') + '"></span></button>' +
+      row(t('nx_date'), fDate(w) + ' · ' + S.ev.start + '–' + endTime(), 1) + row(t('nx_format'), S.ev.format + ' · ' + P('players', S.ev.cap)) + row(t('nx_where'), esc(S.ev.venue) + ' · ' + P('courts', S.ev.courts)) + row(t('nx_entry'), kc(S.ev.price) + (S.ev.price ? ' · ' + t(cardPay() ? 'nx_card' : 'nx_site') : '')) +
+      '<p class="fine" style="text-align:left">' + t('nx_fine') + '</p>' +
       '</div><div class="dock"><button class="cta" data-act="publishNext">' + t('nx_cta') + '</button></div>');
   };
 
   /* ---------- PANELY (sheets) ---------- */
   var SH = {};
   SH.register = function () {
-    var free = !S.ev.price;
+    var free = !S.ev.price, site = !free && !cardPay();
     return '<div class="grab"></div><h2 class="h-mid">' + t('s_join', { name: esc(evName()) }) + '</h2><p class="fine" style="text-align:left;margin-top:-6px">' + evDate() + ' · ' + S.ev.start + ' · ' + esc(S.ev.venue) + '</p>' +
       '<label class="field"><span class="lbl">' + t('your_name') + '</span><input id="f-name" autocomplete="name" value="' + esc(S.me.name) + '"></label>' +
       '<label class="field"><span class="lbl">' + t('contact') + '</span><input id="f-contact" autocomplete="tel" value="' + esc(S.me.contact) + '"></label>' +
-      (free ? '' : '<div class="methods">' + [['apple', ' Pay'], ['google', 'G Pay'], ['card', t('card')]].map(function (m) { return '<button class="' + (S.method === m[0] ? 'on' : '') + '" data-act="method" data-arg="' + m[0] + '">' + m[1] + '</button>'; }).join('') + '</div>' +
+      (free || site ? '' : '<div class="methods">' + [['apple', ' Pay'], ['google', 'G Pay'], ['card', t('card')]].map(function (m) { return '<button class="' + (S.method === m[0] ? 'on' : '') + '" data-act="method" data-arg="' + m[0] + '">' + m[1] + '</button>'; }).join('') + '</div>' +
         (S.method === 'card' ? '<label class="field"><span class="lbl">' + t('card_no') + '</span><input value="4242 4242 4242 4242"></label><div class="two"><label class="field"><span class="lbl">' + t('card_exp') + '</span><input value="12 / 28"></label><label class="field"><span class="lbl">CVC</span><input value="123"></label></div>' : '')) +
-      '<button class="cta" data-act="' + (free ? 'joinFree' : 'pay') + '">' + (free ? t('cta_free') : t('pay_join', { price: kc(S.ev.price) })) + '</button>' +
-      '<p class="fine">' + t('s_fine') + '</p>';
+      '<button class="cta" data-act="' + (free || site ? 'joinFree' : 'pay') + '">' + (free ? t('cta_free') : site ? t('cta_site_join') : t('pay_join', { price: kc(S.ev.price) })) + '</button>' +
+      '<p class="fine">' + (site ? t('s_fine_site', { price: kc(S.ev.price) }) : t('s_fine')) + '</p>';
   };
   SH.paying = function () {
     return '<div class="grab"></div><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:17px"> Pay</b><span class="fine">' + t('cancel') + '</span></div>' +
@@ -558,7 +585,7 @@
   function stripeLabel() { return t(S.stripe === 'active' ? 'active' : S.stripe === 'pending' ? 'pending' : 'not_connected'); }
   SH.omenu = function () {
     var it = D[lang].om_items;
-    return '<div class="grab"></div><div style="display:flex;justify-content:space-between;align-items:center"><div class="lbl">' + esc(S.community) + '</div>' + langSwitch() + '</div>' +
+    return '<div class="grab"></div><div style="display:flex;justify-content:space-between;align-items:center"><div class="lbl">' + esc(orgLabel()) + '</div>' + langSwitch() + '</div>' +
       it.map(function (x, i) {
         if (i === 5) return '<button class="row" data-go="p-event"><span>' + x + '</span><span class="r">▸</span></button>';
         if (i === 1) return '<button class="row" data-act="toastRaw" data-arg="' + esc(t('om_pay_t', { s: stripeLabel() })) + '"><span>' + x + '</span><span class="pill ' + (S.stripe === 'active' ? 'ok' : 'wait') + '">' + stripeLabel() + '</span></button>';
@@ -582,14 +609,17 @@
   };
   SH.preview = function () {
     var d = S.draft, nm = d.custom || t('evName', { f: d.format });
-    return '<div class="grab"></div><div class="lbl">' + t('pv_lbl') + '</div><div class="photo grain" style="min-height:260px"><img src="' + IMG + S.ev.photo + '" alt=""><div class="over-title">' + esc(nm) + '</div>' +
+    return '<div class="grab"></div><div class="lbl">' + t('pv_lbl') + '</div><div class="photo grain" style="min-height:260px"><img src="' + IMG + (d.photo || S.ev.photo) + '" alt=""><div class="over-title">' + esc(nm) + '</div>' +
       '<div class="glass">' + glassKV([[t('k_datetime'), fDate(d.week) + ' · ' + d.start], [t('k_entry'), kc(d.price)], [t('k_location'), d.venue, 1], [t('k_format'), d.format], [t('k_spots'), P('players', d.cap)]]) + '</div></div><button class="cta" data-act="close">' + t('pv_back') + '</button>';
   };
   SH.score = function () {
     var tg = S.scoreTarget, mt = S.sched[tg[0]].m[tg[1]], b = '';
-    for (var i = 0; i <= 24; i++) b += '<button data-act="setScore" data-arg="' + i + '">' + i + ':' + (24 - i) + '</button>';
-    return '<div class="grab"></div><h2 class="h-mid">' + t('score_title', { c: tg[1] + 1, r: tg[0] + 1 }) + '</h2><p class="fine" style="text-align:left">' + t('score_txt', { a: esc(short(mt.a[0])), b: esc(short(mt.a[1])), c: esc(short(mt.b[0])), d: esc(short(mt.b[1])) }) + '</p><div class="scores">' + b + '</div><button class="link" data-act="close">' + t('cancel') + '</button>';
+    for (var i = 0; i <= 24; i++) b += '<button data-act="setScore" data-arg="' + i + '"><b>' + i + '</b><small>' + (24 - i) + '</small></button>';
+    return '<div class="grab"></div><h2 class="h-mid">' + t('score_title', { c: tg[1] + 1, r: tg[0] + 1 }) + '</h2>' +
+      '<div class="sc-teams"><div class="a"><span class="lbl">' + t('team_a') + '</span>' + teamLines(mt.a) + '</div><div><span class="lbl">' + t('team_b') + '</span>' + teamLines(mt.b) + '</div></div>' +
+      '<p class="fine" style="text-align:left">' + t('score_txt2') + '</p><div class="scores big">' + b + '</div><button class="link" data-act="close">' + t('cancel') + '</button>';
   };
+
 
   /* ---------- AKCE ---------- */
   function val(id, d) { var el = document.getElementById(id); return el && el.value.trim() ? el.value.trim() : d; }
@@ -650,12 +680,17 @@
       if (a === 'wa' && S.ctx === 'org') { S.sheet = null; go('o-wa'); return; }
       S.sheet = null; toast(t({ wa: 'opening_wa', ig: 'opening_ig', qr: 'qr_ready' }[a]));
     },
-    signup: function () { go('o-community'); },
+    signup: function () { S.account = true; if (S.pendingPub) A.publish(); else go('o-home'); },
+    wz: function (a) { readDraft(); S.wz = +a; render(); var sc = rootEl().querySelector('.scroll'); if (sc) sc.scrollTop = 0; },
+    wzNext: function () { A.wz(Math.min(3, S.wz + 1)); },
+    dtype: function (a) { readDraft(); S.draft.type = a; render(); },
+    dpay: function (a) { readDraft(); S.draft.pay = a; render(); },
+    dphoto: function (a) { readDraft(); S.draft.photo = a; render(); },
     community: function () {
-      S.community = val('c-name', S.community); S.city = val('c-city', S.city);
-      S.draft = null; S.players = []; S.waitlist = []; S.last = null; S.sched = null; S.stripe = 'none'; go('o-new');
+      S.community = val('c-name', S.community); S.city = val('c-city', S.city); S.hasComm = true;
+      toast(t('co_done', { c: S.community })); go('o-home');
     },
-    newEvent: function () { S.draft = null; go('o-new'); },
+    newEvent: function () { S.draft = null; S.wz = 0; go('o-new'); },
     format: function (a) { readDraft(); S.draft.format = a; S.draft.custom = null; render(); },
     step: function (a) {
       readDraft();
@@ -663,18 +698,16 @@
       d[k] = Math.max(k === 'cap' ? 4 : k === 'courts' ? 1 : 0, Math.min(k === 'cap' ? 48 : k === 'courts' ? 8 : 1000, d[k] + v));
       render();
     },
-    more: function () { readDraft(); S.more = !S.more; render(); },
     connectStripe: function (a) { readDraft(); S.stripeBack = a || 'o-new'; S.stripeStep = 0; go('o-stripe'); },
     stripeNext: function () { if (S.stripeStep === 0) { S.stripeStep = 1; render(); } else { S.stripe = 'active'; go(S.stripeBack); toast(t('stripe_on')); } },
-    paySite: function () { readDraft(); S.stripe = 'active'; toast(t('paysite_t')); },
     publish: function () {
       readDraft();
       var d = S.draft;
-      if (d.price > 0 && S.stripe !== 'active') return;
+      if (!d.edit && !S.account) { S.pendingPub = true; go('o-signup'); return; }
       var edit = d.edit;
-      ['custom', 'format', 'week', 'start', 'venue', 'courts', 'cap', 'price'].forEach(function (k) { S.ev[k] = d[k]; });
+      ['custom', 'format', 'week', 'start', 'venue', 'courts', 'cap', 'price', 'pay', 'type', 'photo'].forEach(function (k) { S.ev[k] = d[k]; });
       S.ev.nm = null; S.ev.when = null; S.ev.org = null; S.ev.level = 'all'; S.pick = 'pa';
-      S.draft = null; S.more = false;
+      S.draft = null; S.pendingPub = false; S.wz = 0;
       if (edit) { if (S.sched && !anyScore()) buildSched(); toast(t('n_saved')); go('o-manage'); return; }
       S.players = []; S.waitlist = []; S.sched = null; S.posted = false; S.me.status = null;
       go('o-live');
@@ -683,7 +716,7 @@
     fastForward: function () {
       var n = Math.max(0, S.ev.cap - 2), off = S.ev.week % 3;
       S.players = [];
-      for (var i = 0; i < n; i++) S.players.push({ n: NAMES[(i + off) % NAMES.length], pay: PAYS[i % PAYS.length], noshow: false });
+      for (var i = 0; i < n; i++) S.players.push({ n: NAMES[(i + off) % NAMES.length], pay: cardPay() ? PAYS[i % PAYS.length] : (i % 5 === 4 ? 'unpaid' : 'site'), noshow: false });
       S.posted = true; render();
     },
     cyclePay: function (a) { var p = S.players[+a], order = ['unpaid', 'paid', 'site']; p.pay = order[(order.indexOf(p.pay) + 1) % 3]; if (S.last && location.hash.indexOf('o-after') > -1) S.last = summary(); render(); },
@@ -697,7 +730,7 @@
       S.players.push({ n: NAMES[(S.players.length + 3) % NAMES.length].split(' ')[0] + ' ' + t('added_by_you'), pay: 'site', noshow: false }); S.sheet = null; toast(t('added_t'));
     },
     attend: function (a) { var p = S.players[+a]; p.noshow = !p.noshow; if (S.sched && !anyScore()) buildSched(); render(); },
-    editEvent: function () { S.sheet = null; S.draft = newDraft(S.ev.week); S.draft.edit = true; go('o-new'); },
+    editEvent: function () { S.sheet = null; S.draft = newDraft(S.ev.week); S.draft.edit = true; S.wz = 0; go('o-new'); },
     buildSchedule: function () { if (!S.sched) buildSched(); go('o-schedule'); },
     reshuffle: function () { S.shuffle++; buildSched(); toast(t('new_sched')); },
     startPlay: function () { go('o-play'); },
@@ -710,12 +743,11 @@
     autofill: function () { fillScores(); render(); },
     finish: function () { S.last = summary(); go('o-after'); },
     nextEvent: function () { go('o-next'); },
-    editNext: function () { S.draft = newDraft(S.ev.week + 1); go('o-new'); },
-    invitePrev: function () { S.invitePrev = !S.invitePrev; render(); },
+    editNext: function () { S.draft = newDraft(S.ev.week + 1); S.wz = 0; go('o-new'); },
     cardAll: function () { toast(t('cd_all_t', { n: S.last.showed })); },
     publishNext: function () {
       S.ev.week += 1; S.players = []; S.waitlist = []; S.sched = null; S.posted = false; S.me.status = null;
-      go('o-live'); if (S.invitePrev) toast(t('nx_sent'));
+      go('o-live');
     }
   };
   function anyScore() { return S.sched && S.play.scores.some(function (rd) { return rd.some(function (x) { return x; }); }); }
@@ -737,7 +769,8 @@
   var web = document.getElementById('web'), view = web ? web.querySelector('.web-view') : null, urlEl = web ? web.querySelector('.web-url') : null;
   var mode = 'desktop';
   try { var qm = new URLSearchParams(location.search).get('mode'); mode = qm === 'mobile' || qm === 'desktop' ? qm : (localStorage.getItem('pl-app-mode') || 'desktop'); } catch (e) { /* bez úložiště */ }
-  function isDesk() { return mode === 'desktop' && !!view && window.innerWidth > 820; }
+  function wideDesk() { return mode === 'desktop' && !!view && window.innerWidth > 820; }
+  function isDesk(r) { r = r || route(); return wideDesk() && (r === 'start' || r.indexOf('p-') === 0); }
   function rootEl() { return isDesk() ? view : app; }
   function setMode(m) { mode = m; try { localStorage.setItem('pl-app-mode', m); } catch (e) { /* */ } render(); }
 
@@ -763,7 +796,7 @@
     var k = kind(r);
     if (k === 'org') {
       var cur = r === 'o-after-d' ? 'o-after' : r;
-      return '<div class="dk-org"><aside class="dk-side"><div class="dk-brand"><i></i>Padel League</div><div class="dk-comm"><b>' + esc(S.community) + '</b><span>' + esc(S.city) + '</span></div><nav>' +
+      return '<div class="dk-org"><aside class="dk-side"><div class="dk-brand"><i></i>Padel League</div><div class="dk-comm"><b>' + esc(orgLabel()) + '</b><span>' + esc(S.city) + '</span></div><nav>' +
         ORG_NAV.map(function (n) { return '<button class="' + (n[0] === cur ? 'on' : '') + '" data-go="' + n[0] + '"><span>' + n[2] + '</span>' + t(n[1]) + '</button>'; }).join('') +
         '</nav><span class="dk-sp"></span><button class="dk-view" data-go="p-event">' + t('em_view') + ' ↗</button><div class="dk-lang">' + langSwitch() + '</div></aside>' +
         '<div class="dk-main r-' + r + '">' + inner + '</div></div>';
@@ -776,19 +809,21 @@
         '</aside><div class="dk-main r-' + r + '">' + inner + '</div></div>';
     }
     if (k === 'auth') return '<div class="dk-auth"><div class="dk-main r-' + r + '">' + inner + '</div></div>';
-    return '<div class="dk-site"><header class="dk-head"><button class="logo" data-go="p-home"><i></i>Padel League</button><nav class="dk-nav"><button class="' + (r === 'p-home' ? 'on' : '') + '" data-go="p-home">' + t('nav_events') + '</button><button data-go="o-signup">' + t('nav_org') + '</button></nav><span class="dk-head-r">' + langSwitch() + '<button class="dk-login" data-act="toast" data-arg="m_login_t">' + t('m_login') + '</button></span></header><div class="dk-main r-' + r + '">' + inner + '</div></div>';
+    return '<div class="dk-site"><header class="dk-head"><button class="logo" data-go="p-home"><i></i>Padel League</button><nav class="dk-nav"><button class="' + (r === 'p-home' ? 'on' : '') + '" data-go="p-home">' + t('nav_events') + '</button><button data-go="o-new">' + t('nav_org') + '</button></nav><span class="dk-head-r">' + langSwitch() + '<button class="dk-login" data-act="toast" data-arg="m_login_t">' + t('m_login') + '</button></span></header><div class="dk-main r-' + r + '">' + inner + '</div></div>';
   }
   function route() { var h = location.hash.replace(/^#\/?/, ''); return R[h] ? h : 'start'; }
   function render() {
     var r = route();
-    if ((r === 'o-after' || r === 'o-after-d' || r === 'o-card') && !S.last) demoFinished();
+    if (r === 'o-new' && !S.orgMode) orgReset();
+    if ((r === 'o-after' || r === 'o-after-d' || r === 'o-card' || r === 'o-community') && !S.last) demoFinished();
     if ((r === 'o-schedule' || r === 'o-play') && !S.sched) { if (S.players.length < 4) S.players = mkPlayers(14); buildSched(); }
-    var desk = isDesk();
+    var desk = isDesk(r);
+    var note = document.querySelector('.mode-note'); if (note) { note.hidden = !(wideDesk() && !desk); note.textContent = t('org_phone_note'); }
     document.body.classList.toggle('mode-desktop', desk);
     document.body.classList.toggle('mode-mobile', !desk);
     document.querySelectorAll('[data-mode]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-mode') === mode); });
     if (device) device.classList.toggle('wide', !desk && r === 'o-after-d');
-    var html = desk && r === 'o-after' ? R['o-after-d']() : R[r]();
+    var html = R[r]();
     if (S.sheet && SH[S.sheet]) html += '<div class="overlay" data-act="' + (S.sheet === 'paying' ? '' : 'close') + '"></div><div class="sheet' + (S.sheet === 'paying' ? ' paysheet' : '') + '" role="dialog" aria-modal="true">' + SH[S.sheet]() + '</div>';
     if (S.toast) html += '<div class="toast" role="status"><span>✓</span><span>' + esc(S.toast) + '</span></div>';
     if (desk) {
@@ -828,7 +863,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && S.sheet && S.sheet !== 'paying') closeSheet(); });
   window.addEventListener('hashchange', function () { S.sheet = null; render(); var sc = rootEl().querySelector('.scroll,.d-main'); if (sc) sc.scrollTop = 0; });
   var lastDesk = null;
-  window.addEventListener('resize', function () { var d = isDesk(); if (d !== lastDesk) { lastDesk = d; render(); } });
+  window.addEventListener('resize', function () { var d = wideDesk(); if (d !== lastDesk) { lastDesk = d; render(); } });
   document.documentElement.lang = lang;
   syncPanelLang();
   render();

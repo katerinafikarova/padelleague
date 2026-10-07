@@ -1,11 +1,13 @@
 # PadelLeague – klikací prototyp
 
-Klikací prototyp tří cest ze zadání pro design (říjen 2026): **hráč**, **organizátor**, **landing page**.
+Klikací prototyp PadelLeague, kolo 2 podle připomínek z října 2026: **landing pro organizátory**, **organizátor na mobilu**, **hráč**, **Instagram**.
+
+**Vstupenka je event, ne komunita.** Organizátor začíná na „Vytvoř event“, účet zakládá až při zveřejnění, komunita, platby kartou a žebříček se odemknou po prvním odehraném eventu. Flow (kroky, pořadí, pravidla) je z aplikace, prototyp řeší vizuál. Pravidla: slovo „event“, ne „turnaj“; bílé pozadí a fotky, navy jen hlavičky, oranžová jen tlačítka a akce; Rozpis a Průběh čitelné na kurtu jednou rukou.
 Vizuál podle JVS Princová & Fikarová (navy #034867, oranžová #F97316, Satoshi, fotografie s grainem a rozmazáním).
 
 Aplikace i landing jsou **česky**, angličtina je druhá jazyková verze (přepínač CZ / EN v aplikaci, v mapě vlevo i na landingu; nebo `?lang=en` v adrese).
 
-**Dvě zobrazení:** výchozí je **počítač** (okno prohlížeče: hráč vidí webovou stránku eventu ve dvou sloupcích a panely jako modální okna, organizátor administraci s bočním menu, WhatsApp jako WhatsApp Web). Nahoře nad oknem se přepíná na **mobil** (telefon). Volba se pamatuje, odkaz `?mode=mobile` nebo `?mode=desktop` ji vynutí. Na telefonu se vždy ukáže mobilní verze.
+**Dvě zobrazení:** výchozí je **počítač** (okno prohlížeče: homepage s eventy a stránka eventu jako web, WhatsApp jako WhatsApp Web). Organizátor se i v tomto režimu ukazuje v telefonu, protože PC verze je hotová v aplikaci. Nahoře nad oknem se přepíná na **mobil** (telefon). Volba se pamatuje, odkaz `?mode=mobile` nebo `?mode=desktop` ji vynutí. Na telefonu se vždy ukáže mobilní verze.
 
 Čisté HTML, CSS a JavaScript. Žádná instalace ani build, funguje jako statický web (GitHub Pages, Netlify, Vercel nebo dvojklik na `index.html`).
 
@@ -22,20 +24,22 @@ Aplikace i landing jsou **česky**, angličtina je druhá jazyková verze (přep
 | `assets/img/` | Fotografie z JVS |
 
 ### Cesta hráče
-Dva vstupy: **homepage s výběrem turnajů** (`#/p-home`: jen nadcházející turnaje podle data, filtr město / tento týden / víkend / zdarma, plné turnaje vedou na čekací listinu, proběhlé turnaje sbalené dole) nebo WhatsApp skupina s odkazem. Pak stránka eventu (odkaz „← Všechny turnaje“ vede zpět) → panel „Přihlásit a zaplatit“ (Apple Pay / Google Pay / karta, event zdarma bez platby) → „Jsi ve hře“ → Pozvat kamaráda → připomínka den předem → „Nemůžu přijít“ (místo jde prvnímu na čekací listině).
+Dva vstupy: **homepage s výběrem eventů** (`#/p-home`: jen nadcházející eventy podle data, filtr město / tento týden / víkend / zdarma, plné eventy vedou na čekací listinu, proběhlé eventy sbalené dole) nebo WhatsApp skupina s odkazem. Pak stránka eventu (odkaz „← Všechny eventy“ vede zpět) → panel přihlášení (se Stripe Apple Pay / Google Pay / karta, bez Stripe „platíš na místě“, event zdarma bez platby) → „Jsi ve hře“ (světlá obrazovka s fotkou) → Pozvat kamaráda → připomínka den předem → „Nemůžu přijít“ (místo jde prvnímu na čekací listině).
 Stavy stránky: **Otevřeno, Poslední místa, Plno + čekací listina, Přihlášen**. Přepínají se v mapě vlevo.
 
-### Cesta organizátora
-Účet → název komunity → nový event na jedné obrazovce (+ Další možnosti, náhled, připojení Stripe přímo ve formuláři) → event je zveřejněný: rozpis s kurty a jedna výzva → sdílení do WhatsAppu (tlačítko „Přetočit o 2 dny“ nasimuluje přihlášky) → správa hráčů (klepnutím na stav Zaplaceno / Nezaplaceno / Na místě, Připomenout, Přesunout z čekací listiny) → docházka a rozpis → průběh se zadáváním skóre → po eventu (vybráno, zaplaceno, přišlo, stupně vítězů) → Založit další event (předvyplněný) → karta výsledku pro Instagram.
+### Cesta organizátora (mobil)
+Vytvoř event, průvodce ve 4 krocích jako v aplikaci (Typ a formát → Termín a místo → Hráči a platba → Prezentace) → účet až při zveřejnění → event je zveřejněný: seznam přihlášených, rozpis až po uzávěrce → sdílení do WhatsAppu (aplikace jen předá text) → hráči a platby → **Rozpis** → **Průběh a zadání skóre** → **Po eventu** (vybráno, nezaplatili, docházka, pořadí, „Co dál“: komunita, Stripe, žebříček) → Další event se stejným nastavením → karta výsledku.
 
-Obrazovka 1 ze zadání (`#/o-live`): po zveřejnění je vidět rozpis 1. kola s kurty a volnými místy a jediná výzva poslat odkaz. Obrazovka 3 (po eventu) má mobilní (`#/o-after`) i desktopovou verzi (`#/o-after-d`) s vybranými penězi, docházkou a výsledky. Docházka se odškrtává před startem v rozpisu.
+Zveřejnit není nikdy šedé: platba na místě je výchozí, Stripe jde připojit kdykoli. Rozpis a Průběh mají velké písmo, číslo kurtu ve čtverci, celou kartu kurtu jako tlačítko a skóre přes velká tlačítka (tým B dostane zbytek do 24).
 
-U každé cesty je v mapě vlevo rozbalovací poznámka „Kde váhá a jak jsme to vyřešily“.
+[PŘEDPOKLAD] Obsah jednotlivých kroků průvodce je odhad, kroky a pořadí jsou z aplikace.
 
-Každá obrazovka jde otevřít přímo odkazem, např. `index.html#/p-event`, `index.html#/o-after`.
+U každé cesty je v mapě vlevo rozbalovací poznámka „Co se změnilo“.
+
+Každá obrazovka jde otevřít přímo odkazem, např. `index.html#/p-event`, `index.html#/o-play`.
 
 ### Instagram profil
-Složka `instagram/`: klikací prototyp IG profilu PadelLeague (mřížka 12 příspěvků, 6 highlights, stories, označené karty hráčů) a systém šablon s živou úpravou a exportem PNG. Podrobnosti v `instagram/README.md`, otevřené otázky v `instagram/OTAZKY.md`.
+Složka `instagram/`: klikací prototyp IG profilu PadelLeague (mřížka 12 příspěvků v rytmu navy / fotka / oranžová / bílá, 6 barevně střídaných highlights, stories, označené karty hráčů) a systém šablon s živou úpravou a exportem PNG. Podrobnosti v `instagram/README.md`, otevřené otázky v `instagram/OTAZKY.md`.
 
 ## Nahrání na GitHub Pages
 

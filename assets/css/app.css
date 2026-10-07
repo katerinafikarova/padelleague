@@ -539,3 +539,99 @@ button.logo{color:inherit;padding:0}
 .dk-site .r-p-home .hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
 .dk-site .r-p-home .hc-img{height:150px}
 .dk-site .r-p-home .acc,.dk-site .r-p-home .h-org{max-width:640px}
+
+/* ===== Kolo 2: bílé pozadí a fotky, navy jen hlavičky, oranžová jen akce ===== */
+.ring{background:conic-gradient(var(--navy) calc(var(--p)*1%),#E7EDF1 0)}
+.chip.me{background:var(--navy)}
+.ln{background:var(--soft)}
+.ln.me{background:var(--navy);color:#fff}
+.check{background:var(--navy);box-shadow:0 12px 26px -10px rgba(3,72,103,.55)}
+.hc-date{color:var(--navy)}
+.hc-st.hot{color:var(--navy)}
+.mode-note{margin:0 0 4px;font-size:13px;color:#C7DAE4;text-align:center}
+.mode-note[hidden]{display:none}
+
+/* průvodce Vytvoř event (4 kroky z aplikace) */
+.wz{flex:none;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:2px 16px 10px}
+.wz button{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:8px 0 0;border-top:3px solid var(--line);text-align:left;font-size:10.5px;line-height:1.15;color:var(--muted)}
+.wz button i{font:900 11px/1 var(--f-display);font-style:normal}
+.wz button.done{border-color:var(--navy);color:var(--navy)}
+.wz button.on{border-color:var(--navy);color:var(--ink);font-weight:700}
+.wz-h{font-size:24px;margin-top:2px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;background:#fff;border:1px solid #D5DEE3;border-radius:16px;padding:13px 14px}
+.opt i{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid #B8C7D0;margin-top:1px}
+.opt.on{border:2px solid var(--navy);padding:12px 13px}
+.opt.on i{border:6px solid var(--navy)}
+.opt b{display:block;font-size:15px}
+.opt b em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ok);background:var(--ok-bg);padding:3px 6px;border-radius:99px;margin-left:4px;vertical-align:2px}
+.opt small{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.note-box{background:var(--soft);border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.45;color:#34566A}
+.pics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pics button{aspect-ratio:1;border-radius:14px;overflow:hidden;border:3px solid transparent;padding:0}
+.pics button.on{border-color:var(--navy)}
+.pics img{width:100%;height:100%;object-fit:cover;display:block}
+.mini-ev{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #E3EAEE;border-radius:18px;padding:8px 12px 8px 8px}
+.mini-ev img{width:56px;height:56px;border-radius:12px;object-fit:cover;flex:none}
+.mini-ev span{flex:1;min-width:0}
+.mini-ev b{display:block;font:900 14px/1.15 var(--f-display);text-transform:uppercase}
+.mini-ev small{display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
+.mini-ev .pill{flex:none}
+.mini-ev.big img{width:84px;height:84px}
+.mini-ev.big b{font-size:18px}
+.ticks{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.ticks li{position:relative;padding-left:26px;font-size:14.5px}
+.ticks li::before{content:"✓";position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;background:var(--ok-bg);color:var(--ok);font-size:11px;font-weight:900;display:grid;place-items:center}
+.step-card{display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:1px solid #E3EAEE;border-radius:18px;padding:12px 14px;width:100%}
+.step-card i{flex:none;width:40px;height:40px;border-radius:12px;background:var(--soft);color:var(--navy);display:grid;place-items:center;font:900 13px/1 var(--f-display);font-style:normal}
+.step-card span{flex:1;min-width:0}
+.step-card b{display:block;font-size:15px}
+.step-card small{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.step-card em{font-style:normal;color:var(--navy);font-weight:700}
+.empty.slim{padding:16px 10px;background:#fff;border:1px dashed #C9D5DC;border-radius:16px}
+.row.big{font-size:15.5px;padding:15px 16px}
+
+/* Rozpis: velké písmo, číslo kurtu vlevo */
+.rz{background:#fff;border:1px solid #E3EAEE;border-radius:20px;padding:14px 14px 10px;display:flex;flex-direction:column}
+.rz h3{margin:0 0 6px;font:900 18px/1 var(--f-display);text-transform:uppercase;color:var(--navy)}
+.rz-m{display:grid;grid-template-columns:40px 1fr auto 1fr;gap:10px;align-items:center;padding:10px 0;border-top:1px solid #EEF3F6}
+.rz-m:first-of-type{border-top:0}
+.rz-c{width:40px;height:40px;border-radius:12px;background:var(--navy);color:#fff;display:grid;place-items:center;font:900 20px/1 var(--f-display)}
+.rz-t{display:flex;flex-direction:column;gap:2px}
+.rz-t b{font-size:16.5px;line-height:1.2;font-weight:700}
+.rz-t.b{text-align:right}
+.rz-vs{font-size:12px;color:var(--muted);font-weight:700}
+.rz-rest{font-size:14px;color:var(--muted);padding:8px 0 2px;border-top:1px solid #EEF3F6}
+
+/* Průvodce kurtem (Průběh): celá karta je tlačítko, skóre velké */
+.rtabs button{font-size:15px;padding:11px 16px;font-weight:600}
+.pc{display:flex;flex-direction:column;gap:6px;text-align:left;background:#fff;border:2px solid #E3EAEE;border-radius:22px;padding:14px 16px;width:100%}
+.pc.done{border-color:#CDE6D7}
+.pc-h{display:flex;justify-content:space-between;align-items:center;font:900 15px/1 var(--f-display);text-transform:uppercase;color:var(--navy);margin-bottom:2px}
+.pc-tap{font:900 12.5px/1 var(--f-display);letter-spacing:.05em;color:#fff;background:var(--orange);border-radius:99px;padding:9px 13px}
+.pc-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0}
+.pc-row + .pc-row{border-top:1px solid #EEF3F6}
+.pc-n{display:flex;flex-direction:column;gap:1px}
+.pc-n b{font-size:18px;line-height:1.2;font-weight:700}
+.pc-s{font:900 40px/1 var(--f-display);font-variant-numeric:tabular-nums;color:var(--navy);min-width:56px;text-align:right}
+.pc:not(.done) .pc-s{color:#C9D5DC}
+.stand.big div{font-size:15.5px;padding:12px 14px}
+.sc-teams{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sc-teams>div{background:var(--soft);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.sc-teams>div.a{background:var(--navy);color:#fff}
+.sc-teams>div.a .lbl{color:#BFD3DE}
+.sc-teams b{font-size:16px}
+.scores.big{gap:8px}
+.scores.big button{padding:12px 0 8px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.scores.big button b{font:900 22px/1 var(--f-display)}
+.scores.big button small{font-size:11px;color:var(--muted)}
+
+/* Po eventu */
+.af-money{background:#fff;border:1px solid #E3EAEE;border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.af-money .money{color:var(--navy)}
+.af-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.tabs,.hchips,.rz,.pc,.af-money,.step-card,.mini-ev,.opt{flex:none}
+.fm.on{border-color:var(--navy)}
+.av:nth-child(3n){background:#5D8BA3}
+.sring{background:conic-gradient(#fff calc(var(--p)*1%),rgba(255,255,255,.25) 0)}
+.hc-cap i{background:var(--navy)}

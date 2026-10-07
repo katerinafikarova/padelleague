@@ -52,7 +52,7 @@
   /* ---------- PROFIL ---------- */
   function profile() {
     var B = IG.brand, bio = S.bio === 0 ? B.bio : B.bioAlt[S.bio - 1];
-    var hl = IG.highlights.map(function (h) { return '<button data-hl="' + h.id + '"><span class="c"><span>' + T.icon(h.icon) + '</span></span>' + esc(h.name) + '</button>'; }).join('');
+    var hl = IG.highlights.map(function (h) { return '<button data-hl="' + h.id + '"><span class="c"><span class="cv-' + (h.cover || 'navy') + '">' + T.icon(h.icon) + '</span></span>' + esc(h.name) + '</button>'; }).join('');
     return '<div class="ig">' + status() +
       '<div class="ig-top"><div class="h">' + esc(B.handle) + ' ' + ic('down') + '</div><div class="ico">' + ic('plus') + ic('menu') + '</div></div>' +
       '<div class="ig-scroll">' +
@@ -228,7 +228,7 @@
     if (S.tab === 'grid') grid = IG.gridOrder.map(function (id) { return deskTile(postById(id), id); }).join('');
     else if (S.tab === 'reels') grid = IG.posts.filter(function (p) { return p.kind === 'reel'; }).map(function (p) { return deskTile(p, p.id, '<span class="views">' + ic('play') + esc(p.views) + '</span>'); }).join('');
     else grid = IG.tagged.map(function (c, i) { var p = postById('tag-' + i); p.html = T.feed(p.slides[0]); return deskTile(p, 'tag-' + i, '<span class="by">@' + esc(c.by) + '</span>'); }).join('');
-    var hl = IG.highlights.map(function (h) { return '<button class="dw-hl" data-hl="' + h.id + '"><span class="c"><span>' + T.icon(h.icon) + '</span></span>' + esc(h.name) + '</button>'; }).join('');
+    var hl = IG.highlights.map(function (h) { return '<button class="dw-hl" data-hl="' + h.id + '"><span class="c"><span class="cv-' + (h.cover || 'navy') + '">' + T.icon(h.icon) + '</span></span>' + esc(h.name) + '</button>'; }).join('');
     return rail() + '<main class="dw-main"><div class="dw-in">' +
       '<header class="dw-head"><div class="dw-avcol"><button class="ig-avatar dw-av ' + (S.seen ? 'seen' : 'ring') + '" data-act="active" aria-label="Aktivní story">' + AV + '</button></div>' +
       '<section class="dw-info"><div class="dw-row1"><h2>' + esc(B.handle) + '</h2><button class="dw-btn blue">Sledovat</button><button class="dw-btn">Poslat zprávu</button><button class="dw-btn icn" aria-label="Navrhnout">' + ic('addp') + '</button><span class="dw-more">' + ic('dots') + '</span></div>' +

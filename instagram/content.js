@@ -9,7 +9,7 @@ window.IG = {
     bio: ['Pořádáš Americano? 🎾', 'Jeden odkaz → přihlášky, platby, výsledky.', 'Bez WhatsApp chaosu ↓'],
     bioAlt: [
       ['Pro ty, kdo pořádají padel 🎾', 'Hráči se přihlásí a zaplatí sami.', 'Ty už jen hraješ ↓'],
-      ['Pošli odkaz, zbytek se stane sám.', 'Americano · Mexicano · turnaje', 'Pro organizátory, zdarma na start ↓']
+      ['Pošli odkaz, zbytek se stane sám.', 'Americano · Mexicano · ligy', 'Pro organizátory, zdarma na start ↓']
     ],
     link: 'padelleague.eu', linkMore: 'a 1 další',
     posts: 48, followers: '1 240', following: 186,
@@ -88,9 +88,9 @@ window.IG = {
         { t: 'link', num: '02.', tag: 'JAK TO FUNGUJE', eyebrow: 'Krok 1', title: 'POŠLI|~JEDEN ODKAZ.', body: 'Náhled ve WhatsAppu sám ukazuje, kolik lidí už jde.' },
         { t: 'page', num: '03.', tag: 'JAK TO FUNGUJE', eyebrow: 'Krok 2', title: 'HRÁČI SE|~PŘIHLÁSÍ SAMI.', body: 'Jméno, kontakt, Apple Pay. Žádný účet.' },
         { t: 'org', num: '04.', tag: 'JAK TO FUNGUJE', eyebrow: 'Krok 3', title: 'TY JEN|~SLEDUJEŠ ČÍSLA.', body: 'Kdo zaplatil, kdo čeká, kolik je vybráno.' },
-        { t: 'cta', num: '05.', tag: 'ZAČNI', eyebrow: 'Po posledním zápase', title: 'KARTA VÝSLEDKŮ|~ZA MINUTU.', body: 'Založ první turnaj zdarma. Odkaz je v biu.' }
+        { t: 'cta', num: '05.', tag: 'ZAČNI', eyebrow: 'Po posledním zápase', title: 'KARTA VÝSLEDKŮ|~ZA MINUTU.', body: 'Založ první event zdarma. Odkaz je v biu.' }
       ],
-      caption: 'Pořádáš Americano? Pak víš, že nejtěžší není hra, ale všechno okolo.\n\nJména, platby, rozpis. Každý týden znovu. PadelLeague to udělá za tebe: pošleš jeden odkaz, hráči se přihlásí a zaplatí sami, výsledky máš minutu po posledním zápase.\n\nPrvní turnaj založíš zdarma, odkaz je v biu.',
+      caption: 'Pořádáš Americano? Pak víš, že nejtěžší není hra, ale všechno okolo.\n\nJména, platby, rozpis. Každý týden znovu. PadelLeague to udělá za tebe: pošleš jeden odkaz, hráči se přihlásí a zaplatí sami, výsledky máš minutu po posledním zápase.\n\nPrvní event založíš zdarma, odkaz je v biu.',
       tags: ['#padel', '#americano', '#padelpraha', '#padelcz'],
       comments: [
         { u: 'ondra.organizuje', t: 'Tohle potřebuju 🙏 jak to funguje s platbami?' },
@@ -148,7 +148,7 @@ window.IG = {
         sources: [{ t: 'Padel Praha: vítězové výročního turnaje (80 lajků)', u: 'https://www.instagram.com/p/DcN-Lv6iPym/' }, { t: 'Marbella Padel: série MP#20', u: 'https://www.instagram.com/p/DVly9FWguQK/' }] }
     },
     {
-      id: 'meme', kind: 'reel', ago: 'před 4 d', likes: 118, views: '4 812', tone: 'white',
+      id: 'meme', kind: 'reel', ago: 'před 3 týdny', likes: 118, views: '4 812', tone: 'white',
       slides: [{ t: 'meme' }],
       caption: 'Když ti 3 lidi pošlou peníze s poznámkou „padel“.\n\nA ty máš 12 jmen a žádnou představu, kdo to byl 🙃 Označ organizátora, který to zná.',
       tags: ['#padel', '#padelmeme', '#padelcz'],
@@ -168,7 +168,7 @@ window.IG = {
         sources: [{ t: 'Padel Social Club: What\'s On', u: 'https://www.instagram.com/p/Dd9XN0pDl-9/' }, { t: 'Asia Padel Events: Upcoming Departures', u: 'https://www.instagram.com/p/DdqRxTzEisj/' }] }
     },
     {
-      id: 'leader', kind: 'single', ago: 'před 1 týdnem', likes: 76, tone: 'orange',
+      id: 'leader', kind: 'single', ago: 'před 2 týdny', likes: 76, tone: 'orange',
       slides: [{ t: 'leader' }],
       caption: 'Říjen je spočítaný. Jsi v top 10?\n\nBody ze čtyř čtvrtečních American. Skokan měsíce si polepšil o 6 míst. Listopad začíná ve čtvrtek, každý zápas se počítá 👀',
       tags: ['#padel', '#americano', '#padelpraha', '#padelleague'],
@@ -178,7 +178,7 @@ window.IG = {
         sources: [{ t: 'Padel Club Ostrava: žebříček SRPEN', u: 'https://www.instagram.com/p/Db5Sg9vCMkL/' }] }
     },
     {
-      id: 'announce', kind: 'single', ago: 'před 1 týdnem', likes: 39, tone: 'photo',
+      id: 'announce', kind: 'single', ago: 'před 3 d', likes: 39, tone: 'photo',
       slides: [{ t: 'announce' }],
       caption: 'Čtvrtek, 19:00. Zbývají 3 místa.\n\nAmericano na Padel Dock Smíchov, 350 Kč. Uvidíš, kdo už jde, přihlásíš se a zaplatíš za 30 vteřin. Odkaz v biu.',
       tags: ['#padel', '#americano', '#padelpraha'],
@@ -188,17 +188,17 @@ window.IG = {
         sources: [{ t: 'Antipříklad: One Padel Zličín, plakát (5 lajků)', u: 'https://www.instagram.com/p/DdZa-5csWC2/' }] }
     },
     {
-      id: 'vox', kind: 'reel', ago: 'před 2 týdny', likes: 84, views: '3 260', tone: 'photo',
+      id: 'vox', kind: 'reel', ago: 'před 1 týdnem', likes: 84, views: '3 260', tone: 'photo',
       slides: [{ t: 'vox' }],
       caption: 'Proč chodíš na Americano? Zeptali jsme se po čtvrtečním večeru.\n\n„Zahraju si s každým.“ „Nikdo nesedí dlouho.“ „Kvůli pivu potom.“ Co bys řekl ty?',
       tags: ['#padel', '#americano', '#padelcz'],
-      comments: [{ u: 'eliska.k', t: 'To pivo potom je důležitá součást turnaje 😄' }],
+      comments: [{ u: 'eliska.k', t: 'To pivo potom je důležitá součást večera 😄' }],
       why: { audience: 'hráč', practices: [7], data: [],
         text: 'Vox-pop „Jak se vám hraje v Ostravě?“ má u Padel Powers 3,5× víc lajků než jejich plakát Tour s cenami za 500 000 Kč. Skuteční lidé místo grafiky. V prototypu je místo videa placeholder: natočit na dalším eventu.',
         sources: [{ t: 'Padel Powers: vox-pop (57 lajků)', u: 'https://www.instagram.com/reel/Dd9g5BxzNIE/' }] }
     },
     {
-      id: 'ach', kind: 'carousel', ago: 'před 3 týdny', likes: 58, tone: 'navy',
+      id: 'ach', kind: 'carousel', ago: 'před 10 d', likes: 58, tone: 'navy',
       slides: [{ t: 'ach', tier: 0 }, { t: 'ach', tier: 1 }, { t: 'ach', tier: 2 }, { t: 'ach', tier: 3 }],
       caption: 'Kterou raketu máš ty?\n\nZákladní za první výhru, stříbrná za 3 výhry v řadě, zlatá za 5, diamantová za 10. Napiš do komentářů, kde jsi 👇',
       tags: ['#padel', '#padelcz', '#padelleague'],
@@ -209,12 +209,12 @@ window.IG = {
     },
     {
       id: 'milestone', kind: 'single', ago: 'před měsícem', likes: 69, tone: 'orange',
-      slides: [{ t: 'milestone', n: '100', label: 'ODEHRANÝCH TURNAJŮ', sub: 'Bez jediného ručního seznamu.' }],
-      caption: '100 turnajů bez jediného ručního seznamu.\n\nDíky všem organizátorům, kteří to s námi zkusili, a hráčům, kteří se přihlásili jedním klikem 🧡',
+      slides: [{ t: 'milestone', n: '100', label: 'ODEHRANÝCH EVENTŮ', sub: 'Bez jediného ručního seznamu.' }],
+      caption: '100 eventů bez jediného ručního seznamu.\n\nDíky všem organizátorům, kteří to s námi zkusili, a hráčům, kteří se přihlásili jedním klikem 🧡',
       tags: ['#padel', '#padelcz', '#padelleague'],
       comments: [{ u: 'smichovpadelcrew', t: 'Z toho 14 našich 💪' }],
       why: { audience: 'oba', practices: [4], data: ['stats.tournaments'],
-        text: 'Milestone šablona z design briefu (100 hráčů, první turnaj v Německu…). Nejvyšší engagement v CZ vzorku měl post k výročí komunity (Padel Praha, 151 lajků): komunita a vděčnost fungují. [PŘEDPOKLAD] Číslo 100 je ilustrativní.',
+        text: 'Milestone šablona z design briefu (100 hráčů, první event v Německu…). Nejvyšší engagement v CZ vzorku měl post k výročí komunity (Padel Praha, 151 lajků): komunita a vděčnost fungují. [PŘEDPOKLAD] Číslo 100 je ilustrativní.',
         sources: [{ t: 'Padel Praha: 2 roky komunity (151 lajků)', u: 'https://www.instagram.com/p/DcLZAinoegl/' }] }
     },
     {
@@ -230,11 +230,11 @@ window.IG = {
   ],
 
   /* Pořadí v mřížce (od nejnovějšího, připnuté nahoře) */
-  gridOrder: ['explainer', 'case', 'card', 'recap', 'meme', 'whatson', 'leader', 'announce', 'vox', 'ach', 'milestone', 'brand'],
+  gridOrder: ['explainer', 'case', 'card', 'recap', 'announce', 'whatson', 'vox', 'ach', 'leader', 'meme', 'milestone', 'brand'],
 
   /* ---------- HIGHLIGHTS ---------- */
   highlights: [
-    { id: 'how', name: 'Jak to funguje', icon: 'steps', audience: 'organizátor',
+    { id: 'how', name: 'Jak to funguje', icon: 'steps', audience: 'organizátor', cover: 'navy',
       stories: [
         { t: 'st', tone: 'navy', eyebrow: 'Pro organizátory', title: 'TŘI KROKY|~A HRAJEŠ.', body: 'Žádné seznamy, žádné převody.' },
         { t: 'st', tone: 'orange', eyebrow: 'Krok 1 · 60 sekund', title: 'VYTVOŘ|~EVENT.', body: 'Formát, datum, kurty, cena.' },
@@ -243,7 +243,7 @@ window.IG = {
         { t: 'st', tone: 'white', eyebrow: 'První event zdarma', title: 'ZKUS TO|~TENHLE TÝDEN.', body: 'Odkaz v biu.', cta: 'padelleague.eu' }
       ],
       why: { audience: 'organizátor', practices: [11, 2], data: ['event.going', 'event.cap'], text: 'Highlight pro organizátora: tři kroky a náhled odkazu se stavem „8/12“. Tournated má highlights rozdělené podle publika (For Clubs / For Tournaments), organizátor tak hned ví, kam kliknout.', sources: [{ t: 'Tournated', u: 'https://www.instagram.com/tournated/' }] } },
-    { id: 'clubs', name: 'Pro kluby', icon: 'court', audience: 'organizátor',
+    { id: 'clubs', name: 'Pro kluby', icon: 'court', audience: 'organizátor', cover: 'white',
       stories: [
         { t: 'stchat', eyebrow: 'Tohle znáš', title: '1. PETR|2. JANA|~3. ?' },
         { t: 'st', tone: 'navy', eyebrow: 'Řešení', title: 'JEDEN ODKAZ|~MÍSTO SEZNAMU.', body: 'Hráči se přihlásí a zaplatí sami. Ty vidíš všechno na jednom místě.' },
@@ -252,26 +252,26 @@ window.IG = {
         { t: 'st', tone: 'white', eyebrow: 'Napiš nám', title: 'UKÁŽEME TI|~TO ZA 10 MINUT.', cta: 'Zpráva v DM' }
       ],
       why: { audience: 'organizátor', practices: [11, 10], data: ['org.collected', 'org.paid'], text: 'Bolest (ruční seznam) → řešení → výsledek v číslech. Mluví ke klubu i k partě, ale vždy k tomu, kdo event pořádá.', sources: [] } },
-    { id: 'tour', name: 'Turnaje', icon: 'trophy', audience: 'oba',
+    { id: 'tour', name: 'Eventy', icon: 'trophy', audience: 'oba', cover: 'photo',
       stories: [
         { t: 'st', photo: 'court-reach.jpg', eyebrow: 'Čtvrtek 19:00', title: 'AMERICANO|~JE TADY.', body: 'Padel Dock Smíchov · 12 míst · 350 Kč' },
         { t: 'team', a: 'tereza', b: 'jakub' },
         { t: 'spots' },
         { t: 'live', court: 2, round: 4, a: ['tereza', 'martin'], b: ['jakub', 'klara'], s: [14, 10] },
         { t: 'winners', series: 12 },
-        { t: 'st', photo: 'court-serve.jpg', eyebrow: 'Po turnaji', title: 'A TEĎ|~NA PIVO.', body: 'Díky, příští čtvrtek zase.' }
+        { t: 'st', photo: 'court-serve.jpg', eyebrow: 'Po eventu', title: 'A TEĎ|~NA PIVO.', body: 'Díky, příští čtvrtek zase.' }
       ],
       why: { audience: 'oba', practices: [8, 2, 3], data: ['event.going[]', 'live.score', 'results.podium'], text: 'Celý příběh eventu ve stories, jak to dělá Padel Praha u Winter Cupu: oznámení → potvrzené týmy → poslední místa → živě → vítězové → oslava. Story „TÝM POTVRZEN“ je ruční série Padel Prahy, tady se vygeneruje automaticky po každé přihlášce.', sources: [{ t: 'Padel Praha: highlight Winter Cup 2026', u: 'https://www.instagram.com/stories/highlights/18084816032484351/' }] } },
-    { id: 'res', name: 'Výsledky', icon: 'podium', audience: 'oba',
+    { id: 'res', name: 'Výsledky', icon: 'podium', audience: 'oba', cover: 'orange',
       stories: [{ t: 'winners', series: 10 }, { t: 'winners', series: 11 }, { t: 'winners', series: 12 }, { t: 'storycard', p: 'martin', series: 12 }],
       why: { audience: 'oba', practices: [3, 1], data: ['results[n].podium', 'results[n].date'], text: 'Stejná šablona „VÍTĚZOVÉ“ ve třech vydáních, mění se jen čísla, jména a datum. Padel Club Ostrava dělá každý týden „WINNERS“ ručně ve stejném stylu, opakovaný vzhled si lidi zapamatují jako značku série.', sources: [{ t: 'Padel Club Ostrava: highlight VP 2026', u: 'https://www.instagram.com/stories/highlights/18099658019083554/' }] } },
-    { id: 'achs', name: 'Achievementy', icon: 'racket', audience: 'hráč',
+    { id: 'achs', name: 'Achievementy', icon: 'racket', audience: 'hráč', cover: 'navy',
       stories: [{ t: 'unlock', tier: 0 }, { t: 'unlock', tier: 1 }, { t: 'unlock', tier: 2 }, { t: 'unlock', tier: 3 }, { t: 'unlock', tier: 'streak' }],
       why: { audience: 'hráč', practices: [9], data: ['player.achievements[]'], text: 'Každý achievement jako story „ODEMČENO“, kterou hráč sdílí. Rakety a streak podle JVS.', sources: [] } },
-    { id: 'faq', name: 'FAQ', icon: 'question', audience: 'organizátor',
+    { id: 'faq', name: 'FAQ', icon: 'question', audience: 'organizátor', cover: 'white',
       stories: [
         { t: 'faq', q: 'Musí mít hráči účet?', a: 'Ne. Jméno, kontakt, platba. Hotovo.' },
-        { t: 'faq', q: 'Jak dostanu peníze?', a: 'Přes Stripe rovnou na svůj účet. Nebo ať platí na místě.' },
+        { t: 'faq', q: 'Jak dostanu peníze?', a: 'Výchozí je platba na místě. Platby kartou přes Stripe zapneš, kdy budeš chtít.' },
         { t: 'faq', q: 'Kolik to stojí?', a: '[DOPLNÍ KUBA] Cena zatím není určená.' },
         { t: 'faq', q: 'Jaké formáty umíte?', a: 'Americano, Mexicano, Round Robin, Playoff.' }
       ],

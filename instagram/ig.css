@@ -291,3 +291,11 @@ body.mode-desktop .side h1{font-size:20px}
   body.mode-desktop .stage{padding:14px 16px}
 }
 @media (max-width:1180px){.mb-links{display:inline-flex}}
+
+/* Kolo 2: highlights v rytmu navy / fotka / oranžová / bílá */
+.ig-hl .c span.cv-orange,.dw-hl .c span.cv-orange{background:#F97316;background-image:none}
+.ig-hl .c span.cv-white,.dw-hl .c span.cv-white{background:#F3F6F8;background-image:none;box-shadow:inset 0 0 0 1px #DCE5EA}
+.ig-hl .c span.cv-photo,.dw-hl .c span.cv-photo{background:url(../assets/img/court-serve.jpg) center/cover}
+.cv-white svg{stroke:#034867}
+.cv-orange svg{fill:#034867}
+.cv-photo svg{filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}

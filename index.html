@@ -10,7 +10,7 @@
 <meta property="og:image" content="assets/img/court-orange-close.jpg">
 <meta name="theme-color" content="#034867">
 <link rel="preload" href="assets/fonts/satoshi-900.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/app.css?v=14">
+<link rel="stylesheet" href="assets/css/app.css?v=15">
 </head>
 <body>
 <div class="shell">
@@ -18,7 +18,7 @@
     <div class="brand"><i></i>Padel League</div>
     <div>
       <h1>Klikací prototyp</h1>
-      <p style="margin-top:8px">Tři cesty ze zadání a Instagram profil. Hráč přichází z homepage s turnaji, nebo z odkazu ve WhatsAppu. Výchozí je zobrazení na počítači, nahoře přepneš na mobil. Klikej přímo v&nbsp;prototypu, nebo skoč na krok tady. Aplikace je česky, angličtina je druhá jazyková verze.</p>
+      <p style="margin-top:8px">Kolo 2 podle Kubových připomínek. Vstupenka je event, ne komunita: organizátor začíná na „Vytvoř event“, komunita a platby kartou přijdou až po prvním odehraném eventu. Flow je z aplikace, tady je vizuál.</p>
     </div>
 
     <div class="ctrls">
@@ -28,66 +28,67 @@
       <div class="seg-ctl" data-preset-grp="lang"><button data-preset="cs">Čeština</button><button data-preset="en">English</button></div>
     </div>
 
-    <nav class="flowgrp" aria-label="Cesta hráče">
-      <h2>1 · Hráč</h2>
+    <nav class="flowgrp" aria-label="Landing">
+      <h2>1 · Landing pro organizátory</h2>
+      <ol><li><a class="ext" href="landing.html">Landing page (počítač i mobil)</a></li></ol>
+      <details class="why"><summary>Co se změnilo</summary><ul>
+        <li><b>CTA „Vytvoř první event · zdarma“</b> místo „Vytvoř komunitu“. Vede rovnou do průvodce.</li>
+        <li><b>Headline a srovnání WhatsApp vs. PadelLeague</b> zůstávají.</li>
+        <li><b>Platba na místě je výchozí</b>, platby kartou jsou v sekci „Co přijde potom“ spolu s komunitou a žebříčkem.</li>
+        <li><b>Bílé pozadí a fotky</b>, navy jen hlavička, oranžová jen tlačítka.</li>
+      </ul></details>
+    </nav>
+
+    <nav class="flowgrp" aria-label="Cesta organizátora">
+      <h2>2 · Organizátor na mobilu</h2>
+      <p class="note" style="margin:0 0 8px">★ = tři obrazovky z bodu 2 zadání</p>
       <ol>
-        <li><a href="#/p-home" data-route="p-home">Homepage: výběr turnajů</a></li>
+        <li><a href="#/o-new" data-route="o-new">Vytvoř event (4 kroky z aplikace)</a></li>
+        <li><a href="#/o-signup" data-route="o-signup">Účet až při zveřejnění</a></li>
+        <li><a href="#/o-live" data-route="o-live">Zveřejněno: seznam přihlášených</a></li>
+        <li><a href="#/o-wa" data-route="o-wa">Sdílení do WhatsAppu</a></li>
+        <li><a href="#/o-manage" data-route="o-manage">Hráči a platby</a></li>
+        <li><a href="#/o-schedule" data-route="o-schedule">Rozpis (po uzávěrce) ★</a></li>
+        <li><a href="#/o-play" data-route="o-play">Průběh a zadání skóre ★</a></li>
+        <li><a href="#/o-after" data-route="o-after">Po eventu + co dál ★</a></li>
+        <li><a href="#/o-community" data-route="o-community">Komunita (až po eventu)</a></li>
+        <li><a href="#/o-next" data-route="o-next">Další event · stejné nastavení</a></li>
+        <li><a href="#/o-card" data-route="o-card">Karta výsledku</a></li>
+        <li><a href="#/o-home" data-route="o-home">Domov organizátora</a></li>
+      </ol>
+      <details class="why"><summary>Co se změnilo</summary><ul>
+        <li><b>Vytvoř event je první obrazovka.</b> Kroky a pořadí jsou z aplikace (Typ a formát → Termín a místo → Hráči a platba → Prezentace), tady je jen vizuální vrstva. [PŘEDPOKLAD] Obsah kroků jsme odhadly, ověříme v testovací verzi.</li>
+        <li><b>Zveřejnit není nikdy šedé.</b> Platba na místě je výchozí, Stripe jde připojit kdykoli, i po zveřejnění.</li>
+        <li><b>Po zveřejnění seznam přihlášených</b>, ne prázdný rozpis. Rozpis vzniká po uzávěrce.</li>
+        <li><b>Rozpis a Průběh čitelné jednou rukou:</b> číslo kurtu ve velkém čtverci, jména 17–18 px, skóre 40 px, celá karta kurtu je tlačítko, body se zadávají velkými tlačítky (tým B dostane zbytek do 24).</li>
+        <li><b>Po eventu „Co dál“:</b> komunita, platby kartou, žebříček. Odemyká se až po prvním odehraném eventu.</li>
+        <li><b>Pryč:</b> přepínač „Nejdřív poslat odkaz hráčům“ (aplikace do WhatsAppu nic neposílá, jen předá text) a „Poslat kartu všem hráčům“.</li>
+        <li><b>Na počítači</b> se organizátor ukazuje v telefonu, PC verze je hotová v aplikaci.</li>
+      </ul></details>
+    </nav>
+
+    <nav class="flowgrp" aria-label="Cesta hráče">
+      <h2>3 · Hráč</h2>
+      <ol>
+        <li><a href="#/p-home" data-route="p-home">Homepage: výběr eventů</a></li>
         <li><a href="#/p-chat" data-route="p-chat">… nebo odkaz ve WhatsApp skupině</a></li>
         <li><a href="#/p-event" data-route="p-event">Stránka eventu</a></li>
         <li><a href="#/p-in" data-route="p-in">Jsi ve hře + pozvat kamaráda</a></li>
         <li><a href="#/p-reminder" data-route="p-reminder">Připomínka den předem</a></li>
       </ol>
-      <details class="why"><summary>Kde hráč váhá a jak jsme to vyřešily</summary><ul>
-        <li><b>„Kde něco najdu, když nejsem ve skupině?“</b> Homepage ukazuje jen nadcházející turnaje seřazené podle data. Filtr město, termín a zdarma, plné turnaje vedou na čekací listinu. Proběhlé turnaje jsou sbalené dole, tlačítko na kartě je „Přihlásit“, ne „Přidat se do komunity“.</li>
-        <li><b>„Kolik to stojí a kdo tam bude?“</b> Cena, datum, místo a „jde 9/16“ s&nbsp;avatary jsou na první obrazovce. Seznam jmen hned pod tím.</li>
-        <li><b>„Musím se registrovat?“</b> Ne. Jméno, telefon a Apple Pay v&nbsp;jednom panelu, pod tlačítkem „Žádný účet, žádné heslo“.</li>
-        <li><b>„Jsem opravdu přihlášený?“</b> Místo krátké hlášky celá obrazovka „Jsi ve hře“ a moje jméno oranžově v&nbsp;seznamu.</li>
-        <li><b>„Je plno, co teď?“</b> Čekací listina místo slepé uličky. Platí se, až když se uvolní místo.</li>
-        <li><b>„Nemůžu přijít.“</b> Odkaz v&nbsp;připomínce uvolní místo dalšímu z&nbsp;listiny, organizátor nic nepřepisuje.</li>
-      </ul></details>
-    </nav>
-
-    <nav class="flowgrp" aria-label="Cesta organizátora">
-      <h2>2 · Organizátor</h2>
-      <ol>
-        <li><a href="#/o-signup" data-route="o-signup">Založení účtu</a></li>
-        <li><a href="#/o-community" data-route="o-community">Název komunity</a></li>
-        <li><a href="#/o-new" data-route="o-new">Nový event + zapnutí plateb</a></li>
-        <li><a href="#/o-live" data-route="o-live">Obrazovka 1: rozpis + výzva</a></li>
-        <li><a href="#/o-wa" data-route="o-wa">Sdílení do WhatsAppu</a></li>
-        <li><a href="#/o-home" data-route="o-home">Domov (přehled)</a></li>
-        <li><a href="#/o-manage" data-route="o-manage">Správa hráčů a plateb</a></li>
-        <li><a href="#/o-schedule" data-route="o-schedule">Docházka a rozpis</a></li>
-        <li><a href="#/o-play" data-route="o-play">Průběh a skóre</a></li>
-        <li><a href="#/o-after" data-route="o-after">Obrazovka 3: po eventu (mobil)</a></li>
-        <li><a href="#/o-after-d" data-route="o-after-d">Obrazovka 3: po eventu (desktop)</a></li>
-        <li><a href="#/o-next" data-route="o-next">Další event</a></li>
-        <li><a href="#/o-card" data-route="o-card">Karta výsledku</a></li>
-      </ol>
-      <details class="why"><summary>Kde organizátor váhá a jak jsme to vyřešily</summary><ul>
-        <li><b>„Kolik toho musím vyplnit?“</b> Čtyři kroky průvodce jsou jedna obrazovka. Místo, čas a kurty jsou předvyplněné, zbytek je v&nbsp;„Další možnosti“.</li>
-        <li><b>„Jak vyberu peníze?“</b> Stripe se připojuje přímo ve formuláři, ve chvíli, kdy nastaví vstupné. Nebo „ať hráči platí na místě“.</li>
-        <li><b>„A co teď?“</b> Po zveřejnění vidí rozpis 1. kola s&nbsp;kurty a volnými místy a jedinou výzvu: poslat odkaz do WhatsAppu.</li>
-        <li><b>„Kdo zaplatil? Kdo přišel?“</b> Stav platby u&nbsp;každého jména, připomínka na jedno klepnutí. Docházka se odškrtá před startem a rozpis se sám přepočítá.</li>
-        <li><b>„Stálo to za to?“</b> Po eventu nahoře vybraná částka, kolik zaplatilo a kolik přišlo, pod tím vítězové. Jediné tlačítko: další event, předvyplněný z&nbsp;tohoto.</li>
-      </ul></details>
-    </nav>
-
-    <nav class="flowgrp" aria-label="Landing">
-      <h2>3 · Landing</h2>
-      <ol><li><a class="ext" href="landing.html">Landing page (samostatná stránka)</a></li></ol>
-      <details class="why"><summary>Kde organizátor váhá a jak jsme to vyřešily</summary><ul>
-        <li><b>„Je to pro mě?“</b> Nadpis je jedna věta ze zadání a mluví jen k&nbsp;organizátorovi, ne ke klubům.</li>
-        <li><b>„Nečtu dlouhé stránky.“</b> 5 sekcí místo 15, všechny vedou ke stejnému tlačítku.</li>
-        <li><b>„Je to skutečné?“</b> Žádné vymyšlené reference. Ukázková čísla jsou označená jako ukázka.</li>
+      <details class="why"><summary>Co se změnilo</summary><ul>
+        <li><b>Stránka eventu zůstává</b> (velká fotka, karta s údaji, kdo už jde, přihlášení bez účtu, jedno oranžové tlačítko).</li>
+        <li><b>Platba podle organizátora:</b> bez Stripe tlačítko „Přihlásit se · 200 Kč na místě“, se Stripe Apple Pay. Přepínač „Stripe organizátora“ níže.</li>
+        <li><b>„Jsi ve hře“ je světlá</b> s fotkou eventu místo tmavé celoplošné obrazovky.</li>
+        <li><b>„Event“, ne „turnaj“</b> na homepage i všude jinde.</li>
       </ul></details>
     </nav>
 
     <nav class="flowgrp" aria-label="Instagram">
       <h2>4 · Instagram</h2>
       <ol>
-        <li><a class="ext" href="instagram/index.html">Instagram profil (mřížka, highlights, stories)</a></li>
-        <li><a class="ext" href="instagram/templates.html">Systém šablon (živá úprava, export PNG)</a></li>
+        <li><a class="ext" href="instagram/index.html">Profil: mřížka s rytmem navy / fotka / oranžová / bílá</a></li>
+        <li><a class="ext" href="instagram/templates.html">Šablony včetně karty výsledku</a></li>
       </ol>
     </nav>
 
@@ -97,7 +98,7 @@
         <button data-preset="open">Otevřeno 9/16</button><button data-preset="last">Poslední místa</button><button data-preset="full">Plno + čekací listina</button><button data-preset="in">Přihlášen</button>
       </div>
       <div class="seg-ctl" data-preset-grp="price"><button data-preset="paid">200 Kč</button><button data-preset="free">Zdarma</button></div>
-      <h2 style="margin-top:6px">Stripe organizátora</h2>
+      <h2 style="margin-top:6px">Stripe organizátora (hráčská stránka)</h2>
       <div class="seg-ctl" data-preset-grp="stripe"><button data-preset="stripeOn">Aktivní</button><button data-preset="stripeOff">Nepřipojeno</button></div>
       <div class="seg-ctl"><button data-preset="reset">↺ Začít znovu</button></div>
     </div>
@@ -106,6 +107,7 @@
   </aside>
 
   <main class="stage">
+    <p class="mode-note" hidden></p>
     <div class="modebar" role="group" aria-label="Zobrazení">Zobrazení <span class="mseg"><button data-mode="desktop">💻 Počítač</button><button data-mode="mobile">📱 Mobil</button></span></div>
     <div class="web" id="web"><div class="web-bar"><span class="dots"><i></i><i></i><i></i></span><span class="web-url">padelleague.eu</span></div><div class="web-view" aria-live="polite"></div></div>
     <div class="device"><div class="app" id="app" aria-live="polite"></div></div>
@@ -113,7 +115,7 @@
   </main>
 </div>
 <button class="map-btn" data-panel aria-label="Mapa prototypu">Mapa</button>
-<script src="assets/js/i18n.js?v=14"></script>
-<script src="assets/js/app.js?v=14"></script>
+<script src="assets/js/i18n.js?v=15"></script>
+<script src="assets/js/app.js?v=15"></script>
 </body>
 </html>
