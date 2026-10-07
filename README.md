@@ -16,6 +16,7 @@ Aplikace i landing jsou **česky**, angličtina je druhá jazyková verze (přep
 | Soubor | Obsah |
 |---|---|
 | `index.html` | Aplikace v okně prohlížeče (počítač) nebo v telefonu (mobil) + mapa prototypu vlevo (na skutečném telefonu přes celou obrazovku, mapa pod oranžovým štítkem „Mapa“) |
+| `vizualni-vrstva.html` | Návrh vizuální vrstvy nad enginem: stavy, karty, rozpis, tabulky, pavouk |
 | `landing.html` | Landing page pro organizátora, desktop i mobil. Tlačítka vedou do registrace v prototypu. |
 | `assets/css/app.css` | Styly a design tokeny |
 | `assets/js/app.js` | Obrazovky, stavy a navigace |
@@ -32,7 +33,10 @@ Vytvoř event, průvodce ve 4 krocích jako v aplikaci (Typ a formát → Termí
 
 Zveřejnit není nikdy šedé: platba na místě je výchozí, Stripe jde připojit kdykoli. Rozpis a Průběh mají velké písmo, číslo kurtu ve čtverci, celou kartu kurtu jako tlačítko a skóre přes velká tlačítka (tým B dostane zbytek do 24).
 
-[PŘEDPOKLAD] Obsah jednotlivých kroků průvodce je odhad, kroky a pořadí jsou z aplikace.
+Pole průvodce i kroky enginu (Soupiska → Nastavení → Rozpis → Spuštění → Průběh → Dokončeno) odpovídají testovací verzi ze 7. 10. 2026, převedené na telefon.
+
+### Vizuální vrstva
+`vizualni-vrstva.html`: návrh vzhledu nad enginem (bod 3 zadání). Sjednocené stavy eventu, karta eventu ve 4 stavech, rozpis, karta kurtu naživo, zadání skóre, tabulka pořadí, pavouk a skupiny. U každé sekce je, co se liší od testovací verze.
 
 U každé cesty je v mapě vlevo rozbalovací poznámka „Co se změnilo“.
 

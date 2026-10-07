@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PadelLeague · Vizuální vrstva</title>
+<meta name="description" content="Návrh vizuální vrstvy nad průvodcem a enginem PadelLeague: stavy, karty, rozpis, tabulky, pavouk.">
+<meta name="theme-color" content="#034867">
+<link rel="stylesheet" href="assets/css/app.css?v=16">
+<style>
+  body{background:var(--ground);color:var(--ink);font-size:16px;line-height:1.5}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 20px 80px}
+  .nav{background:var(--navy);color:#fff}
+  .nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:14px;padding-bottom:14px}
+  .nav a{color:#fff;text-decoration:none;font-size:14px;opacity:.85}
+  header.top{padding:48px 0 12px}
+  header.top h1{margin:0;font:900 clamp(32px,5vw,56px)/.95 var(--f-display);text-transform:uppercase;color:var(--navy)}
+  header.top p{max-width:70ch;color:var(--muted);margin:16px 0 0}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .toc a{background:#fff;border:1px solid var(--line);border-radius:99px;padding:7px 13px;font-size:13.5px;color:var(--ink);text-decoration:none}
+  section.s{padding-top:56px}
+  .eyebrow{font:700 12px/1 var(--f-body);letter-spacing:.16em;text-transform:uppercase;color:var(--navy)}
+  h2.t{margin:10px 0 6px;font:900 clamp(24px,3vw,34px)/1 var(--f-display);text-transform:uppercase}
+  .lead{color:var(--muted);max-width:72ch;margin:0}
+  .fix{margin:16px 0 0;padding:14px 16px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;font-size:14.5px}
+  .fix b{display:block;margin-bottom:4px}
+  .fix ul{margin:6px 0 0;padding-left:18px}
+  .grid{display:grid;gap:16px;margin-top:22px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .cap{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
+  @media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:620px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+  /* stavy */
+  .states{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:22px}
+  .state{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+  .state small{color:var(--muted);font-size:13px}
+  .state .was{font-size:12px;color:#8A9AA6}
+  .sp{display:inline-flex;align-items:center;gap:6px;font:700 11px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;padding:7px 11px;border-radius:99px;align-self:flex-start;white-space:nowrap}
+  .sp::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+  .sp.draft{border:1px dashed #9AAAB5;color:#5B6E7B}
+  .sp.open{background:var(--ok-bg);color:var(--ok)}
+  .sp.last{background:#FFF1E6;color:var(--orange-ink)}
+  .sp.full{background:var(--navy);color:#fff}
+  .sp.closed{background:var(--soft);color:#34566A}
+  .sp.live{background:#16A34A;color:#fff}
+  .sp.live::before{animation:blink 1.2s infinite}
+  .sp.done{background:#E5E7EB;color:#1F2937}
+  .sp.cancel{border:1px solid #F5C2C2;color:#B42318}
+  @keyframes blink{50%{opacity:.25}}
+  @media (prefers-reduced-motion:reduce){.sp.live::before{animation:none}}
+
+  /* karta eventu */
+  .ec{background:#fff;border:1px solid #E3EAEE;border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+  .ec .im{position:relative;height:150px;background:#0b2a3a}
+  .ec .im img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .ec .im::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,47,68,.1),rgba(2,47,68,.55))}
+  .ec .im .sp{position:absolute;top:12px;right:12px;z-index:2}
+  .ec .im .vibe{position:absolute;top:12px;left:12px;z-index:2;background:rgba(255,255,255,.92);color:var(--navy);font:700 11px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:7px 10px;border-radius:99px}
+  .ec .im .pr{position:absolute;right:12px;bottom:12px;z-index:2;background:#fff;color:var(--navy);font:900 14px/1 var(--f-display);padding:7px 10px;border-radius:10px}
+  .ec .b{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+  .ec .d{font:700 11px/1.2 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--navy)}
+  .ec .n{font:900 18px/1.1 var(--f-display);text-transform:uppercase;color:var(--navy)}
+  .ec .m{font-size:13px;color:var(--muted)}
+  .ec .tg{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .ec .tg span{font-size:11.5px;padding:4px 8px;border-radius:99px;background:var(--soft);color:#34566A}
+  .ec .bar{height:5px;border-radius:99px;background:#E7EDF1;margin-top:10px;overflow:hidden}
+  .ec .bar i{display:block;height:100%;background:var(--navy)}
+  .ec .f{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12.5px;color:var(--muted)}
+  .ec .btn{margin-top:12px;display:block;text-align:center;border-radius:14px;padding:12px;font:900 13px/1 var(--f-display);text-transform:uppercase;letter-spacing:.05em}
+  .btn.go{background:var(--orange);color:#fff}
+  .btn.sec{background:#fff;border:1px solid var(--line);color:var(--navy)}
+  .btn.live{background:#fff;border:2px solid #16A34A;color:#15803D}
+  .ec.dim .im img{filter:grayscale(.6)}
+
+  /* tabulka */
+  .tbl{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+  .tbl table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .tbl th{background:var(--navy);color:#fff;font:700 10.5px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;padding:12px 10px;text-align:center}
+  .tbl th:nth-child(2){text-align:left}
+  .tbl td{padding:12px 10px;border-top:1px solid #EEF3F6;text-align:center;color:var(--muted);font-size:14.5px}
+  .tbl td.nm{text-align:left;color:var(--ink);font-weight:600}
+  .tbl td.pts{color:var(--ink);font-weight:900;font-size:16px}
+  .tbl .pos{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;font-weight:900;color:var(--ink)}
+  .tbl tr.m1 .pos{background:#F6C945}.tbl tr.m2 .pos{background:#D5DBE1}.tbl tr.m3 .pos{background:#F0B48A}
+  .tbl tr.m1 td{background:#FFFBEF}
+  .tbl tr.me td{background:#EEF5F9}
+  .df{display:inline-block;min-width:38px;border-radius:99px;padding:3px 6px;font-size:12px;font-weight:700}
+  .df.up{background:var(--ok-bg);color:var(--ok)}.df.dn{background:#FDECEC;color:#B42318}.df.eq{background:var(--soft);color:#5B6E7B}
+  @media (max-width:620px){.tbl .hide-m{display:none}}
+
+  /* pavouk */
+  .br{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;align-items:center;margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px}
+  .col{display:flex;flex-direction:column;gap:18px;justify-content:space-around;height:100%}
+  .col h4{margin:0 0 4px;font:700 11px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .mt{border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative;background:#fff}
+  .mt .tm{display:flex;justify-content:space-between;gap:8px;padding:9px 12px;font-size:14px;color:var(--muted)}
+  .mt .tm + .tm{border-top:1px solid #EEF3F6}
+  .mt .tm.w{color:var(--ink);font-weight:700}
+  .mt .tm.w b{color:var(--navy)}
+  .mt .tm b{font-variant-numeric:tabular-nums}
+  .mt .meta{font-size:11px;color:#8A9AA6;padding:5px 12px;background:var(--soft)}
+  .mt.bye .tm:last-child{font-style:italic}
+  .mt.final{border:2px solid #F6C945}
+  .mt.final .meta{background:#FFF8E6;color:#8A6A00;font-weight:700}
+  .br{padding-top:48px}
+  .col{position:relative}
+  .col h4{position:absolute;top:-30px;left:2px}
+  .col.c1 .mt,.col.c2 .mt{box-shadow:6px 0 0 -4px transparent}
+  .third{margin-top:14px}
+  .br-m{display:none}
+  @media (max-width:760px){.br{display:none}.br-m{display:block;margin-top:22px}}
+  .br-m .tabs{margin-bottom:12px}
+  .br-m .mt{margin-bottom:10px}
+
+  /* skupiny */
+  .grp h4{margin:0;padding:12px 14px;background:var(--navy);color:#fff;font:900 15px/1 var(--f-display);text-transform:uppercase;display:flex;justify-content:space-between}
+  .grp h4 small{font:500 12px/1 var(--f-body);text-transform:none;opacity:.8}
+  .adv{display:inline-block;width:8px;height:8px;border-radius:50%;background:#16A34A;margin-right:6px}
+
+  /* telefon pro mobilní ukázky */
+  .ph{max-width:340px;margin:0 auto;border-radius:36px;padding:10px;background:#0A1C26}
+  .ph .in{border-radius:28px;background:var(--ground);padding:14px;display:flex;flex-direction:column;gap:10px}
+  footer{margin-top:64px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<header class="nav"><div class="wrap"><a href="index.html" class="logo" style="opacity:1"><i></i>Padel League</a><a href="index.html">← Prototyp</a></div></header>
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">Bod 3 zadání · návrh</p>
+    <h1>Vizuální vrstva nad enginem</h1>
+    <p>Kroky, pořadí a logika jsou z testovací verze a nemění se. Tady je jen vzhled: stavy, karty, rozpis, živé skóre, tabulky, pavouk a skupiny. Každá sekce má poznámku, co se liší od testovací verze ze 7. 10. 2026. Pravidla: „event“ místo „turnaj“, bílé pozadí a fotky, navy jen hlavičky, oranžová jen akce.</p>
+    <nav class="toc" aria-label="Obsah"><a href="#stavy">Stavy</a><a href="#karty">Karty eventu</a><a href="#rozpis">Rozpis</a><a href="#kurt">Kurt živě</a><a href="#tabulka">Tabulka</a><a href="#pavouk">Pavouk</a><a href="#skupiny">Skupiny</a></nav>
+  </header>
+
+  <section class="s" id="stavy">
+    <p class="eyebrow">01</p>
+    <h2 class="t">Stavy eventu</h2>
+    <p class="lead">Jedna sada stavů pro kartu, stránku eventu i engine. Každý stav má jednu barvu a jedno slovo.</p>
+    <div class="states">
+      <div class="state"><span class="sp draft">Koncept</span><small>Uložený, nezveřejněný. Vidí ho jen organizátor.</small><span class="was">Dnes: „Uložit koncept“, bez štítku</span></div>
+      <div class="state"><span class="sp open">Otevřeno</span><small>Přihlášky běží.</small><span class="was">Dnes: Otevřeno</span></div>
+      <div class="state"><span class="sp last">Zbývají 2</span><small>Varianta Otevřeno, když zbývají 1–2 místa.</small><span class="was">Dnes: jen text „1 volné místo“</span></div>
+      <div class="state"><span class="sp full">Plno · čeká 3</span><small>Kapacita naplněná, běží čekací listina.</small><span class="was">Dnes: Plno (bez čekací listiny)</span></div>
+      <div class="state"><span class="sp closed">Uzavřeno</span><small>Přihlášky zavřené, organizátor chystá soupisku a rozpis.</small><span class="was">Dnes: Uzavřeno na kartě, Příprava v enginu</span></div>
+      <div class="state"><span class="sp live">Probíhá</span><small>Event se hraje, výsledky naživo.</small><span class="was">Dnes: Probíhá na kartě, LIVE v enginu</span></div>
+      <div class="state"><span class="sp done">Odehráno</span><small>Výsledky jsou konečné.</small><span class="was">Dnes: Hotovo na kartě, Dokončeno v enginu</span></div>
+      <div class="state"><span class="sp cancel">Zrušeno</span><small>Hráči dostali e-mail, peníze se vrací.</small><span class="was">Dnes: Zrušeno</span></div>
+    </div>
+    <div class="fix"><b>Co sjednocujeme</b>Pro stejný stav jsou dnes v aplikaci dvě slova (Hotovo / Dokončeno, Probíhá / LIVE, Uzavřeno / Příprava). Navrhujeme jedno slovo a jednu barvu všude. [OTÁZKA] Smíme ve stavech přejmenovat „Hotovo“ a „Dokončeno“ na „Odehráno“?</div>
+  </section>
+
+  <section class="s" id="karty">
+    <p class="eyebrow">02</p>
+    <h2 class="t">Karta eventu</h2>
+    <p class="lead">Homepage, stránka komunity a „Moje eventy“. Stejná karta, mění se jen štítek stavu a tlačítko.</p>
+    <div class="grid g4">
+      <div><div class="ec"><div class="im"><img src="assets/img/court-orange-close.jpg" alt=""><span class="vibe">Social</span><span class="sp open">Otevřeno</span><span class="pr">200 Kč</span></div>
+        <div class="b"><span class="d">pá 30. 10. · 18:00</span><span class="n">Páteční Americano</span><span class="m">Padel Klub Novosedlice · Teplice</span><div class="tg"><span>Americano · rotující partneři</span><span>Pro všechny</span></div>
+        <div class="bar"><i style="width:56%"></i></div><div class="f"><span>9/16 · zbývá 7 míst</span><span>na místě</span></div><span class="btn go">Přihlásit se</span></div></div><p class="cap">Otevřeno</p></div>
+      <div><div class="ec"><div class="im"><img src="assets/img/court-serve.jpg" alt=""><span class="vibe">Competitive</span><span class="sp full">Plno · čeká 3</span><span class="pr">250 Kč</span></div>
+        <div class="b"><span class="d">so 31. 10. · 10:00</span><span class="n">Sobotní Mexicano</span><span class="m">Padel Písečná · Teplice</span><div class="tg"><span>Mexicano · živý žebříček</span><span>Úroveň 4–6</span></div>
+        <div class="bar"><i style="width:100%"></i></div><div class="f"><span>16/16</span><span>kartou</span></div><span class="btn sec">Na čekací listinu</span></div></div><p class="cap">Plno</p></div>
+      <div><div class="ec"><div class="im"><img src="assets/img/court-dark-run.jpg" alt=""><span class="vibe">Competitive</span><span class="sp live">Probíhá</span></div>
+        <div class="b"><span class="d">dnes · 18:00 · kolo 3 z 4</span><span class="n">Středeční liga</span><span class="m">Padel Klub Novosedlice · Teplice</span><div class="tg"><span>Turnaj · skupiny + pavouk</span></div>
+        <div class="bar"><i style="width:67%;background:#16A34A"></i></div><div class="f"><span>Zápasy 8/12</span><span>vede Veselý / Horák</span></div><span class="btn live">Sledovat živě</span></div></div><p class="cap">Probíhá</p></div>
+      <div><div class="ec dim"><div class="im"><img src="assets/img/court-blue-orange.jpg" alt=""><span class="vibe">Social</span><span class="sp done">Odehráno</span></div>
+        <div class="b"><span class="d">pá 23. 10.</span><span class="n">Mixy Americano</span><span class="m">Padel Klub Novosedlice · Teplice</span><div class="tg"><span>Americano</span><span>16 hráčů</span></div>
+        <div class="f" style="margin-top:12px"><span>🏆 Tereza H.</span><span>58 bodů</span></div><span class="btn sec">Výsledky</span></div></div><p class="cap">Odehráno</p></div>
+    </div>
+    <div class="fix"><b>Co se liší od testovací verze</b><ul>
+      <li>Typ eventu je jednou (štítek „Social“). Dnes je nad kartou ještě „SOCIAL VIBE“ a Competitive má celou kartu i tlačítko žluté.</li>
+      <li>Tlačítko odpovídá stavu: Přihlásit se / Na čekací listinu / Sledovat živě / Výsledky. Dnes je na veřejné kartě „Přidat se do komunity“ nebo „Zobrazit detail“.</li>
+      <li>Karta bez fotky dostane fotku klubu nebo výchozí fotku podle formátu místo navy plochy s logem.</li>
+      <li>Kruh obsazenosti a progress jsou navy, oranžové je jen tlačítko.</li>
+    </ul></div>
+  </section>
+
+  <section class="s" id="rozpis">
+    <p class="eyebrow">03</p>
+    <h2 class="t">Rozpis</h2>
+    <p class="lead">Stejná struktura jako v PC verzi (kolo jako karta s navy hlavičkou, odznak kurtu, jména pod sebou). Na telefonu větší písmo a jedno kolo pod druhým.</p>
+    <div class="grid g2">
+      <div class="ph"><div class="in">
+        <section class="rz"><h3><i>1</i>Kolo 1<small>2 zápasy</small></h3>
+          <div class="rz-m"><span class="rz-c"><small>Kurt</small>1</span><div class="rz-t"><b>Tomáš N.</b><b>Jan K.</b></div><span class="rz-vs">vs</span><div class="rz-t b"><b>Petr S.</b><b>Lucie B.</b></div></div>
+          <div class="rz-m"><span class="rz-c"><small>Kurt</small>2</span><div class="rz-t"><b>Klára R.</b><b>Martin Č.</b></div><span class="rz-vs">vs</span><div class="rz-t b"><b>Anna J.</b><b>Lukáš D.</b></div></div>
+          <div class="rz-rest">Odpočívá: Ondřej P., Eliška K.</div></section>
+        <section class="rz"><h3><i>2</i>Kolo 2<small>2 zápasy</small></h3>
+          <div class="rz-m"><span class="rz-c"><small>Kurt</small>1</span><div class="rz-t"><b>Tomáš N.</b><b>Anna J.</b></div><span class="rz-vs">vs</span><div class="rz-t b"><b>Ondřej P.</b><b>Klára R.</b></div></div></section>
+      </div><p class="cap">Telefon · organizátor u kurtu</p></div>
+      <div>
+        <div class="fix" style="margin-top:0"><b>Co se liší od testovací verze</b><ul>
+          <li>Odznak kurtu je navy na světlém podkladu. V PC verzi je oranžový, ale oranžová patří jen akcím.</li>
+          <li>Jména mají na telefonu 16–17 px a tučný řez, aby šla přečíst na délku paže.</li>
+          <li>Kdo v kole odpočívá, je napsané přímo v kartě kola. V PC verzi to vidíš jen v nastavení jako číslo.</li>
+          <li>Statistika „Nikdo nemá stejného partnera 2×“ zůstává nahoře jako zelená kontrola.</li>
+        </ul></div>
+        <p style="margin-top:16px"><a href="index.html?mode=mobile#/o-schedule">Otevřít Rozpis v prototypu →</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="kurt">
+    <p class="eyebrow">04</p>
+    <h2 class="t">Kurt živě</h2>
+    <p class="lead">Karta kurtu má tři stavy. Okraj vlevo říká, co dělat: oranžová = zadej skóre, zelená = zapsáno. Celá karta je tlačítko.</p>
+    <div class="grid g3">
+      <div><button class="pc" style="pointer-events:none"><div class="pc-h"><span class="court-pill">Kurt 1</span><span class="pc-tap">Zadat skóre</span></div><div class="pc-row"><span class="pc-n"><b>Tomáš N.</b><b>Jan K.</b></span><span class="pc-s">–</span></div><div class="pc-row"><span class="pc-n"><b>Petr S.</b><b>Lucie B.</b></span><span class="pc-s">–</span></div></button><p class="cap">Čeká na skóre</p></div>
+      <div><button class="pc done" style="pointer-events:none"><div class="pc-h"><span class="court-pill">Kurt 2</span><span class="pill ok">Zapsáno</span></div><div class="pc-row"><span class="pc-n"><b>Klára R.</b><b>Martin Č.</b></span><span class="pc-s win">14</span></div><div class="pc-row"><span class="pc-n"><b>Anna J.</b><b>Lukáš D.</b></span><span class="pc-s">10</span></div></button><p class="cap">Zapsáno · vítěz navy, poražený šedě</p></div>
+      <div><div class="sheet" style="position:static;border-radius:22px;border:1px solid var(--line);animation:none;max-height:none"><h2 class="h-mid">Zadat skóre · Kurt 1</h2>
+        <div class="sc-teams"><div class="a"><span class="lbl">Tým A</span><b>Tomáš N.</b><b>Jan K.</b></div><div><span class="lbl">Tým B</span><b>Petr S.</b><b>Lucie B.</b></div></div>
+        <div class="scores pairs"><button>12:12</button><button>13:11</button><button class="on">14:10</button><button>15:9</button><button>16:8</button><button>17:7</button><button>18:6</button><button>19:5</button></div>
+        <p class="fine">Hraje se celkem 24 bodů. Klepnutím na výsledek se rovnou uloží.</p></div><p class="cap">Zadání skóre (výřez)</p></div>
+    </div>
+    <div class="fix"><b>Co se liší od testovací verze</b><ul>
+      <li>Logika zadání je stejná (mřížka výsledků, klepnutím se uloží). Tlačítka jsou na telefonu 4 v řadě a 44 px vysoká místo 5 malých.</li>
+      <li>V PC verzi jsou týmy vedle sebe. Na telefonu jsou pod sebou se skóre vpravo jako ve výsledkové tabuli, skóre má 40 px.</li>
+      <li>Iniciála „A“ v modrém kolečku u každého hosta nic neříká, na telefonu ji vynecháváme.</li>
+    </ul></div>
+  </section>
+
+  <section class="s" id="tabulka">
+    <p class="eyebrow">05</p>
+    <h2 class="t">Tabulka pořadí</h2>
+    <p class="lead">Průběžná i konečná. Stejné sloupce jako PC verze (Z, V, R, P, Body, +/−), na telefonu se schová R a ostatní sloupce zúží.</p>
+    <div class="tbl" style="margin-top:22px"><table>
+      <thead><tr><th>#</th><th>Hráč</th><th>Z</th><th>V</th><th class="hide-m">R</th><th>P</th><th>Body</th><th>+/−</th></tr></thead>
+      <tbody>
+        <tr class="m1"><td><span class="pos">1</span></td><td class="nm">Petr Svoboda</td><td>3</td><td>2</td><td class="hide-m">0</td><td>1</td><td class="pts">51</td><td><span class="df up">+30</span></td></tr>
+        <tr class="m2"><td><span class="pos">2</span></td><td class="nm">Lukáš Dvořák</td><td>3</td><td>2</td><td class="hide-m">0</td><td>1</td><td class="pts">48</td><td><span class="df up">+24</span></td></tr>
+        <tr class="m3"><td><span class="pos">3</span></td><td class="nm">Martin Černý</td><td>3</td><td>2</td><td class="hide-m">0</td><td>1</td><td class="pts">41</td><td><span class="df up">+10</span></td></tr>
+        <tr class="me"><td><span class="pos">4</span></td><td class="nm">Jana Malá (ty)</td><td>3</td><td>2</td><td class="hide-m">0</td><td>1</td><td class="pts">40</td><td><span class="df up">+8</span></td></tr>
+        <tr><td><span class="pos">5</span></td><td class="nm">Tereza Hájková</td><td>3</td><td>1</td><td class="hide-m">1</td><td>1</td><td class="pts">36</td><td><span class="df eq">0</span></td></tr>
+        <tr><td><span class="pos">6</span></td><td class="nm">Klára Růžičková</td><td>3</td><td>0</td><td class="hide-m">0</td><td>3</td><td class="pts">17</td><td><span class="df dn">−38</span></td></tr>
+      </tbody></table></div>
+    <div class="fix"><b>Co se liší od testovací verze</b><ul>
+      <li>Řádek přihlášeného hráče je podbarvený („ty“), aby se na stránce eventu hned našel.</li>
+      <li>Stupně vítězů mají medailovou barvu jen v kolečku pořadí, ne v celém řádku. Výjimkou je 1. místo.</li>
+      <li>Na telefonu dnes tabulka ořezává jména. Navrhujeme zkratku „Petr S.“ a schovat sloupec R.</li>
+    </ul></div>
+  </section>
+
+  <section class="s" id="pavouk">
+    <p class="eyebrow">06</p>
+    <h2 class="t">Pavouk (Playoff)</h2>
+    <p class="lead">Dnes je pavouk v aplikaci seznam zápasů po fázích. Navrhujeme sloupce fází vedle sebe na počítači a záložky fází na telefonu. Data jsou z eventu „Playoff 6 párů“ v testovací verzi.</p>
+    <div class="br" role="img" aria-label="Pavouk: čtvrtfinále, semifinále, finále">
+      <div class="col c1"><h4>Čtvrtfinále</h4>
+        <div class="mt bye"><div class="tm w"><span>Novák / Svoboda</span><b>–</b></div><div class="tm"><span>volný los</span><b></b></div></div>
+        <div class="mt"><div class="tm w"><span>Veselý / Horák</span><b>6:3</b></div><div class="tm"><span>Němec / Marek</span><b></b></div><div class="meta">Kurt 1</div></div>
+        <div class="mt bye"><div class="tm w"><span>Dvořák / Černý</span><b>–</b></div><div class="tm"><span>volný los</span><b></b></div></div>
+        <div class="mt"><div class="tm"><span>Procházka / Kučera</span><b></b></div><div class="tm w"><span>Pokorný / Pospíšil</span><b>6:4</b></div><div class="meta">Kurt 2</div></div>
+      </div>
+      <div class="col c2"><h4>Semifinále</h4>
+        <div class="mt"><div class="tm"><span>Novák / Svoboda</span><b></b></div><div class="tm w"><span>Veselý / Horák</span><b>6:3</b></div></div>
+        <div class="mt"><div class="tm w"><span>Dvořák / Černý</span><b>6:4</b></div><div class="tm"><span>Pokorný / Pospíšil</span><b></b></div></div>
+      </div>
+      <div class="col"><h4>Finále</h4>
+        <div class="mt final"><div class="meta">🏆 Finále</div><div class="tm w"><span>Veselý / Horák</span><b>6:4</b></div><div class="tm"><span>Dvořák / Černý</span><b></b></div></div>
+        <div class="mt third"><div class="meta">O 3. místo</div><div class="tm w"><span>Novák / Svoboda</span><b>7:5</b></div><div class="tm"><span>Pokorný / Pospíšil</span><b></b></div></div>
+      </div>
+    </div>
+    <div class="br-m"><div class="ph"><div class="in">
+      <div class="tabs"><button class="done">Čtvrtfinále ✓</button><button class="on">Semifinále</button><button>Finále</button></div>
+      <div class="mt"><div class="tm"><span>Novák / Svoboda</span><b></b></div><div class="tm w"><span>Veselý / Horák</span><b>6:3</b></div><div class="meta">Kurt 1 · postupuje Veselý / Horák</div></div>
+      <div class="mt"><div class="tm w"><span>Dvořák / Černý</span><b>6:4</b></div><div class="tm"><span>Pokorný / Pospíšil</span><b></b></div><div class="meta">Kurt 2 · postupuje Dvořák / Černý</div></div>
+    </div></div><p class="cap">Telefon: fáze jako záložky</p></div>
+    <div class="fix"><b>Co se liší od testovací verze</b><ul>
+      <li>Fáze ve sloupcích vedle sebe místo jednoho dlouhého seznamu. Vítěz zápasu je tučně navy, poražený šedě.</li>
+      <li>„BYE“ píšeme jako „volný los“.</li>
+      <li>Skóre se ukazuje jen jednou (6:3), ne „1 : 0 (6:3)“.</li>
+      <li>Finále má zlatý rámeček, zápas o 3. místo je pod ním.</li>
+    </ul></div>
+  </section>
+
+  <section class="s" id="skupiny">
+    <p class="eyebrow">07</p>
+    <h2 class="t">Skupiny (formát Turnaj)</h2>
+    <p class="lead">Skupinová fáze před pavoukem. Kdo postupuje, má zelenou tečku, čára odděluje postupující.</p>
+    <div class="grid g2">
+      <div class="tbl grp"><h4>Skupina A <small>dohráno</small></h4><table><thead><tr><th>#</th><th>Pár</th><th>Z</th><th>V</th><th>Body</th></tr></thead><tbody>
+        <tr><td>1</td><td class="nm"><span class="adv"></span>Veselý / Horák</td><td>3</td><td>3</td><td class="pts">72</td></tr>
+        <tr style="border-bottom:2px solid var(--navy)"><td>2</td><td class="nm"><span class="adv"></span>Novák / Svoboda</td><td>3</td><td>2</td><td class="pts">61</td></tr>
+        <tr><td>3</td><td class="nm">Němec / Marek</td><td>3</td><td>1</td><td class="pts">48</td></tr>
+        <tr><td>4</td><td class="nm">Malý / Zeman</td><td>3</td><td>0</td><td class="pts">35</td></tr></tbody></table></div>
+      <div class="tbl grp"><h4>Skupina B <small>hraje se · 2 z 3 kol</small></h4><table><thead><tr><th>#</th><th>Pár</th><th>Z</th><th>V</th><th>Body</th></tr></thead><tbody>
+        <tr><td>1</td><td class="nm">Dvořák / Černý</td><td>2</td><td>2</td><td class="pts">50</td></tr>
+        <tr><td>2</td><td class="nm">Pokorný / Pospíšil</td><td>2</td><td>1</td><td class="pts">44</td></tr>
+        <tr><td>3</td><td class="nm">Procházka / Kučera</td><td>2</td><td>1</td><td class="pts">39</td></tr>
+        <tr><td>4</td><td class="nm">Beneš / Doležal</td><td>2</td><td>0</td><td class="pts">27</td></tr></tbody></table></div>
+    </div>
+    <div class="fix"><b>Poznámka</b>Skupiny jsme v testovací verzi neprocházely do hloubky (event „Turnaj Mistrů“ je odehraný). [PŘEDPOKLAD] Postupují první dva z každé skupiny.</div>
+  </section>
+
+  <footer>Návrh pro PadelLeague · Princová &amp; Fikarová · podklad: testovací verze ze 7. 10. 2026 · data jsou ukázková.</footer>
+</div>
+</body>
+</html>

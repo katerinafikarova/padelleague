@@ -10,7 +10,7 @@
 <meta property="og:image" content="assets/img/court-orange-close.jpg">
 <meta name="theme-color" content="#034867">
 <link rel="preload" href="assets/fonts/satoshi-900.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/app.css?v=15">
+<link rel="stylesheet" href="assets/css/app.css?v=16">
 </head>
 <body>
 <div class="shell">
@@ -43,13 +43,14 @@
       <h2>2 · Organizátor na mobilu</h2>
       <p class="note" style="margin:0 0 8px">★ = tři obrazovky z bodu 2 zadání</p>
       <ol>
-        <li><a href="#/o-new" data-route="o-new">Vytvoř event (4 kroky z aplikace)</a></li>
+        <li><a href="#/o-new" data-route="o-new">Vytvoř event (4 kroky jako v aplikaci)</a></li>
         <li><a href="#/o-signup" data-route="o-signup">Účet až při zveřejnění</a></li>
         <li><a href="#/o-live" data-route="o-live">Zveřejněno: seznam přihlášených</a></li>
         <li><a href="#/o-wa" data-route="o-wa">Sdílení do WhatsAppu</a></li>
-        <li><a href="#/o-manage" data-route="o-manage">Hráči a platby</a></li>
-        <li><a href="#/o-schedule" data-route="o-schedule">Rozpis (po uzávěrce) ★</a></li>
-        <li><a href="#/o-play" data-route="o-play">Průběh a zadání skóre ★</a></li>
+        <li><a href="#/o-manage" data-route="o-manage">Engine 1: Soupiska a platby</a></li>
+        <li><a href="#/o-setup" data-route="o-setup">Engine 2: Nastavení (kurty, kola, body)</a></li>
+        <li><a href="#/o-schedule" data-route="o-schedule">Engine 3: Rozpis + 4: Spuštění ★</a></li>
+        <li><a href="#/o-play" data-route="o-play">Průběh (live) a zadání skóre ★</a></li>
         <li><a href="#/o-after" data-route="o-after">Po eventu + co dál ★</a></li>
         <li><a href="#/o-community" data-route="o-community">Komunita (až po eventu)</a></li>
         <li><a href="#/o-next" data-route="o-next">Další event · stejné nastavení</a></li>
@@ -57,10 +58,11 @@
         <li><a href="#/o-home" data-route="o-home">Domov organizátora</a></li>
       </ol>
       <details class="why"><summary>Co se změnilo</summary><ul>
-        <li><b>Vytvoř event je první obrazovka.</b> Kroky a pořadí jsou z aplikace (Typ a formát → Termín a místo → Hráči a platba → Prezentace), tady je jen vizuální vrstva. [PŘEDPOKLAD] Obsah kroků jsme odhadly, ověříme v testovací verzi.</li>
+        <li><b>Vytvoř event je první obrazovka.</b> Kroky, pořadí i pole jsou z testovací verze (Typ a formát → Termín a místo → Hráči a platba → Prezentace), včetně variant Americana, uzávěrky, minima hráčů, délky, klubu, úrovní, viditelnosti a WhatsApp zprávy. Tady je převedené na telefon.</li>
+        <li><b>Engine po zveřejnění</b> má stejné 4 kroky jako PC verze: Soupiska → Nastavení → Rozpis → Spuštění. Pak Průběh (live) a Dokončeno.</li>
         <li><b>Zveřejnit není nikdy šedé.</b> Platba na místě je výchozí, Stripe jde připojit kdykoli, i po zveřejnění.</li>
         <li><b>Po zveřejnění seznam přihlášených</b>, ne prázdný rozpis. Rozpis vzniká po uzávěrce.</li>
-        <li><b>Rozpis a Průběh čitelné jednou rukou:</b> číslo kurtu ve velkém čtverci, jména 17–18 px, skóre 40 px, celá karta kurtu je tlačítko, body se zadávají velkými tlačítky (tým B dostane zbytek do 24).</li>
+        <li><b>Rozpis, Průběh a Po eventu ve vizuálu PC verze:</b> navy hlavička kola, odznak kurtu, karta kurtu s oranžovým okrajem (čeká) / zeleným (zapsáno), tabulka Z/V/P/Body/+−, karta vítěze a stupně. Na telefonu větší písmo a celá karta kurtu jako tlačítko.</li>
         <li><b>Po eventu „Co dál“:</b> komunita, platby kartou, žebříček. Odemyká se až po prvním odehraném eventu.</li>
         <li><b>Pryč:</b> přepínač „Nejdřív poslat odkaz hráčům“ (aplikace do WhatsAppu nic neposílá, jen předá text) a „Poslat kartu všem hráčům“.</li>
         <li><b>Na počítači</b> se organizátor ukazuje v telefonu, PC verze je hotová v aplikaci.</li>
@@ -92,6 +94,11 @@
       </ol>
     </nav>
 
+    <nav class="flowgrp" aria-label="Vizuální vrstva">
+      <h2>5 · Vizuální vrstva nad enginem</h2>
+      <ol><li><a class="ext" href="vizualni-vrstva.html">Stavy, karty, tabulky, pavouk (návrh)</a></li></ol>
+    </nav>
+
     <div class="ctrls">
       <h2>Stav eventu</h2>
       <div class="seg-ctl" data-preset-grp="fill">
@@ -115,7 +122,7 @@
   </main>
 </div>
 <button class="map-btn" data-panel aria-label="Mapa prototypu">Mapa</button>
-<script src="assets/js/i18n.js?v=15"></script>
-<script src="assets/js/app.js?v=15"></script>
+<script src="assets/js/i18n.js?v=16"></script>
+<script src="assets/js/app.js?v=16"></script>
 </body>
 </html>

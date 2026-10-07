@@ -38,7 +38,7 @@
         courts: 4, cap: 16, price: 200, slug: 'patecni-americano', photo: 'court-orange-close.jpg', pay: 'card', type: 'social' },
       players: mkPlayers(9), waitlist: [],
       me: { name: 'Jana Malá', contact: '+420 777 123 456', status: null },
-      method: 'apple', stripe: 'active', orgName: 'Kuba', hasComm: false, account: false, orgMode: false, wz: 0, pendingPub: false, stripeBack: 'o-new', community: 'Kuba komunity', city: 'Teplice',
+      method: 'apple', stripe: 'active', orgName: 'Kuba', cfg: { courts: 4, mode: 'free', rounds: 4, pts: 24 }, hasComm: false, account: false, orgMode: false, wz: 0, pendingPub: false, stripeBack: 'o-new', community: 'Kuba komunity', city: 'Teplice',
       draft: null, more: false, acc: false, allNames: false, shuffle: 0,
       sched: null, play: { round: 0, scores: [] }, last: null,
       sheet: null, ctx: 'player', pick: 'pa', hf: { city: 'all', when: 'all', free: false }, scoreTarget: null, toast: null, stripeStep: 0, posted: false
@@ -59,7 +59,7 @@
   function wPrev(w) { return w.d > 1 ? { d: w.d - 1, m: w.m, dow: (w.dow + 6) % 7 } : { d: 31, m: 10, dow: (w.dow + 6) % 7 }; }
   function endTime() { var p = S.ev.start.split(':'); return ('0' + ((+p[0] + 2) % 24)).slice(-2) + ':' + p[1]; }
   function evLong() { return S.ev.when ? wLong(S.ev.when) : fLong(S.ev.week); }
-  function evClose() { return S.ev.when ? wShort(wPrev(S.ev.when)) + (lang === 'cs' ? ', 18:00' : ', 6 pm') : fClose(S.ev.week); }
+  function evClose() { if (S.ev.deadline === 'none') return t('dl_none_txt'); return S.ev.when ? wShort(wPrev(S.ev.when)) + (lang === 'cs' ? ', 18:00' : ', 6 pm') : fClose(S.ev.week); }
   function present(p) { return !p.noshow; }
   function going() { return S.players.length + (S.me.status === 'in' ? 1 : 0); }
   function left() { return Math.max(0, S.ev.cap - going()); }
@@ -292,39 +292,71 @@
   };
 
   /* Průvodce Vytvoř event: kroky a pořadí podle aplikace, tady jen vizuální vrstva */
-  var FORMATS = [['Americano', 'f_am'], ['Mexicano', 'f_mx'], ['Round Robin', 'f_rr'], ['Playoff', 'f_po']];
+  /* Průvodce Vytvoř event: kroky, pořadí a pole přesně podle testovací verze aplikace (PC), tady převedené na telefon */
+  var FMT = {
+    'Americano': ['fs_am', 'fx_am', ['ft_rot', 'ft_ind', '8–24']],
+    'Mexicano': ['fs_mx', 'fx_mx', ['ft_live', 'ft_ind', '8–24']],
+    'Round Robin': ['fs_rr', 'fx_rr', ['ft_pairs', 'ft_all', '6–16']],
+    'Turnaj': ['fs_tn', 'fx_tn', ['ft_pairs', 'ft_groups', '8–32']],
+    'Playoff': ['fs_po', 'fx_po', ['ft_pairs', 'ft_ko', '4–32']],
+    'Bez herního systému': ['fs_nx', 'fx_nx', ['ft_reg', 'ft_noeng']]
+  };
+  function fmtList(type) { return type === 'comp' ? ['Americano', 'Mexicano', 'Round Robin', 'Turnaj', 'Playoff'] : ['Americano', 'Mexicano', 'Round Robin', 'Bez herního systému']; }
   var WZ = ['wz1', 'wz2', 'wz3', 'wz4'];
   var PHOTOS = ['court-orange-close.jpg', 'court-serve.jpg', 'court-reach.jpg', 'court-blue-orange.jpg'];
-  function newDraft(w) { return { custom: S.ev.custom, format: S.ev.format, week: w, start: S.ev.start, venue: S.ev.venue, courts: S.ev.courts, cap: S.ev.cap, price: S.ev.price, pay: S.ev.pay || 'site', type: S.ev.type || 'social', photo: S.ev.photo }; }
+  var CLUBS = ['Padel Klub Novosedlice', 'Padel Písečná', 'Padel Arena Ústí'];
+  function newDraft(w) {
+    return { custom: S.ev.custom, format: S.ev.format, variant: 'Classic', week: w, start: S.ev.start, deadline: '1d', venue: S.ev.venue, place: 'club', courts: S.ev.courts, cap: S.ev.cap, min: 4, dur: '2 h',
+      price: S.ev.price, pay: S.ev.pay || 'site', type: S.ev.type || 'social', photo: S.ev.photo, gender: 'mix', vis: 'pub', force: false };
+  }
+  function chipRow(act, items, cur) { return '<div class="choice">' + items.map(function (x) { return '<button class="' + (cur === x[0] ? 'on' : '') + '" data-act="' + act + '" data-arg="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>'; }
+  function stepper(k, v, label) { return '<div class="stepper"><button data-act="step" data-arg="' + k + ':-' + (k === 'cap' ? 4 : k === 'price' ? 50 : 1) + '" aria-label="−">−</button><b>' + label + '</b><button data-act="step" data-arg="' + k + ':' + (k === 'cap' ? 4 : k === 'price' ? 50 : 1) + '" aria-label="+">+</button></div>'; }
+  function waText(d) { return t('wa_tpl', { name: d.custom || t('evName', { f: d.format }), date: fDate(d.week), start: d.start, venue: d.venue, cap: d.cap, format: d.format }); }
   R['o-new'] = function () {
     var d = S.draft || (S.draft = newDraft(S.ev.week)), st = S.wz;
+    if (fmtList(d.type).indexOf(d.format) < 0) d.format = 'Americano';
     var bar = '<div class="wz" role="list">' + WZ.map(function (k, i) { return '<button role="listitem" class="' + (i === st ? 'on' : i < st ? 'done' : '') + '" data-act="wz" data-arg="' + i + '"' + (i === st ? ' aria-current="step"' : '') + '><i>' + (i < st ? '✓' : i + 1) + '</i><span>' + t(k) + '</span></button>'; }).join('') + '</div>';
     function opt(k, h, s, tag) { return '<button class="opt' + (d.pay === k ? ' on' : '') + '" data-act="dpay" data-arg="' + k + '"><i></i><span><b>' + h + (tag ? ' <em>' + tag + '</em>' : '') + '</b><small>' + s + '</small></span></button>'; }
-    var body;
-    if (st === 0) body = '<h1 class="h-mid wz-h">' + t('wz1_h') + '</h1>' +
-      '<div class="formats">' + FORMATS.map(function (f) { return '<button class="fm' + (d.format === f[0] ? ' on' : '') + '" data-act="format" data-arg="' + f[0] + '"><b>' + f[0] + '</b><span>' + t(f[1]) + '</span></button>'; }).join('') + '</div>' +
-      '<button class="row" data-act="toast" data-arg="n_formats_t"><span>' + t('n_formats') + '</span><span class="r">▸</span></button>' +
-      '<div><div class="lbl" style="margin-bottom:8px">' + t('n_type') + '</div><div class="choice">' + [['social', 'v_social'], ['comp', 'v_comp'], ['train', 'v_train']].map(function (x) { return '<button class="' + (d.type === x[0] ? 'on' : '') + '" data-act="dtype" data-arg="' + x[0] + '">' + t(x[1]) + '</button>'; }).join('') + '</div></div>' +
-      '<label class="field"><span class="lbl">' + t('n_name') + '</span><input id="d-name" value="' + esc(draftName()) + '"></label>';
-    else if (st === 1) body = '<h1 class="h-mid wz-h">' + t('wz2_h') + '</h1>' +
-      '<label class="field"><span class="lbl">' + t('n_when') + '</span><select id="d-week">' + [0, 1, 2].map(function (o) { var w = S.ev.week + o; return '<option value="' + w + '"' + (w === d.week ? ' selected' : '') + '>' + fDate(w) + '</option>'; }).join('') + '</select></label>' +
-      '<div class="two"><label class="field"><span class="lbl">' + t('n_start') + '</span><select id="d-start">' + ['18:00', '19:00', '20:00'].map(function (v) { return '<option' + (v === d.start ? ' selected' : '') + '>' + v + '</option>'; }).join('') + '</select></label><div class="field"><span class="lbl">' + t('n_courts') + '</span><div class="stepper"><button data-act="step" data-arg="courts:-1" aria-label="−">−</button><b>' + d.courts + '</b><button data-act="step" data-arg="courts:1" aria-label="+">+</button></div></div></div>' +
-      '<label class="field"><span class="lbl">' + t('n_where') + '</span><input id="d-venue" value="' + esc(d.venue) + '"></label>';
-    else if (st === 2) body = '<h1 class="h-mid wz-h">' + t('wz3_h') + '</h1>' +
-      '<div class="two"><div class="field"><span class="lbl">' + t('n_players') + '</span><div class="stepper"><button data-act="step" data-arg="cap:-4" aria-label="−">−</button><b>' + d.cap + '</b><button data-act="step" data-arg="cap:4" aria-label="+">+</button></div></div>' +
-      '<div class="field"><span class="lbl">' + t('k_entry') + '</span><div class="stepper"><button data-act="step" data-arg="price:-50" aria-label="−">−</button><b>' + kc(d.price) + '</b><button data-act="step" data-arg="price:50" aria-label="+">+</button></div></div></div>' +
-      (d.price > 0 ? '<div class="lbl">' + t('n_pay') + '</div><div class="opts">' + opt('site', t('pay_site_h'), t('pay_site_s'), t('default')) + opt('card', t('pay_card_h'), t(S.stripe === 'active' ? 'pay_card_on' : 'pay_card_s')) + '</div>' +
-        (d.pay === 'card' && S.stripe !== 'active' ? '<div class="note-box">' + t('n_card_note') + ' <button class="link" style="display:inline;padding:0" data-act="connectStripe" data-arg="o-new">' + t('st_btn') + ' →</button></div>' : '') : '') +
-      '<label class="field"><span class="lbl">' + t('n_dead') + '</span><select><option>' + t('dl_24') + '</option><option>' + t('dl_none') + '</option><option>' + t('dl_3') + '</option></select></label>' +
-      '<div class="two"><label class="field"><span class="lbl">' + t('k_level') + '</span><select><option>' + t('all_levels') + '</option><option>1–3</option><option>3–5</option><option>5–7</option></select></label><label class="field"><span class="lbl">' + t('n_gender') + '</span><select><option>' + t('g_mix') + '</option><option>' + t('g_m') + '</option><option>' + t('g_w') + '</option></select></label></div>';
-    else body = '<h1 class="h-mid wz-h">' + t('wz4_h') + '</h1>' +
+    var body, f = FMT[d.format];
+    if (st === 0) body =
+      '<div class="lbl">' + t('n_type') + '</div><div class="types">' + [['comp', 'v_comp', 'vt_comp', '🏆'], ['social', 'v_social', 'vt_social', '◎'], ['train', 'v_train', 'vt_train', '○']].map(function (x) {
+        return '<button class="' + (d.type === x[0] ? 'on' : '') + '" data-act="dtype" data-arg="' + x[0] + '"><i>' + x[3] + '</i><b>' + t(x[1]) + '</b><small>' + t(x[2]) + '</small></button>'; }).join('') + '</div>' +
+      '<div class="lbl">' + t('k_format') + '</div><div class="formats">' + fmtList(d.type).map(function (k) { return '<button class="fm' + (d.format === k ? ' on' : '') + '" data-act="format" data-arg="' + k + '"><b>' + t('fmt_' + k.replace(/ /g, '_')) + '</b><span>' + t(FMT[k][0]) + '</span></button>'; }).join('') + '</div>' +
+      (d.format === 'Americano' ? '<div class="lbl">' + t('n_variant') + '</div>' + chipRow('dvar', [['Classic', 'Classic'], ['Team', 'Team'], ['Mixed', 'Mixed']], d.variant) : '') +
+      '<div class="note-box"><b>' + t('fx_how', { f: t('fmt_' + d.format.replace(/ /g, '_')) }) + '</b><br>' + t(f[1]) + '<div class="tags">' + f[2].map(function (x) { return '<span>' + (/^\d/.test(x) ? t('ft_players', { n: x }) : t(x)) + '</span>'; }).join('') + '</div></div>';
+    else if (st === 1) {
+      var rest = d.cap - d.courts * 4;
+      body =
+        '<div class="two"><label class="field"><span class="lbl">' + t('n_when') + '</span><select id="d-week">' + [0, 1, 2].map(function (o) { var w = S.ev.week + o; return '<option value="' + w + '"' + (w === d.week ? ' selected' : '') + '>' + fDate(w) + '</option>'; }).join('') + '</select></label>' +
+        '<label class="field"><span class="lbl">' + t('n_start') + '</span><select id="d-start">' + ['17:00', '18:00', '19:00', '20:00'].map(function (v) { return '<option' + (v === d.start ? ' selected' : '') + '>' + v + '</option>'; }).join('') + '</select></label></div>' +
+        '<div class="lbl">' + t('n_dead') + ' <span class="opt-l">' + t('optional') + '</span></div>' + chipRow('ddead', [['none', t('dl_none')], ['1d', t('dl_1d')], ['3d', t('dl_3d')], ['1w', t('dl_1w')], ['2w', t('dl_2w')]], d.deadline) +
+        '<div class="field"><span class="lbl">' + t('n_players') + '</span>' + stepper('cap', d.cap, P('players', d.cap)) + '<div class="choice mini">' + [8, 12, 16, 24, 32, 48].map(function (n) { return '<button class="' + (d.cap === n ? 'on' : '') + '" data-act="dcap" data-arg="' + n + '">' + n + '</button>'; }).join('') + '</div></div>' +
+        '<div class="two"><div class="field"><span class="lbl">' + t('n_min') + '</span>' + stepper('min', d.min, d.min) + '</div><div class="field"><span class="lbl">' + t('n_courts') + '</span>' + stepper('courts', d.courts, d.courts) + '</div></div>' +
+        '<div class="lbl">' + t('n_dur') + '</div>' + chipRow('ddur', [['1 h', '1 h'], ['1,5 h', '1,5 h'], ['2 h', '2 h'], ['3 h', '3 h'], ['4 h', '4 h'], ['all', t('dur_all')]], d.dur) +
+        '<p class="fine" style="text-align:left;margin-top:-4px">' + (rest > 0 ? t('rest_n', { n: P('players', rest) }) : t('rest_none')) + '</p>' +
+        '<div class="lbl">' + t('n_where') + '</div><div class="opts">' + ['club', 'own'].map(function (k) { return '<button class="opt' + (d.place === k ? ' on' : '') + '" data-act="dplace" data-arg="' + k + '"><i></i><span><b>' + t('pl_' + k) + '</b><small>' + t('pl_' + k + '_s') + '</small></span></button>'; }).join('') + '</div>' +
+        (d.place === 'club' ? '<label class="field"><span class="lbl">' + t('n_club') + '</span><select id="d-venue">' + CLUBS.map(function (c) { return '<option' + (c === d.venue ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select></label>'
+          : '<label class="field"><span class="lbl">' + t('n_place') + '</span><input id="d-venue" value="' + esc(d.venue) + '"></label>');
+    } else if (st === 2) body =
+      '<div class="lbl">' + t('n_gender') + '</div>' + chipRow('dgen', [['mix', t('g_mix')], ['m', t('g_m')], ['w', t('g_w')]], d.gender) +
+      '<div class="two"><label class="field"><span class="lbl">' + t('lv_from') + '</span><select><option>' + t('no_limit') + '</option>' + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) { return '<option>' + t('lv_n', { n: n }) + '</option>'; }).join('') + '</select></label>' +
+      '<label class="field"><span class="lbl">' + t('lv_to') + '</span><select><option>' + t('no_limit') + '</option>' + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) { return '<option>' + t('lv_n', { n: n }) + '</option>'; }).join('') + '</select></label></div>' +
+      '<button class="row" data-act="dforce"><span><b>' + t('lv_force') + '</b><br><small class="muted">' + t('lv_force_s') + '</small></span><span class="sw' + (d.force ? ' on' : '') + '"></span></button>' +
+      '<div class="lbl">' + t('n_vis') + '</div>' + chipRow('dvis', [['pub', t('v_pub')], ['link', t('v_link')], ['com', t('v_com')]], d.vis) +
+      '<div class="lbl">' + t('n_entry') + '</div>' + chipRow('dpaid', [['paid', t('paid')], ['free', t('free')]], d.price > 0 ? 'paid' : 'free') +
+      (d.price > 0 ? '<div class="field"><span class="lbl">' + t('n_price') + '</span>' + stepper('price', d.price, kc(d.price)) + '</div>' +
+        '<div class="lbl">' + t('n_pay') + '</div><div class="opts">' + opt('site', t('pay_site_h'), t('pay_site_s'), t('default')) + opt('card', t('pay_card_h'), t(S.stripe === 'active' ? 'pay_card_on' : 'pay_card_s')) + '</div>' +
+        (d.pay === 'card' && S.stripe !== 'active' ? '<div class="note-box">' + t('n_card_note') + ' <button class="link" style="display:inline;padding:0" data-act="connectStripe" data-arg="o-new">' + t('st_btn') + ' →</button></div>' : '') : '');
+    else body =
+      '<label class="field"><span class="lbl">' + t('n_name') + ' *</span><input id="d-name" value="' + esc(d.custom || '') + '" placeholder="' + esc(t('evName', { f: d.format })) + '"></label>' +
       '<div class="lbl">' + t('n_banner') + '</div><div class="pics">' + PHOTOS.map(function (p) { return '<button class="' + (d.photo === p ? 'on' : '') + '" data-act="dphoto" data-arg="' + p + '" aria-label="' + t('n_banner') + '"><img src="' + IMG + p + '" alt=""></button>'; }).join('') + '</div>' +
       '<label class="field"><span class="lbl">' + t('n_desc') + '</span><textarea rows="3" placeholder="' + t('n_desc_ph') + '"></textarea></label>' +
-      '<div><div class="lbl" style="margin-bottom:8px">' + t('n_vis') + '</div><div class="choice"><button class="on">' + t('v_link') + '</button><button>' + t('v_pub') + '</button></div></div>' +
+      '<label class="field"><span class="lbl">' + t('n_cancel') + '</span><input value="' + t('n_cancel_v') + '"></label>' +
+      '<div class="lbl">' + t('n_wa') + '</div><div class="wa-prev"><div class="bubble out">' + esc(waText(d)).replace(/\n/g, '<br>') + '<div class="time">20:51</div></div></div>' +
       '<button class="row" data-act="sheet" data-arg="preview"><span>' + t('n_preview_row') + '</span><span class="r">▸</span></button>';
     var dock = d.edit ? '<button class="cta" data-act="publish">' + t('n_save') + '</button>' + (st < 3 ? '<button class="link" data-act="wzNext">' + t('wz_next', { s: t(WZ[st + 1]) }) + '</button>' : '')
       : st < 3 ? '<button class="cta" data-act="wzNext">' + t('wz_next', { s: t(WZ[st + 1]) }) + '</button>' + (st ? '<button class="link" data-act="wz" data-arg="' + (st - 1) + '">' + t('back') + '</button>' : '')
-      : '<button class="cta" data-act="publish">' + t('n_publish') + '</button><p class="fine">' + t('n_always') + '</p>';
+      : '<button class="cta" data-act="publish">' + t('n_publish') + '</button><button class="link" data-act="toast" data-arg="draft_t">' + t('n_draft') + '</button>';
     return screen('', status() + top(ib('✕', 'data-go="' + (S.account ? 'o-home' : 'start') + '"', 'close'), d.edit ? t('n_edit') : t('n_title'), '<button class="link" style="color:var(--navy);font-weight:700;text-decoration:none" data-act="sheet" data-arg="preview">' + t('n_preview') + '</button>') +
       bar + '<div class="scroll" style="gap:12px;padding-top:4px">' + body + '</div><div class="dock">' + dock + '</div>');
   };
@@ -368,28 +400,54 @@
       '</div><div class="dock">' + (S.posted ? '<button class="cta" data-go="o-live">' + t('wa_back') + '</button>' : '<button class="cta white" data-act="fastForward">' + t('wa_ff') + '</button><p class="fine">' + t('wa_fine') + '</p>') + '</div>');
   };
 
+  /* Engine na mobilu: stejné 4 kroky jako PC verze (Soupiska → Nastavení → Rozpis → Spuštění) */
+  var ENG = ['en1', 'en2', 'en3', 'en4'];
+  function engBar(cur) {
+    return '<div class="wz eng" role="list">' + ENG.map(function (k, i) { return '<span role="listitem" class="' + (i === cur ? 'on' : i < cur ? 'done' : '') + '"><i>' + (i < cur ? '✓' : i + 1) + '</i><span>' + t(k) + '</span></span>'; }).join('') + '</div>';
+  }
+  function evHead(state) {
+    return '<div class="ev-head"><div class="pills"><span class="pill fmt">' + esc(S.ev.format) + '</span><span class="pill st-' + state + '">' + t('st_' + state) + '</span></div><b>' + esc(evName()) + '</b><small>' + evDate() + ' · ' + S.ev.start + ' · ' + esc(S.ev.venue) + '</small></div>';
+  }
+  function payCounts() { var o = { paid: 0, site: 0, unpaid: 0 }; S.players.forEach(function (p) { o[p.pay]++; }); return o; }
+
   R['o-manage'] = function () {
-    var paid = S.players.filter(function (p) { return p.pay !== 'unpaid'; }).length;
+    var here = S.players.filter(present), pc = payCounts(), n = S.players.length;
     var rows = S.players.map(function (p, i) {
-      return '<div class="row"' + (p.noshow ? ' style="opacity:.6"' : '') + '><span>' + esc(p.n) + (p.noshow ? ' <span class="pill site">' + t('noshow') + '</span>' : '') + '</span><span style="display:flex;gap:8px;align-items:center">' +
-        (p.pay === 'unpaid' ? '<button class="r" style="text-decoration:underline" data-act="remind" data-arg="' + i + '">' + t('remind') + '</button>' : '') +
-        '<button class="pill ' + p.pay + '" data-act="cyclePay" data-arg="' + i + '">' + t(PAYK[p.pay]) + '</button></span></div>';
+      return '<div class="pl-row' + (p.noshow ? ' off' : '') + '"><span class="av">' + initials(p.n) + '</span><span class="nm">' + esc(p.n) + '</span>' +
+        '<button class="pill ' + p.pay + '" data-act="cyclePay" data-arg="' + i + '">' + t(PAYK[p.pay]) + '</button>' +
+        '<button class="pill ns' + (p.noshow ? ' on' : '') + '" data-act="attend" data-arg="' + i + '">' + t(p.noshow ? 'noshow' : 'ns_btn') + '</button></div>';
     }).join('') || '<div class="empty"><p>' + t('mg_empty') + '</p></div>';
-    var wl = S.waitlist.map(function (n, i) { return '<div class="row"><span>' + (i + 1) + ' · ' + esc(n) + '</span><button class="r" style="color:var(--navy);font-weight:700;text-decoration:underline" data-act="moveIn" data-arg="' + i + '">' + t('move_in') + '</button></div>'; }).join('');
-    return screen('', status() + top(ib('←', 'data-go="o-home"', 'back'), esc(evName()) + '<br><span class="muted" style="font:500 11px/1 var(--f-body);letter-spacing:0;text-transform:none">' + evDate() + ' · ' + S.ev.start + '</span>', ib('⋯', 'data-act="sheet" data-arg="evmenu"', 'more')) +
-      '<div class="scroll" style="gap:10px">' +
-      '<div class="seg3"><div><b>' + S.players.length + '/' + S.ev.cap + '</b><span>' + t('mg_going') + '</span></div><div><b>' + paid + '</b><span>' + t('mg_paid') + '</span></div><div><b>' + S.waitlist.length + '</b><span>' + t('mg_wait') + '</span></div></div>' +
-      '<button class="row" data-act="share" data-arg="org"><span>' + t('h_share') + '</span><span class="r">⤴</span></button>' +
-      '<div class="lbl" style="margin-top:4px">' + t('mg_lbl') + '</div>' + rows +
+    var wl = S.waitlist.map(function (nm, i) { return '<div class="row"><span>' + (i + 1) + ' · ' + esc(nm) + '</span><button class="r" style="color:var(--navy);font-weight:700;text-decoration:underline" data-act="moveIn" data-arg="' + i + '">' + t('move_in') + '</button></div>'; }).join('');
+    var restN = Math.max(0, here.length - Math.min(S.cfg.courts, Math.floor(here.length / 4)) * 4);
+    var check = [[n >= 4, t('ck_min')], [true, t('ck_pay', { a: pc.paid, b: pc.site, c: pc.unpaid })], [true, t('ck_play', { n: here.length })], [true, restN ? t('ck_rest', { n: restN }) : t('ck_all')]];
+    return screen('', status() + top(ib('←', 'data-go="o-live"', 'back'), t('en1'), ib('⋯', 'data-act="sheet" data-arg="evmenu"', 'more')) +
+      engBar(0) + '<div class="scroll" style="gap:10px">' + evHead('prep') +
+      '<div class="seg3"><div><b>' + n + '/' + S.ev.cap + '</b><span>' + t('mg_going') + '</span></div><div><b>' + (pc.paid + pc.site) + '</b><span>' + t('mg_paid') + '</span></div><div><b>' + S.waitlist.length + '</b><span>' + t('mg_wait') + '</span></div></div>' +
+      '<div class="h-sec"><div class="lbl">' + t('mg_lbl') + '</div><button class="link" data-act="addPlayer">+ ' + t('em_add') + '</button></div>' + rows +
       (wl ? '<div class="lbl" style="margin-top:6px">' + t('mg_waitlist') + '</div>' + wl : '') +
-      '</div><div class="dock">' + (S.players.length < 4 ? '<button class="cta" data-act="share" data-arg="org">' + t('h_share') + '</button>' :
-        '<button class="cta" data-act="buildSchedule">' + t(S.sched ? 'mg_open' : 'mg_build') + '</button>' + (S.sched ? '' : '<p class="fine">' + t('mg_build_fine', { close: evClose() }) + '</p>')) + '</div>');
+      '<div class="check-box"><b>' + t('ck_title') + '</b>' + check.map(function (c) { return '<span class="' + (c[0] ? 'ok' : 'no') + '">' + c[1] + '</span>'; }).join('') + '</div>' +
+      '</div><div class="dock">' + (n < 4 ? '<button class="cta" data-act="share" data-arg="org">' + t('h_share') + '</button>' :
+        '<button class="cta" data-go="o-setup">' + t('en_confirm') + '</button><p class="fine">' + t('en_confirm_fine') + '</p>') + '</div>');
+  };
+
+  function maxRounds() { return Math.max(1, Math.min(7, S.players.filter(present).length - 1)); }
+  R['o-setup'] = function () {
+    var c = S.cfg, here = S.players.filter(present).length, courts = Math.min(c.courts, Math.floor(here / 4)) || 1, rest = Math.max(0, here - courts * 4);
+    return screen('', status() + top(ib('←', 'data-go="o-manage"', 'back'), t('en2')) +
+      engBar(1) + '<div class="scroll" style="gap:12px">' +
+      '<div class="lbl" style="color:var(--navy)">' + t('es_rec') + '</div><h1 class="h-mid" style="font-size:22px">' + t('es_h') + '</h1>' +
+      '<div class="field"><span class="lbl">' + t('n_courts') + ' <span class="opt-l">' + t('reserved', { n: S.ev.courts }) + '</span></span><div class="stepper"><button data-act="cfg" data-arg="courts:-1">−</button><b>' + c.courts + '</b><button data-act="cfg" data-arg="courts:1">+</button></div></div>' +
+      '<div class="lbl">' + t('es_time') + '</div>' + chipRow('cfgmode', [['time', t('es_timed')], ['free', t('es_notime')]], c.mode) +
+      '<div class="field"><span class="lbl">' + t('es_rounds') + ' <span class="opt-l">' + t('es_max', { n: maxRounds() }) + '</span></span><div class="stepper"><button data-act="cfg" data-arg="rounds:-1">−</button><b>' + P('rounds', c.rounds) + '</b><button data-act="cfg" data-arg="rounds:1">+</button></div></div>' +
+      '<div class="lbl">' + t('es_pts') + '</div>' + chipRow('cfgpts', [[16, '16'], [24, '24'], [32, '32']].map(function (x) { return [String(x[0]), x[1]]; }), String(c.pts)) +
+      '<div class="est"><b>' + t('es_est') + '</b><div><span>' + t('es_e1') + '</span><b>' + courts + '</b></div><div><span>' + t('es_e2') + '</span><b>' + courts * c.rounds + '</b></div><div><span>' + t('es_e3') + '</span><b>' + rest + '</b></div><div><span>' + t('es_e4') + '</span><b>≈ ' + c.rounds * 10 + ' min</b></div></div>' +
+      '</div><div class="dock"><button class="cta" data-act="buildSchedule">' + t('es_cta') + '</button></div>');
   };
 
   function rng(seed) { return function () { seed = seed + 0x6D2B79F5 | 0; var x = Math.imul(seed ^ seed >>> 15, 1 | seed); x = x + Math.imul(x ^ x >>> 7, 61 | x) ^ x; return ((x ^ x >>> 14) >>> 0) / 4294967296; }; }
   function buildSched() {
     var ps = S.players.filter(present).map(function (p) { return p.n; });
-    var courts = Math.min(S.ev.courts, Math.floor(ps.length / 4)), rounds = 4, out = [];
+    var courts = Math.max(1, Math.min(S.cfg.courts, Math.floor(ps.length / 4))), rounds = S.cfg.rounds, out = [];
     var rand = rng(hash(ps.join('|')) + S.shuffle * 7919), seen = {}, rested = {};
     function key(a, b) { return a < b ? a + '|' + b : b + '|' + a; }
     for (var r = 0; r < rounds; r++) {
@@ -413,55 +471,72 @@
     S.sched = out;
     S.play = { round: 0, scores: out.map(function (rd) { return rd.m.map(function () { return null; }); }) };
   }
+  function partnerStats() {
+    var cnt = {}, rep = false;
+    S.sched.forEach(function (rd) { rd.m.forEach(function (mt) { [mt.a, mt.b].forEach(function (tm) { var k = tm.slice().sort().join('|'); cnt[k] = (cnt[k] || 0) + 1; if (cnt[k] > 1) rep = true; }); }); });
+    return rep;
+  }
 
-  /* Rozpis a Průběh: čitelné na kurtu jednou rukou (měřítko PadelMix) */
+  /* Rozpis a Průběh: čitelné na kurtu jednou rukou, vizuál podle PC verze */
   function teamLines(a) { return '<b>' + esc(short(a[0])) + '</b><b>' + esc(short(a[1])) + '</b>'; }
   R['o-schedule'] = function () {
-    var here = S.players.filter(present).length;
+    var matches = S.sched.reduce(function (s, rd) { return s + rd.m.length; }, 0);
     var rds = S.sched.map(function (rd, r) {
-      return '<section class="rz"><h3>' + t('round', { n: r + 1 }) + '</h3>' +
-        rd.m.map(function (mt, c) { return '<div class="rz-m"><span class="rz-c" aria-label="' + t('court', { n: c + 1 }) + '">' + (c + 1) + '</span><div class="rz-t">' + teamLines(mt.a) + '</div><span class="rz-vs">vs</span><div class="rz-t b">' + teamLines(mt.b) + '</div></div>'; }).join('') +
+      return '<section class="rz"><h3><i>' + (r + 1) + '</i>' + t('round', { n: r + 1 }) + '<small>' + P('matches', rd.m.length) + '</small></h3>' +
+        rd.m.map(function (mt, c) { return '<div class="rz-m"><span class="rz-c"><small>' + t('court_s') + '</small>' + (c + 1) + '</span><div class="rz-t">' + teamLines(mt.a) + '</div><span class="rz-vs">vs</span><div class="rz-t b">' + teamLines(mt.b) + '</div></div>'; }).join('') +
         (rd.rest.length ? '<div class="rz-rest">' + t('resting') + rd.rest.map(short).map(esc).join(', ') + '</div>' : '') + '</section>';
     }).join('');
-    return screen('', status() + top(ib('←', 'data-go="o-manage"', 'back'), t('sc_title'), ib('↻', 'data-act="reshuffle"', 'shuffle')) +
-      '<div class="scroll" style="gap:12px">' +
-      '<button class="row big" data-act="sheet" data-arg="attend"><span>' + t('sc_att', { n: here, t: S.players.length }) + '</span><span class="r">' + t('sc_check') + '</span></button>' +
-      '<p class="p muted" style="font-size:15px">' + t('sc_meta', { players: P('players', here), courts: P('courts', S.sched[0].m.length) }) + '</p>' + rds +
-      '</div><div class="dock"><button class="cta" data-act="startPlay">' + t('sc_start') + '</button></div>');
+    return screen('', status() + top(ib('←', 'data-go="o-setup"', 'back'), t('en3'), ib('↻', 'data-act="reshuffle"', 'shuffle')) +
+      engBar(2) + '<div class="scroll" style="gap:12px">' +
+      '<div class="sc-stats"><span>' + P('rounds', S.sched.length) + ' · ' + P('matches', matches) + '</span><span class="' + (partnerStats() ? 'warn' : 'ok') + '">' + t(partnerStats() ? 'sc_rep' : 'sc_norep') + '</span></div>' +
+      '<button class="row" data-act="reshuffle"><span>' + t('sc_regen') + '</span><span class="r">↻</span></button>' + rds +
+      '</div><div class="dock"><button class="cta" data-act="sheet" data-arg="launch">' + t('sc_next') + '</button></div>');
   };
 
   function roundDone(r) { return S.play.scores[r].every(function (x) { return x; }); }
   function allDone() { return S.play.scores.every(function (rd) { return rd.every(function (x) { return x; }); }); }
+  function doneCount() { var d = 0, all = 0; S.play.scores.forEach(function (rd) { rd.forEach(function (x) { all++; if (x) d++; }); }); return [d, all]; }
+  function standTable(rows, full) {
+    return '<div class="st-tbl' + (full ? ' full' : '') + '"><div class="st-h"><span>#</span><span>' + t('d_player') + '</span><span>' + t('tz') + '</span><span>' + t('tv') + '</span><span>' + t('tp') + '</span><span>' + t('d_points') + '</span><span>+/−</span></div>' +
+      rows.map(function (p, i) { return '<div class="st-r' + (i < 3 && full ? ' m' + (i + 1) : '') + '"><span class="pos">' + (i + 1) + '</span><span class="nm">' + esc(short(p.n)) + '</span><span>' + p.z + '</span><span>' + p.v + '</span><span>' + p.p + '</span><b>' + p.pts + '</b><span class="df ' + (p.d >= 0 ? 'up' : 'dn') + '">' + (p.d > 0 ? '+' : '') + p.d + '</span></div>'; }).join('') + '</div>';
+  }
   R['o-play'] = function () {
-    var r = S.play.round, rd = S.sched[r];
+    var r = S.play.round, rd = S.sched[r], dc = doneCount(), pctDone = Math.round(dc[0] / dc[1] * 100);
     var tabs = S.sched.map(function (_, i) { return '<button class="' + (i === r ? 'on' : (roundDone(i) ? 'done' : '')) + '" data-act="round" data-arg="' + i + '">' + t('round', { n: i + 1 }) + (roundDone(i) ? ' ✓' : '') + '</button>'; }).join('');
     var courts = rd.m.map(function (mt, c) {
       var sc = S.play.scores[r][c];
       return '<button class="pc' + (sc ? ' done' : '') + '" data-act="score" data-arg="' + r + ':' + c + '">' +
-        '<div class="pc-h"><span>' + t('court', { n: c + 1 }) + '</span>' + (sc ? '<span class="pill ok">' + t('saved') + '</span>' : '<span class="pc-tap">' + t('enter_score') + '</span>') + '</div>' +
-        '<div class="pc-row"><span class="pc-n">' + teamLines(mt.a) + '</span><span class="pc-s">' + (sc ? sc[0] : '–') + '</span></div>' +
-        '<div class="pc-row"><span class="pc-n">' + teamLines(mt.b) + '</span><span class="pc-s">' + (sc ? sc[1] : '–') + '</span></div></button>';
+        '<div class="pc-h"><span class="court-pill">' + t('court', { n: c + 1 }) + '</span>' + (sc ? '<span class="pill ok">' + t('saved') + '</span>' : '<span class="pc-tap">' + t('enter_score') + '</span>') + '</div>' +
+        '<div class="pc-row"><span class="pc-n">' + teamLines(mt.a) + '</span><span class="pc-s' + (sc && sc[0] > sc[1] ? ' win' : '') + '">' + (sc ? sc[0] : '–') + '</span></div>' +
+        '<div class="pc-row"><span class="pc-n">' + teamLines(mt.b) + '</span><span class="pc-s' + (sc && sc[1] > sc[0] ? ' win' : '') + '">' + (sc ? sc[1] : '–') + '</span></div></button>';
     }).join('');
     var todo = S.play.scores[r].filter(function (x) { return !x; }).length;
-    var stand = standings().slice(0, 5).map(function (p, i) { return '<div><span>' + (i + 1) + ' · ' + esc(p.n) + '</span><b>' + p.pts + '</b></div>'; }).join('');
-    return screen('', status() + top(ib('←', 'data-go="o-schedule"', 'back'), '<span class="pill ok" style="margin-right:6px">' + t('running') + '</span>' + esc(evName()), ib('⋯', 'data-act="toast" data-arg="pl_menu_t"', 'more')) +
-      '<div class="scroll" style="gap:12px"><div class="tabs rtabs">' + tabs + '</div>' + courts +
-      '<div class="lbl" style="margin-top:4px">' + t('standings') + '</div><div class="stand big">' + stand + '</div>' +
-      '</div><div class="dock">' + (allDone() ? '<button class="cta" data-act="finish">' + t('finish') + '</button>' :
-        '<button class="cta" disabled>' + t('pl_progress', { r: r + 1, k: P('toScore', todo) }) + '</button><button class="link" data-act="autofill">' + t('demo_fill') + '</button>') + '</div>');
+    return screen('', status() + top(ib('←', 'data-go="o-schedule"', 'back'), t('en_live'), ib('⋯', 'data-act="sheet" data-arg="livemenu"', 'more')) +
+      '<div class="scroll" style="gap:12px">' +
+      '<div class="live-head"><div><div class="pills"><span class="pill fmt">' + esc(S.ev.format) + '</span><span class="pill st-live">● ' + t('st_live') + '</span></div><b>' + esc(evName()) + '</b><small>' + t('active_round', { r: r + 1, n: S.sched.length }) + '</small></div>' +
+      '<div class="ring sm" style="--p:' + pctDone + '"><span>' + dc[0] + '/' + dc[1] + '</span></div></div>' +
+      '<div class="tabs rtabs">' + tabs + '</div>' + courts +
+      '<div class="h-sec"><div class="lbl">' + t('standings') + '</div><span class="pill st-live">' + t('st_live') + '</span></div>' + standTable(standings().slice(0, 6)) +
+      '</div><div class="dock">' + (allDone() ? '<button class="cta" data-act="finish">⚑ ' + t('finish') + '</button>' :
+        '<button class="cta" disabled>' + t('pl_progress2', { r: r + 1, n: S.sched.length, k: P('toScore', todo) }) + '</button><button class="link" data-act="autofill">' + t('demo_fill') + '</button>') + '</div>');
   };
 
   function fillScores() {
-    S.play.scores.forEach(function (rd, r) { rd.forEach(function (x, c) { if (!x) { var a = 8 + (hash(r + ':' + c + S.ev.format) % 9); rd[c] = [a, 24 - a]; } }); });
+    var pts = S.cfg.pts;
+    S.play.scores.forEach(function (rd, r) { rd.forEach(function (x, c) { if (!x) { var a = Math.round(pts / 3) + (hash(r + ':' + c + S.ev.format) % Math.round(pts / 3 + 1)); rd[c] = [a, pts - a]; } }); });
     S.play.round = S.sched.length - 1;
   }
   function standings() {
-    var pts = {};
-    S.players.filter(present).forEach(function (p) { pts[p.n] = 0; });
+    var o = {};
+    S.players.filter(present).forEach(function (p) { o[p.n] = { n: p.n, z: 0, v: 0, r: 0, p: 0, pts: 0, d: 0 }; });
     if (S.sched) S.sched.forEach(function (rd, r) {
-      rd.m.forEach(function (mt, c) { var sc = S.play.scores[r][c]; if (!sc) return; mt.a.forEach(function (n) { pts[n] += sc[0]; }); mt.b.forEach(function (n) { pts[n] += sc[1]; }); });
+      rd.m.forEach(function (mt, c) {
+        var sc = S.play.scores[r][c]; if (!sc) return;
+        function add(tm, f, a) { tm.forEach(function (n) { var x = o[n]; if (!x) return; x.z++; x.pts += f; x.d += f - a; if (f > a) x.v++; else if (f < a) x.p++; else x.r++; }); }
+        add(mt.a, sc[0], sc[1]); add(mt.b, sc[1], sc[0]);
+      });
     });
-    return Object.keys(pts).map(function (n) { return { n: n, pts: pts[n] }; }).sort(function (a, b) { return b.pts - a.pts || a.n.localeCompare(b.n); });
+    return Object.keys(o).map(function (n) { return o[n]; }).sort(function (a, b) { return b.pts - a.pts || b.d - a.d || a.n.localeCompare(b.n); });
   }
   function summary() {
     var st = standings(), card = 0, site = 0, owe = [];
@@ -476,24 +551,25 @@
     buildSched(); fillScores(); S.last = summary();
   }
 
-  /* Obrazovka 3 – po eventu (mobil): vybráno, nezaplatili, docházka, pořadí, co dál */
+  /* Obrazovka 3 – po eventu: vítěz, stupně a pořadí jako PC verze + vybráno, nezaplatili, docházka, co dál */
   R['o-after'] = function () {
-    var L = S.last, st = L.stand;
+    var L = S.last, st = L.stand, w = st[0];
     var owe = L.owe.map(function (n) { var i = -1; S.players.forEach(function (p, j) { if (p.n === n) i = j; }); return '<div class="row"><span>' + esc(n) + '</span><button class="r" style="text-decoration:underline" data-act="remind" data-arg="' + i + '">' + t('remind') + '</button></div>'; }).join('');
     return screen('', status() + top(ib('←', 'data-go="o-home"', 'back'), t('af_title'), ib('⋯', 'data-act="toast" data-arg="af_menu_t"', 'more')) +
       '<div class="scroll" style="gap:12px">' +
-      '<div class="lbl">' + esc(evName()) + ' · ' + fDate(L.week) + '</div>' +
+      '<div class="win-card grain"><img src="' + IMG + S.ev.photo + '" alt=""><div class="in"><div class="pills"><span class="pill fmt">' + esc(S.ev.format) + '</span><span class="pill st-done">' + t('st_done') + '</span></div>' +
+      '<i class="cup">🏆</i><span class="lbl">' + t('winner_lbl') + '</span><b>' + esc(w.n) + '</b><small>' + t('win_line', { p: w.pts, v: P('wins', w.v), d: (w.d > 0 ? '+' : '') + w.d }) + '</small></div></div>' +
+      podium(st) +
       '<div class="af-money"><div class="lbl">' + t('collected') + '</div><div class="money">' + kc(L.collected) + '</div>' +
       '<div class="af-pills"><span class="pill ok">' + t('af_paid', { p: L.paid, t: L.total }) + '</span><span class="pill site">' + t('af_showed', { s: L.showed, t: L.total }) + '</span>' + (L.owe.length ? '<span class="pill wait">' + t('af_owe', { u: L.owe.length }) + '</span>' : '') + '</div></div>' +
       (owe ? '<div class="lbl">' + t('d_owe') + '</div>' + owe : '') +
-      '<div class="lbl" style="margin-top:4px">' + t('d_final') + '</div>' + podium(st) +
-      '<div class="stand big">' + st.slice(3, 8).map(function (p, i) { return '<div><span>' + (i + 4) + ' · ' + esc(p.n) + '</span><b>' + p.pts + '</b></div>'; }).join('') + '</div>' +
+      '<div class="h-sec"><div class="lbl">' + t('d_final') + '</div><button class="link" data-act="toast" data-arg="matches_t">' + t('show_matches') + '</button></div>' + standTable(st, true) +
       '<div class="lbl" style="margin-top:6px">' + t('nx_steps') + '</div>' + nextSteps() +
       '</div><div class="dock"><button class="cta" data-act="nextEvent">' + t('af_next') + '<small>' + t('af_same', { date: fDate(S.ev.week + 1) }) + '</small></button><button class="link" data-go="o-card">' + t('af_card') + '</button></div>');
   };
   function podium(st) {
-    function pod(cls, i) { return '<div class="pod ' + cls + '"><span class="m">' + (i + 1) + '</span><b>' + esc(short(st[i].n)) + '</b><span>' + t('pts', { n: st[i].pts }) + '</span></div>'; }
-    return '<div class="podium" style="margin-top:6px">' + pod('s', 1) + pod('g', 0) + pod('b3', 2) + '</div>';
+    function pod(cls, i) { return '<div class="pod2 ' + cls + '"><i>' + (i + 1) + '</i><span class="av">' + initials(st[i].n) + '</span><b>' + esc(short(st[i].n)) + '</b><small>' + t('pts', { n: st[i].pts }) + '</small></div>'; }
+    return '<div class="podium2">' + pod('s', 1) + pod('g', 0) + pod('b', 2) + '</div>';
   }
 
   /* Obrazovka 3 – desktop (ponecháno pro srovnání, PC verze je v aplikaci) */
@@ -613,12 +689,25 @@
       '<div class="glass">' + glassKV([[t('k_datetime'), fDate(d.week) + ' · ' + d.start], [t('k_entry'), kc(d.price)], [t('k_location'), d.venue, 1], [t('k_format'), d.format], [t('k_spots'), P('players', d.cap)]]) + '</div></div><button class="cta" data-act="close">' + t('pv_back') + '</button>';
   };
   SH.score = function () {
-    var tg = S.scoreTarget, mt = S.sched[tg[0]].m[tg[1]], b = '';
-    for (var i = 0; i <= 24; i++) b += '<button data-act="setScore" data-arg="' + i + '"><b>' + i + '</b><small>' + (24 - i) + '</small></button>';
-    return '<div class="grab"></div><h2 class="h-mid">' + t('score_title', { c: tg[1] + 1, r: tg[0] + 1 }) + '</h2>' +
+    var tg = S.scoreTarget, mt = S.sched[tg[0]].m[tg[1]], pts = S.cfg.pts, cur = S.play.scores[tg[0]][tg[1]], b = '';
+    for (var i = 0; i <= pts; i++) b += '<button class="' + (cur && cur[0] === i ? 'on' : '') + '" data-act="setScore" data-arg="' + i + '">' + i + ':' + (pts - i) + '</button>';
+    return '<div class="grab"></div><h2 class="h-mid">' + t('score_title2', { c: tg[1] + 1 }) + '</h2>' +
       '<div class="sc-teams"><div class="a"><span class="lbl">' + t('team_a') + '</span>' + teamLines(mt.a) + '</div><div><span class="lbl">' + t('team_b') + '</span>' + teamLines(mt.b) + '</div></div>' +
-      '<p class="fine" style="text-align:left">' + t('score_txt2') + '</p><div class="scores big">' + b + '</div><button class="link" data-act="close">' + t('cancel') + '</button>';
+      '<div class="scores pairs">' + b + '</div><p class="fine">' + t('score_fine', { n: pts }) + '</p><button class="link" data-act="close">' + t('cancel') + '</button>';
   };
+  SH.launch = function () {
+    var here = S.players.filter(present).length, m = S.sched.reduce(function (x, rd) { return x + rd.m.length; }, 0), pc = payCounts();
+    return '<div class="grab"></div><div class="check" aria-hidden="true" style="width:52px;height:52px;font-size:24px">✓</div><h2 class="h-mid">' + t('ln_title') + '</h2><p class="p muted" style="font-size:14px">' + t('ln_txt') + '</p>' +
+      '<div class="seg3"><div><b>' + here + '</b><span>' + t('ln_players') + '</span></div><div><b>' + m + '</b><span>' + t('ln_matches') + '</span></div><div><b>' + S.sched.length + '</b><span>' + t('ln_rounds') + '</span></div></div>' +
+      '<div class="note-box">' + t('ln_warn') + '</div>' +
+      '<div class="check-box"><span class="ok">' + t('ln_ck1') + '</span><span class="ok">' + t('ln_ck2') + '</span><span class="ok">' + t('ck_pay', { a: pc.paid, b: pc.site, c: pc.unpaid }) + '</span><span class="ok">' + t('es_e4') + ' ≈ ' + S.sched.length * 10 + ' min</span></div>' +
+      '<button class="cta" data-act="startPlay">▶ ' + t('ln_cta') + '</button><button class="link" data-act="close">' + t('back') + '</button>';
+  };
+  SH.livemenu = function () {
+    return '<div class="grab"></div>' + ['lm_pause', 'lm_fix', 'lm_set'].map(function (k) { return '<button class="row" data-act="toast" data-arg="lm_t"><span>' + t(k) + '</span><span class="r">▸</span></button>'; }).join('') +
+      '<button class="link" data-act="close">' + t('close') + '</button>';
+  };
+
 
 
   /* ---------- AKCE ---------- */
@@ -684,6 +773,18 @@
     wz: function (a) { readDraft(); S.wz = +a; render(); var sc = rootEl().querySelector('.scroll'); if (sc) sc.scrollTop = 0; },
     wzNext: function () { A.wz(Math.min(3, S.wz + 1)); },
     dtype: function (a) { readDraft(); S.draft.type = a; render(); },
+    dvar: function (a) { readDraft(); S.draft.variant = a; render(); },
+    ddead: function (a) { readDraft(); S.draft.deadline = a; render(); },
+    dcap: function (a) { readDraft(); S.draft.cap = +a; render(); },
+    ddur: function (a) { readDraft(); S.draft.dur = a; render(); },
+    dplace: function (a) { readDraft(); S.draft.place = a; if (a === 'club' && CLUBS.indexOf(S.draft.venue) < 0) S.draft.venue = CLUBS[0]; render(); },
+    dgen: function (a) { readDraft(); S.draft.gender = a; render(); },
+    dforce: function () { readDraft(); S.draft.force = !S.draft.force; render(); },
+    dvis: function (a) { readDraft(); S.draft.vis = a; render(); },
+    dpaid: function (a) { readDraft(); S.draft.price = a === 'free' ? 0 : (S.draft.price || 200); render(); },
+    cfg: function (a) { var p = a.split(':'), k = p[0], c = S.cfg; c[k] = Math.max(1, Math.min(k === 'rounds' ? maxRounds() : 8, c[k] + (+p[1]))); render(); },
+    cfgmode: function (a) { S.cfg.mode = a; render(); },
+    cfgpts: function (a) { S.cfg.pts = +a; render(); },
     dpay: function (a) { readDraft(); S.draft.pay = a; render(); },
     dphoto: function (a) { readDraft(); S.draft.photo = a; render(); },
     community: function () {
@@ -695,7 +796,7 @@
     step: function (a) {
       readDraft();
       var p = a.split(':'), k = p[0], v = +p[1], d = S.draft;
-      d[k] = Math.max(k === 'cap' ? 4 : k === 'courts' ? 1 : 0, Math.min(k === 'cap' ? 48 : k === 'courts' ? 8 : 1000, d[k] + v));
+      d[k] = Math.max(k === 'cap' ? 4 : k === 'courts' ? 1 : k === 'min' ? 2 : 0, Math.min(k === 'cap' ? 48 : k === 'courts' ? 8 : k === 'min' ? d.cap : 1000, d[k] + v));
       render();
     },
     connectStripe: function (a) { readDraft(); S.stripeBack = a || 'o-new'; S.stripeStep = 0; go('o-stripe'); },
@@ -705,7 +806,8 @@
       var d = S.draft;
       if (!d.edit && !S.account) { S.pendingPub = true; go('o-signup'); return; }
       var edit = d.edit;
-      ['custom', 'format', 'week', 'start', 'venue', 'courts', 'cap', 'price', 'pay', 'type', 'photo'].forEach(function (k) { S.ev[k] = d[k]; });
+      ['custom', 'format', 'week', 'start', 'venue', 'courts', 'cap', 'price', 'pay', 'type', 'photo', 'deadline'].forEach(function (k) { S.ev[k] = d[k]; });
+      S.cfg.courts = d.courts;
       S.ev.nm = null; S.ev.when = null; S.ev.org = null; S.ev.level = 'all'; S.pick = 'pa';
       S.draft = null; S.pendingPub = false; S.wz = 0;
       if (edit) { if (S.sched && !anyScore()) buildSched(); toast(t('n_saved')); go('o-manage'); return; }
@@ -731,13 +833,13 @@
     },
     attend: function (a) { var p = S.players[+a]; p.noshow = !p.noshow; if (S.sched && !anyScore()) buildSched(); render(); },
     editEvent: function () { S.sheet = null; S.draft = newDraft(S.ev.week); S.draft.edit = true; S.wz = 0; go('o-new'); },
-    buildSchedule: function () { if (!S.sched) buildSched(); go('o-schedule'); },
+    buildSchedule: function () { if (!S.sched || !anyScore()) buildSched(); go('o-schedule'); },
     reshuffle: function () { S.shuffle++; buildSched(); toast(t('new_sched')); },
-    startPlay: function () { go('o-play'); },
+    startPlay: function () { S.sheet = null; go('o-play'); },
     round: function (a) { S.play.round = +a; render(); },
     score: function (a) { var p = a.split(':'); S.scoreTarget = [+p[0], +p[1]]; S.sheet = 'score'; render(); },
     setScore: function (a) {
-      var tg = S.scoreTarget; S.play.scores[tg[0]][tg[1]] = [+a, 24 - a]; S.sheet = null;
+      var tg = S.scoreTarget; S.play.scores[tg[0]][tg[1]] = [+a, S.cfg.pts - a]; S.sheet = null;
       if (roundDone(tg[0]) && tg[0] === S.play.round && tg[0] < S.sched.length - 1) { S.play.round++; toast(t('round_on', { n: S.play.round + 1 })); } else render();
     },
     autofill: function () { fillScores(); render(); },
@@ -816,6 +918,7 @@
     var r = route();
     if (r === 'o-new' && !S.orgMode) orgReset();
     if ((r === 'o-after' || r === 'o-after-d' || r === 'o-card' || r === 'o-community') && !S.last) demoFinished();
+    if (r === 'o-setup' && S.players.length < 4) S.players = mkPlayers(14);
     if ((r === 'o-schedule' || r === 'o-play') && !S.sched) { if (S.players.length < 4) S.players = mkPlayers(14); buildSched(); }
     var desk = isDesk(r);
     var note = document.querySelector('.mode-note'); if (note) { note.hidden = !(wideDesk() && !desk); note.textContent = t('org_phone_note'); }
