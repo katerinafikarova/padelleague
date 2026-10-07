@@ -355,7 +355,7 @@
       '<div class="lbl">' + t('n_wa') + '</div><div class="wa-prev"><div class="bubble out">' + esc(waText(d)).replace(/\n/g, '<br>') + '<div class="time">20:51</div></div></div>' +
       '<button class="row" data-act="sheet" data-arg="preview"><span>' + t('n_preview_row') + '</span><span class="r">▸</span></button>';
     var dock = d.edit ? '<button class="cta" data-act="publish">' + t('n_save') + '</button>' + (st < 3 ? '<button class="link" data-act="wzNext">' + t('wz_next', { s: t(WZ[st + 1]) }) + '</button>' : '')
-      : st < 3 ? '<button class="cta" data-act="wzNext">' + t('wz_next', { s: t(WZ[st + 1]) }) + '</button>' + (st ? '<button class="link" data-act="wz" data-arg="' + (st - 1) + '">' + t('back') + '</button>' : '')
+      : st < 3 ? '<button class="cta" data-act="wzNext">' + t('wz_next', { s: t(WZ[st + 1]) }) + '</button>' + (st ? '<button class="link" data-act="wz" data-arg="' + (st - 1) + '">' + t('back') + '</button>' : (S.account ? '' : '<button class="link" data-act="demoTry">' + t('demo_try') + '</button>'))
       : '<button class="cta" data-act="publish">' + t('n_publish') + '</button><button class="link" data-act="toast" data-arg="draft_t">' + t('n_draft') + '</button>';
     return screen('', status() + top(ib('✕', 'data-go="' + (S.account ? 'o-home' : 'start') + '"', 'close'), d.edit ? t('n_edit') : t('n_title'), '<button class="link" style="color:var(--navy);font-weight:700;text-decoration:none" data-act="sheet" data-arg="preview">' + t('n_preview') + '</button>') +
       bar + '<div class="scroll" style="gap:12px;padding-top:4px">' + body + '</div><div class="dock">' + dock + '</div>');
@@ -496,29 +496,33 @@
   function roundDone(r) { return S.play.scores[r].every(function (x) { return x; }); }
   function allDone() { return S.play.scores.every(function (rd) { return rd.every(function (x) { return x; }); }); }
   function doneCount() { var d = 0, all = 0; S.play.scores.forEach(function (rd) { rd.forEach(function (x) { all++; if (x) d++; }); }); return [d, all]; }
+  /* Tabulka jako v PadelMixu: Body a V-R-P, nic navíc. Ve finální verzi ještě rozdíl skóre. */
   function standTable(rows, full) {
-    return '<div class="st-tbl' + (full ? ' full' : '') + '"><div class="st-h"><span>#</span><span>' + t('d_player') + '</span><span>' + t('tz') + '</span><span>' + t('tv') + '</span><span>' + t('tp') + '</span><span>' + t('d_points') + '</span><span>+/−</span></div>' +
-      rows.map(function (p, i) { return '<div class="st-r' + (i < 3 && full ? ' m' + (i + 1) : '') + '"><span class="pos">' + (i + 1) + '</span><span class="nm">' + esc(short(p.n)) + '</span><span>' + p.z + '</span><span>' + p.v + '</span><span>' + p.p + '</span><b>' + p.pts + '</b><span class="df ' + (p.d >= 0 ? 'up' : 'dn') + '">' + (p.d > 0 ? '+' : '') + p.d + '</span></div>'; }).join('') + '</div>';
+    return '<div class="st-tbl mx' + (full ? ' full' : '') + '"><div class="st-h"><span>#</span><span>' + t('d_player') + '</span><span>' + t('d_points') + '</span><span>' + t('vrp') + '</span>' + (full ? '<span>+/−</span>' : '') + '</div>' +
+      rows.map(function (p, i) { return '<div class="st-r' + (i < 3 ? ' m' + (i + 1) : '') + '"><span class="pos">' + (i + 1) + '</span><span class="nm">' + esc(short(p.n)) + (i === 0 && p.v >= 3 ? ' 🔥' : '') + '</span><b>' + p.pts + '</b><span class="vrp">' + p.v + '-' + p.r + '-' + p.p + '</span>' + (full ? '<span class="df ' + (p.d >= 0 ? 'up' : 'dn') + '">' + (p.d > 0 ? '+' : '') + p.d + '</span>' : '') + '</div>'; }).join('') + '</div>';
   }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  /* Průběh podle měřítka PadelMix: jedno kolo na obrazovce, velké skóre u každého týmu, klepnutím se zadává */
   R['o-play'] = function () {
-    var r = S.play.round, rd = S.sched[r], dc = doneCount(), pctDone = Math.round(dc[0] / dc[1] * 100);
-    var tabs = S.sched.map(function (_, i) { return '<button class="' + (i === r ? 'on' : (roundDone(i) ? 'done' : '')) + '" data-act="round" data-arg="' + i + '">' + t('round', { n: i + 1 }) + (roundDone(i) ? ' ✓' : '') + '</button>'; }).join('');
+    var r = S.play.round, rd = S.sched[r], last = r === S.sched.length - 1;
+    var tabs = S.sched.map(function (_, i) { return '<button class="' + (i === r ? 'on' : '') + (roundDone(i) ? ' done' : '') + '" data-act="round" data-arg="' + i + '" aria-label="' + t('round', { n: i + 1 }) + '">' + (i + 1) + (roundDone(i) ? '<i>✓</i>' : '') + '</button>'; }).join('');
     var courts = rd.m.map(function (mt, c) {
       var sc = S.play.scores[r][c];
-      return '<button class="pc' + (sc ? ' done' : '') + '" data-act="score" data-arg="' + r + ':' + c + '">' +
-        '<div class="pc-h"><span class="court-pill">' + t('court', { n: c + 1 }) + '</span>' + (sc ? '<span class="pill ok">' + t('saved') + '</span>' : '<span class="pc-tap">' + t('enter_score') + '</span>') + '</div>' +
-        '<div class="pc-row"><span class="pc-n">' + teamLines(mt.a) + '</span><span class="pc-s' + (sc && sc[0] > sc[1] ? ' win' : '') + '">' + (sc ? sc[0] : '–') + '</span></div>' +
-        '<div class="pc-row"><span class="pc-n">' + teamLines(mt.b) + '</span><span class="pc-s' + (sc && sc[1] > sc[0] ? ' win' : '') + '">' + (sc ? sc[1] : '–') + '</span></div></button>';
+      function box(side) { var v = sc ? sc[side] : 0, win = sc && sc[side] > sc[1 - side]; return '<button class="sb' + (win ? ' win' : '') + (sc ? '' : ' empty') + '" data-act="score" data-arg="' + r + ':' + c + ':' + side + '" aria-label="' + t('score_for', { a: short(mt[side ? 'b' : 'a'][0]), b: short(mt[side ? 'b' : 'a'][1]) }) + '">' + pad2(v) + '</button>'; }
+      return '<div class="mx"><div class="mx-sc">' + box(0) + box(1) + '</div>' +
+        '<div class="mx-t"><span>' + esc(short(mt.a[0])) + '<br>' + esc(short(mt.a[1])) + '</span><span class="b">' + esc(short(mt.b[0])) + '<br>' + esc(short(mt.b[1])) + '</span></div>' +
+        '<span class="mx-c">▯ ' + t('court', { n: c + 1 }) + '</span></div>';
     }).join('');
     var todo = S.play.scores[r].filter(function (x) { return !x; }).length;
-    return screen('', status() + top(ib('←', 'data-go="o-schedule"', 'back'), t('en_live'), ib('⋯', 'data-act="sheet" data-arg="livemenu"', 'more')) +
-      '<div class="scroll" style="gap:12px">' +
-      '<div class="live-head"><div><div class="pills"><span class="pill fmt">' + esc(S.ev.format) + '</span><span class="pill st-live">● ' + t('st_live') + '</span></div><b>' + esc(evName()) + '</b><small>' + t('active_round', { r: r + 1, n: S.sched.length }) + '</small></div>' +
-      '<div class="ring sm" style="--p:' + pctDone + '"><span>' + dc[0] + '/' + dc[1] + '</span></div></div>' +
-      '<div class="tabs rtabs">' + tabs + '</div>' + courts +
-      '<div class="h-sec"><div class="lbl">' + t('standings') + '</div><span class="pill st-live">' + t('st_live') + '</span></div>' + standTable(standings().slice(0, 6)) +
-      '</div><div class="dock">' + (allDone() ? '<button class="cta" data-act="finish">⚑ ' + t('finish') + '</button>' :
-        '<button class="cta" disabled>' + t('pl_progress2', { r: r + 1, n: S.sched.length, k: P('toScore', todo) }) + '</button><button class="link" data-act="autofill">' + t('demo_fill') + '</button>') + '</div>');
+    var dock = last ? '<div class="dock-row"><button class="cta sec" data-act="addRound">+ ' + t('add_round') + '</button><button class="cta" data-act="sheet" data-arg="finish">✓ ' + t('finish_s') + '</button></div>'
+      : '<button class="cta" data-act="round" data-arg="' + (r + 1) + '">' + t('next_round') + ' →</button>';
+    return screen('', status() + top(ib('←', 'data-go="o-schedule"', 'back'), '', '<span class="top-icons">' + ib('⤴', 'data-act="sheet" data-arg="live"', 'share_live') + ib('☰', 'data-act="sheet" data-arg="board"', 'board') + ib('⋯', 'data-act="sheet" data-arg="livemenu"', 'more') + '</span>') +
+      '<div class="scroll" style="gap:14px">' +
+      '<div class="mx-head"><div><b>' + esc(evName()) + '</b><small>' + esc(S.ev.format) + ' · ' + evDate() + '</small></div><div class="meta"><span>' + S.cfg.pts + ' ◎</span><span>' + S.players.filter(present).length + ' 👤</span></div></div>' +
+      '<div class="rtabs2">' + tabs + '</div><div class="lbl" style="text-align:center;margin-top:-6px">' + t('rounds_lbl') + '</div>' + courts +
+      (rd.rest.length ? '<div class="mx-rest"><b>' + t('resting_h') + '</b><span>' + rd.rest.map(short).map(esc).join(', ') + '</span></div>' : '') +
+      (todo ? '<p class="fine">' + t('left_score', { k: P('toScore', todo) }) + ' · <button class="link" style="display:inline;padding:0" data-act="autofill">' + t('demo_fill') + '</button></p>' : '') +
+      '</div><div class="dock">' + dock + '</div>');
   };
 
   function fillScores() {
@@ -563,7 +567,10 @@
       '<div class="af-money"><div class="lbl">' + t('collected') + '</div><div class="money">' + kc(L.collected) + '</div>' +
       '<div class="af-pills"><span class="pill ok">' + t('af_paid', { p: L.paid, t: L.total }) + '</span><span class="pill site">' + t('af_showed', { s: L.showed, t: L.total }) + '</span>' + (L.owe.length ? '<span class="pill wait">' + t('af_owe', { u: L.owe.length }) + '</span>' : '') + '</div></div>' +
       (owe ? '<div class="lbl">' + t('d_owe') + '</div>' + owe : '') +
-      '<div class="h-sec"><div class="lbl">' + t('d_final') + '</div><button class="link" data-act="toast" data-arg="matches_t">' + t('show_matches') + '</button></div>' + standTable(st, true) +
+      '<div class="stat4"><div><span>' + t('stats_players') + '</span><b>' + L.showed + '</b></div><div><span>' + t('stats_rounds') + '</span><b>' + S.sched.length + '</b></div><div><span>' + t('stats_matches') + '</span><b>' + S.sched.reduce(function (x, rd) { return x + rd.m.length; }, 0) + '</b></div><div><span>' + t('stats_pts') + '</span><b>' + S.play.scores.reduce(function (x, rd) { return x + rd.reduce(function (y, sc) { return y + (sc ? sc[0] + sc[1] : 0); }, 0); }, 0) + '</b></div></div>' +
+      '<div class="h-sec"><div class="lbl">' + t('d_final') + '</div><button class="link" data-act="sheet" data-arg="breakdown">▦ ' + t('breakdown') + '</button></div>' + standTable(st, true) +
+      '<div class="lbl" style="margin-top:6px">' + t('hl_title') + '</div><div class="hl-row">' + highlights().map(function (h) { return '<div class="hl"><span>' + h[0] + ' ' + h[1] + '</span><b>' + h[2] + '</b></div>'; }).join('') + '</div>' +
+      '<button class="row" data-act="sheet" data-arg="live"><span>⤴ ' + t('share_results') + '</span><span class="r">QR ▸</span></button>' +
       '<div class="lbl" style="margin-top:6px">' + t('nx_steps') + '</div>' + nextSteps() +
       '</div><div class="dock"><button class="cta" data-act="nextEvent">' + t('af_next') + '<small>' + t('af_same', { date: fDate(S.ev.week + 1) }) + '</small></button><button class="link" data-go="o-card">' + t('af_card') + '</button></div>');
   };
@@ -688,13 +695,66 @@
     return '<div class="grab"></div><div class="lbl">' + t('pv_lbl') + '</div><div class="photo grain" style="min-height:260px"><img src="' + IMG + (d.photo || S.ev.photo) + '" alt=""><div class="over-title">' + esc(nm) + '</div>' +
       '<div class="glass">' + glassKV([[t('k_datetime'), fDate(d.week) + ' · ' + d.start], [t('k_entry'), kc(d.price)], [t('k_location'), d.venue, 1], [t('k_format'), d.format], [t('k_spots'), P('players', d.cap)]]) + '</div></div><button class="cta" data-act="close">' + t('pv_back') + '</button>';
   };
+  /* Zadání skóre jako v PadelMixu: klepneš na číslo týmu, vybereš jeho body, druhý tým dostane zbytek */
   SH.score = function () {
-    var tg = S.scoreTarget, mt = S.sched[tg[0]].m[tg[1]], pts = S.cfg.pts, cur = S.play.scores[tg[0]][tg[1]], b = '';
-    for (var i = 0; i <= pts; i++) b += '<button class="' + (cur && cur[0] === i ? 'on' : '') + '" data-act="setScore" data-arg="' + i + '">' + i + ':' + (pts - i) + '</button>';
-    return '<div class="grab"></div><h2 class="h-mid">' + t('score_title2', { c: tg[1] + 1 }) + '</h2>' +
-      '<div class="sc-teams"><div class="a"><span class="lbl">' + t('team_a') + '</span>' + teamLines(mt.a) + '</div><div><span class="lbl">' + t('team_b') + '</span>' + teamLines(mt.b) + '</div></div>' +
-      '<div class="scores pairs">' + b + '</div><p class="fine">' + t('score_fine', { n: pts }) + '</p><button class="link" data-act="close">' + t('cancel') + '</button>';
+    var tg = S.scoreTarget, mt = S.sched[tg[0]].m[tg[1]], side = tg[2] || 0, tm = side ? mt.b : mt.a, pts = S.cfg.pts, cur = S.play.scores[tg[0]][tg[1]], b = '';
+    for (var i = 0; i <= pts; i++) b += '<button class="' + (cur && cur[side] === i ? 'on' : '') + '" data-act="setScore" data-arg="' + i + '">' + pad2(i) + '</button>';
+    return '<div class="grab"></div><h2 class="h-mid" style="text-align:center">' + t('score_for', { a: esc(short(tm[0])), b: esc(short(tm[1])) }) + '</h2>' +
+      '<div class="scores num">' + b + '</div><p class="fine">' + t('score_fine2', { n: pts }) + '</p>' +
+      '<button class="link" style="color:var(--navy);font-weight:700;text-decoration:none" data-act="toast" data-arg="custom_t">' + t('custom_score') + '</button>' +
+      '<button class="cta white" style="border:1px solid var(--line)" data-act="resetScore">' + t('reset_score') + '</button>';
   };
+  SH.finish = function () {
+    return '<div class="grab"></div><h2 class="h-mid">' + t('fin_title') + '</h2><p class="p muted" style="font-size:14.5px">' + t('fin_txt') + '</p>' +
+      (allDone() ? '' : '<div class="note-box">' + t('fin_open', { k: P('toScore', doneCount()[1] - doneCount()[0]) }) + '</div>') +
+      '<div class="dock-row"><button class="cta white" style="border:1px solid var(--line)" data-act="close">' + t('cancel') + '</button><button class="cta" data-act="finish">' + t('finish_s') + '</button></div>';
+  };
+  SH.board = function () {
+    return '<div class="grab"></div><h2 class="h-mid" style="text-align:center">' + t('board') + '</h2>' + standTable(standings()) +
+      '<p class="fine" style="text-align:left">' + t('board_note') + '</p>' +
+      '<button class="row" data-act="sheet" data-arg="breakdown"><span>▦ ' + t('breakdown') + '</span><span class="r">▸</span></button><button class="link" data-act="close">' + t('close') + '</button>';
+  };
+  function roundCell(n, r) {
+    var rd = S.sched[r], res = null;
+    rd.m.forEach(function (mt, c) { var sc = S.play.scores[r][c]; var side = mt.a.indexOf(n) > -1 ? 0 : mt.b.indexOf(n) > -1 ? 1 : -1; if (side > -1) res = sc ? [sc[side], sc[side] > sc[1 - side] ? 'W' : sc[side] < sc[1 - side] ? 'L' : 'T'] : ['–', '']; });
+    if (!res) return '<td class="rest" title="' + t('rest_ic') + '">⏸</td>';
+    return '<td><b>' + res[0] + '</b><i class="' + res[1] + '">' + (res[1] ? t('t_' + res[1].toLowerCase()) : '') + '</i></td>';
+  }
+  SH.breakdown = function () {
+    var st = standings();
+    return '<div class="grab"></div><h2 class="h-mid" style="text-align:center">' + t('breakdown') + '</h2><div class="bd-wrap"><table class="bd"><thead><tr><th>#</th><th></th>' + S.sched.map(function (_, r) { return '<th>K' + (r + 1) + '</th>'; }).join('') + '<th>' + t('d_points') + '</th></tr></thead><tbody>' +
+      st.map(function (p, i) { return '<tr><td>' + (i + 1) + '</td><td class="nm">' + esc(short(p.n)) + '</td>' + S.sched.map(function (_, r) { return roundCell(p.n, r); }).join('') + '<td class="pts">' + p.pts + '</td></tr>'; }).join('') +
+      '</tbody></table></div><button class="link" data-act="sheet" data-arg="board">← ' + t('board') + '</button>';
+  };
+  function fakeQR(seed) {
+    function fin(x, y) { var ox = x < 7 ? 0 : x > 13 ? 14 : -1, oy = y < 7 ? 0 : y > 13 ? 14 : -1; if (ox < 0 || oy < 0 || (ox === 14 && oy === 14)) return -1; var dx = x - ox, dy = y - oy; return (dx === 0 || dx === 6 || dy === 0 || dy === 6 || (dx > 1 && dx < 5 && dy > 1 && dy < 5)) ? 1 : 0; }
+    var cells = '';
+    for (var y = 0; y < 21; y++) for (var x = 0; x < 21; x++) { var f = fin(x, y), on = f === -1 ? hash(seed + ':' + x + ':' + y) % 2 === 0 : f === 1; cells += '<i' + (on ? ' class="on"' : '') + '></i>'; }
+    return '<div class="qr" aria-hidden="true">' + cells + '</div>';
+  }
+  SH.live = function () {
+    var url = 'padelleague.eu/e/' + S.ev.slug + '/live';
+    return '<div class="grab"></div><h2 class="h-mid" style="text-align:center">' + t('live_t') + '</h2><p class="fine">' + t('live_txt') + '</p>' + fakeQR(url) +
+      '<div class="field"><span class="lbl">' + t('live_link') + '</span><div style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:14px">' + url + '</b><button class="link" style="padding:0" data-act="shareTo" data-arg="copy">⧉</button></div></div>' +
+      '<button class="cta" data-act="shareTo" data-arg="wa">⤴ ' + t('live_share') + '</button>';
+  };
+  /* Zajímavosti po eventu (PadelMix: Tournament highlights) */
+  function highlights() {
+    var streak = { n: '', k: 0 }, big = { d: -1 }, top = { n: '', k: 0 };
+    var cur = {};
+    S.sched.forEach(function (rd, r) {
+      rd.m.forEach(function (mt, c) {
+        var sc = S.play.scores[r][c]; if (!sc) return;
+        var d = Math.abs(sc[0] - sc[1]); if (d > big.d) big = { d: d, w: sc[0] > sc[1] ? mt.a : mt.b, s: Math.max(sc[0], sc[1]) + ':' + Math.min(sc[0], sc[1]), r: r + 1 };
+        [[mt.a, sc[0] > sc[1]], [mt.b, sc[1] > sc[0]]].forEach(function (x) { x[0].forEach(function (n) { cur[n] = x[1] ? (cur[n] || 0) + 1 : 0; if (cur[n] > streak.k) streak = { n: n, k: cur[n] }; }); });
+      });
+    });
+    if (big.d < 0) return [];
+    standings().forEach(function (p) { var avg = p.z ? Math.round(p.pts / p.z * 10) / 10 : 0; if (avg > top.k) top = { n: p.n, k: avg }; });
+    return [['🔥', t('hl_streak'), t('hl_streak_t', { n: esc(short(streak.n)), k: streak.k })],
+      ['◎', t('hl_big'), t('hl_big_t', { a: esc(short(big.w[0])) + ' & ' + esc(short(big.w[1])), s: big.s, r: big.r })],
+      ['★', t('hl_top'), t('hl_top_t', { n: esc(short(top.n)), k: String(top.k).replace('.', lang === 'cs' ? ',' : '.') })]];
+  }
   SH.launch = function () {
     var here = S.players.filter(present).length, m = S.sched.reduce(function (x, rd) { return x + rd.m.length; }, 0), pc = payCounts();
     return '<div class="grab"></div><div class="check" aria-hidden="true" style="width:52px;height:52px;font-size:24px">✓</div><h2 class="h-mid">' + t('ln_title') + '</h2><p class="p muted" style="font-size:14px">' + t('ln_txt') + '</p>' +
@@ -836,14 +896,20 @@
     buildSchedule: function () { if (!S.sched || !anyScore()) buildSched(); go('o-schedule'); },
     reshuffle: function () { S.shuffle++; buildSched(); toast(t('new_sched')); },
     startPlay: function () { S.sheet = null; go('o-play'); },
-    round: function (a) { S.play.round = +a; render(); },
-    score: function (a) { var p = a.split(':'); S.scoreTarget = [+p[0], +p[1]]; S.sheet = 'score'; render(); },
-    setScore: function (a) {
-      var tg = S.scoreTarget; S.play.scores[tg[0]][tg[1]] = [+a, S.cfg.pts - a]; S.sheet = null;
-      if (roundDone(tg[0]) && tg[0] === S.play.round && tg[0] < S.sched.length - 1) { S.play.round++; toast(t('round_on', { n: S.play.round + 1 })); } else render();
+    round: function (a) { S.play.round = Math.max(0, Math.min(S.sched.length - 1, +a)); render(); var sc = rootEl().querySelector('.scroll'); if (sc) sc.scrollTop = 0; },
+    score: function (a) { var p = a.split(':'); S.scoreTarget = [+p[0], +p[1], +(p[2] || 0)]; S.sheet = 'score'; render(); },
+    resetScore: function () { var tg = S.scoreTarget; S.play.scores[tg[0]][tg[1]] = null; S.sheet = null; render(); },
+    addRound: function () {
+      var old = S.play.scores, cur = S.play.round; S.cfg.rounds++; buildSched();
+      old.forEach(function (rd, i) { S.play.scores[i] = rd; }); S.play.round = cur + 1; toast(t('added_round', { n: S.sched.length }));
     },
+    demoTry: function () { S.players = mkPlayers(9); S.cfg.courts = 2; S.cfg.rounds = 5; S.sched = null; buildSched(); go('o-play'); },
+    setScore: function (a) {
+      var tg = S.scoreTarget, v = +a, o = S.cfg.pts - v; S.play.scores[tg[0]][tg[1]] = tg[2] ? [o, v] : [v, o]; S.sheet = null; render();
+    },
+
     autofill: function () { fillScores(); render(); },
-    finish: function () { S.last = summary(); go('o-after'); },
+    finish: function () { S.sheet = null; S.last = summary(); go('o-after'); },
     nextEvent: function () { go('o-next'); },
     editNext: function () { S.draft = newDraft(S.ev.week + 1); S.wz = 0; go('o-new'); },
     cardAll: function () { toast(t('cd_all_t', { n: S.last.showed })); },
