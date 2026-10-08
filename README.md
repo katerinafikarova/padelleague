@@ -7,7 +7,7 @@ Vizuál podle JVS Princová & Fikarová (navy #034867, oranžová #F97316, Satos
 
 Aplikace i landing jsou **česky**, angličtina je druhá jazyková verze (přepínač CZ / EN v aplikaci, v mapě vlevo i na landingu; nebo `?lang=en` v adrese).
 
-**Dvě zobrazení:** výchozí je **počítač** (okno prohlížeče: homepage s eventy a stránka eventu jako web, WhatsApp jako WhatsApp Web). Organizátor se i v tomto režimu ukazuje v telefonu, protože PC verze je hotová v aplikaci. Nahoře nad oknem se přepíná na **mobil** (telefon). Volba se pamatuje, odkaz `?mode=mobile` nebo `?mode=desktop` ji vynutí. Na telefonu se vždy ukáže mobilní verze.
+**Dvě zobrazení:** výchozí je **počítač** (okno prohlížeče: homepage s eventy a stránka eventu jako web, WhatsApp skupina hráče jako WhatsApp Web). Organizátor se i v tomto režimu ukazuje v telefonu, protože PC verze je hotová v aplikaci. Nahoře nad oknem se přepíná na **mobil** (telefon). Volba se pamatuje, odkaz `?mode=mobile` nebo `?mode=desktop` ji vynutí. Na telefonu se vždy ukáže mobilní verze.
 
 Čisté HTML, CSS a JavaScript. Žádná instalace ani build, funguje jako statický web (GitHub Pages, Netlify, Vercel nebo dvojklik na `index.html`).
 
@@ -16,6 +16,7 @@ Aplikace i landing jsou **česky**, angličtina je druhá jazyková verze (přep
 | Soubor | Obsah |
 |---|---|
 | `index.html` | Aplikace v okně prohlížeče (počítač) nebo v telefonu (mobil) + mapa prototypu vlevo (na skutečném telefonu přes celou obrazovku, mapa pod oranžovým štítkem „Mapa“) |
+| `pc-navrhy.html` | Návrhy přímo nad obrazovkami PC verze (přehled, průvodce, soupiska, rozpis, průběh, dokončeno, pavouk) |
 | `vizualni-vrstva.html` | Návrh vizuální vrstvy nad enginem: stavy, karty, rozpis, tabulky, pavouk |
 | `landing.html` | Landing page pro organizátora, desktop i mobil. Tlačítka vedou do registrace v prototypu. |
 | `assets/css/app.css` | Styly a design tokeny |
@@ -25,17 +26,19 @@ Aplikace i landing jsou **česky**, angličtina je druhá jazyková verze (přep
 | `assets/img/` | Fotografie z JVS |
 
 ### Cesta hráče
-Dva vstupy: **homepage s výběrem eventů** (`#/p-home`: jen nadcházející eventy podle data, filtr město / tento týden / víkend / zdarma, plné eventy vedou na čekací listinu, proběhlé eventy sbalené dole) nebo WhatsApp skupina s odkazem. Pak stránka eventu (odkaz „← Všechny eventy“ vede zpět) → panel přihlášení (se Stripe Apple Pay / Google Pay / karta, bez Stripe „platíš na místě“, event zdarma bez platby) → „Jsi ve hře“ (světlá obrazovka s fotkou) → Pozvat kamaráda → připomínka den předem → „Nemůžu přijít“ (místo jde prvnímu na čekací listině).
+Dva vstupy: **homepage s výběrem eventů** (`#/p-home`: jen nadcházející eventy podle data, filtr město / tento týden / víkend / zdarma, plné eventy vedou na čekací listinu, proběhlé eventy sbalené dole) nebo WhatsApp skupina s odkazem. Pak stránka eventu (odkaz „← Všechny eventy“ vede zpět) → panel přihlášení (se Stripe Apple Pay / Google Pay / karta, bez Stripe „platíš na místě“, event zdarma bez platby) → „Jsi ve hře“ (světlá obrazovka s fotkou) → Pozvat kamaráda → připomínka den předem e-mailem → „Nemůžu přijít“ (místo jde prvnímu na čekací listině).
 Stavy stránky: **Otevřeno, Poslední místa, Plno + čekací listina, Přihlášen**. Přepínají se v mapě vlevo.
 
 ### Cesta organizátora (mobil)
-Vytvoř event, průvodce ve 4 krocích jako v aplikaci (Typ a formát → Termín a místo → Hráči a platba → Prezentace) → účet až při zveřejnění → event je zveřejněný: seznam přihlášených, rozpis až po uzávěrce → sdílení do WhatsAppu (aplikace jen předá text) → hráči a platby → **Rozpis** → **Průběh a zadání skóre** → **Po eventu** (vybráno, nezaplatili, docházka, pořadí, „Co dál“: komunita, Stripe, žebříček) → Další event se stejným nastavením → karta výsledku.
+Vytvoř event, průvodce ve 4 krocích jako v aplikaci (Typ a formát → Termín a místo → Hráči a platba → Prezentace) → účet až při zveřejnění → event je zveřejněný: seznam přihlášených, rozpis až po uzávěrce → „Sdílet odkaz“ (otevře sdílení s předvyplněným textem, odešle ho organizátor, aplikace sama nic neposílá) → hráči a platby → **Rozpis** → **Průběh a zadání skóre** → **Po eventu** (vybráno, nezaplatili, docházka, pořadí, „Co dál“: komunita, Stripe, žebříček) → Další event se stejným nastavením → karta výsledku.
 
 Zveřejnit není nikdy šedé: platba na místě je výchozí, Stripe jde připojit kdykoli. Rozpis a Průběh mají velké písmo, číslo kurtu ve čtverci, celou kartu kurtu jako tlačítko a skóre přes velká tlačítka (tým B dostane zbytek do 24).
 
 Pole průvodce i kroky enginu (Soupiska → Nastavení → Rozpis → Spuštění → Průběh → Dokončeno) odpovídají testovací verzi ze 7. 10. 2026, převedené na telefon.
 
 ### Vizuální vrstva
+`pc-navrhy.html`: osm obrazovek PC verze 1:1 podle testovací verze, jen s naší vizuální vrstvou a seznamem změn u každé.
+
 `vizualni-vrstva.html`: návrh vzhledu nad enginem (bod 3 zadání). Sjednocené stavy eventu, karta eventu ve 4 stavech, rozpis, karta kurtu naživo, zadání skóre, tabulka pořadí, pavouk a skupiny. U každé sekce je, co se liší od testovací verze.
 
 U každé cesty je v mapě vlevo rozbalovací poznámka „Co se změnilo“.
@@ -43,6 +46,8 @@ U každé cesty je v mapě vlevo rozbalovací poznámka „Co se změnilo“.
 Každá obrazovka jde otevřít přímo odkazem, např. `index.html#/p-event`, `index.html#/o-play`.
 
 ### Instagram profil
+Stories respektují ochranné zóny Meta pro reklamy (14 % nahoře, 35 % dole, 6 % po stranách; ověřeno v Meta Ads Guide). Na stránce Šablony jdou zóny zobrazit. PNG se exportuje v rozlišení, které Meta doporučuje (1440 × 1800 a 1440 × 2560).
+
 Složka `instagram/`: klikací prototyp IG profilu PadelLeague (mřížka 12 příspěvků v rytmu navy / fotka / oranžová / bílá, 6 barevně střídaných highlights, stories, označené karty hráčů) a systém šablon s živou úpravou a exportem PNG. Podrobnosti v `instagram/README.md`, otevřené otázky v `instagram/OTAZKY.md`.
 
 ## Nahrání na GitHub Pages

@@ -162,12 +162,12 @@
     var h = '<button class="info-close" data-act="info" aria-label="Zavřít panel">✕</button>';
     if (S.story) {
       h += '<div class="ctx">Story · ' + esc(S.story.name) + ' · ' + (S.story.i + 1) + '/' + S.story.list.length + '</div><h2>Proč takhle</h2>' + whyBlock(S.story.why) +
-        '<p class="note">Ovládání: klepnutí vpravo / vlevo, podržení = pauza, šipky ← → na klávesnici, Esc zavře. Bezpečná zóna 1080 × 1920: horních 250 px a spodních 340 px je bez klíčového obsahu.</p>' +
-        '<button class="btn" data-act="stdl">Stáhnout story jako PNG (1080 × 1920)</button>';
+        '<p class="note">Ovládání: klepnutí vpravo / vlevo, podržení = pauza, šipky ← → na klávesnici, Esc zavře. Ochranná zóna Meta pro Stories a Reels: horních 14 % (269 px), spodních 35 % (672 px) a 6 % po stranách je bez textu a loga.</p>' +
+        '<button class="btn" data-act="stdl">Stáhnout story jako PNG (1440 × 2560)</button>';
     } else if (S.view === 'post') {
       var p = postById(S.post);
       h += '<div class="ctx">' + (p.tagged ? 'Označený příspěvek od @' + esc(p.by) : esc(KIND[p.kind]) + (p.slides.length > 1 ? ' · ' + p.slides.length + ' slidů' : '') + (p.pinned ? ' · připnuto' : '')) + '</div><h2>' + esc(LABELS[p.id] || 'Hráčská karta (UGC)') + '</h2>' + whyBlock(p.why) +
-        '<button class="btn" data-act="dl">Stáhnout ' + (p.slides.length > 1 ? 'slide ' + (S.slide + 1) + ' ' : '') + 'jako PNG (1080 × 1350)</button>' +
+        '<button class="btn" data-act="dl">Stáhnout ' + (p.slides.length > 1 ? 'slide ' + (S.slide + 1) + ' ' : '') + 'jako PNG (1440 × 1800)</button>' +
         (p.slides.length > 1 ? '<button class="btn ghost" data-act="dlall">Stáhnout všech ' + p.slides.length + ' slidů</button>' : '') +
         '<p class="note">Export funguje na GitHub Pages nebo na lokálním serveru. Při otevření dvojklikem prohlížeč obrázky z disku do PNG nepustí.</p>';
     } else {
@@ -190,14 +190,14 @@
     s.onload = cb; s.onerror = function () { toast('Knihovnu pro export se nepodařilo načíst. Zkontroluj připojení k internetu.'); }; document.head.appendChild(s);
   }
   function exportPNG(html, w, h, name, done) {
-    toast('Připravuji PNG ' + w + ' × ' + h + '…');
+    toast('Připravuji PNG ' + Math.round(w * 4 / 3) + ' × ' + Math.round(h * 4 / 3) + '…');
     loadH2C(function () {
       var box = document.createElement('div');
       box.style.cssText = 'position:fixed;left:-30000px;top:0;width:' + w + 'px;height:' + h + 'px;';
       box.innerHTML = html; document.body.appendChild(box);
       var imgs = [].slice.call(box.querySelectorAll('img'));
       Promise.all(imgs.map(function (im) { return im.complete ? 1 : new Promise(function (r) { im.onload = im.onerror = r; }); })).then(function () { return document.fonts ? document.fonts.ready : 1; }).then(function () {
-        return window.html2canvas(box.firstChild, { width: w, height: h, scale: 1, useCORS: true, backgroundColor: null, logging: false });
+        return window.html2canvas(box.firstChild, { width: w, height: h, scale: 4 / 3, useCORS: true, backgroundColor: null, logging: false });
       }).then(function (cv) {
         cv.toBlob(function (b) {
           var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name + '.png'; document.body.appendChild(a); a.click();

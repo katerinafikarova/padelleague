@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PadelLeague · Návrhy nad PC verzí</title>
+<meta name="description" content="Vizuální vrstva přímo nad obrazovkami PC verze PadelLeague: přehled, průvodce, soupiska, rozpis, průběh, výsledky, pavouk.">
+<meta name="theme-color" content="#034867">
+<link rel="stylesheet" href="assets/css/app.css?v=19">
+<style>
+  body{background:var(--ground);color:var(--ink);font-size:16px;line-height:1.5}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px}
+  .pnav{background:var(--navy);color:#fff}
+  .pnav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:14px;padding-bottom:14px}
+  .pnav a{color:#fff;text-decoration:none;font-size:14px}
+  .hero-t{padding:44px 0 6px}
+  .hero-t h1{margin:0;font:900 clamp(30px,5vw,54px)/.95 var(--f-display);text-transform:uppercase;color:var(--navy)}
+  .hero-t p{max-width:74ch;color:var(--muted);margin:14px 0 0}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .toc a{background:#fff;border:1px solid var(--line);border-radius:99px;padding:7px 13px;font-size:13.5px;color:var(--ink);text-decoration:none}
+  .rules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:18px}
+  .rules div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13.5px}
+  .rules b{display:block;color:var(--navy);margin-bottom:2px}
+  @media (max-width:820px){.rules{grid-template-columns:1fr 1fr}}
+  section.sc{padding-top:54px}
+  .eyebrow{font:700 12px/1 var(--f-body);letter-spacing:.16em;text-transform:uppercase;color:var(--navy)}
+  h2.t{margin:8px 0 4px;font:900 clamp(22px,3vw,32px)/1 var(--f-display);text-transform:uppercase}
+  .lead{color:var(--muted);margin:0;max-width:78ch}
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;margin-top:18px;align-items:start}
+  @media (max-width:1020px){.cols{grid-template-columns:1fr}}
+  .chg{background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;padding:14px 16px;font-size:14px}
+  .chg b{display:block;margin-bottom:6px}
+  .chg ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+  .chg .was{color:var(--muted);font-size:12.5px}
+  /* škálovaný rám obrazovky 1280 × 800 */
+  .shot{position:relative;width:100%;aspect-ratio:1280/800;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 20px 50px -24px rgba(3,72,103,.45);border:1px solid var(--line)}
+  .shot>.k{position:absolute;left:0;top:0;width:1280px;height:800px;transform-origin:0 0}
+
+  /* ===== komponenty návrhu (prefix k-) ===== */
+  .k{display:flex;font-size:14px;color:var(--ink);background:#F4F7F9}
+  .k-side{flex:none;width:232px;background:var(--navy-deep);color:#D7E4EB;padding:20px 14px;display:flex;flex-direction:column;gap:12px;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:28px 28px}
+  .k-logo{display:flex;align-items:center;gap:8px;font:900 15px/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:#fff;padding:2px 6px 6px}
+  .k-logo i{width:8px;height:8px;border-radius:50%;background:var(--orange)}
+  .k-new{background:var(--orange);color:#fff;border-radius:14px;padding:12px;text-align:center;font:900 13px/1 var(--f-display);text-transform:uppercase;letter-spacing:.05em}
+  .k-comm{background:rgba(255,255,255,.07);border-radius:12px;padding:10px 12px;font-size:12px}
+  .k-comm b{display:block;color:#fff;font-size:14px}
+  .k-nav{display:flex;flex-direction:column;gap:2px}
+  .k-nav span{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:9px;font-size:14px}
+  .k-nav span i{width:16px;text-align:center;font-style:normal;opacity:.7}
+  .k-nav span.on{background:rgba(255,255,255,.12);color:#fff;font-weight:700;box-shadow:inset 3px 0 0 var(--orange)}
+  .k-sp{flex:1}
+  .k-user{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.07);border-radius:12px;padding:9px 10px;font-size:12px}
+  .k-user i{width:30px;height:30px;border-radius:50%;background:#2A6C8B;display:grid;place-items:center;color:#fff;font-style:normal;font-weight:700}
+  .k-user b{display:block;color:#fff;font-size:13px}
+  .k-main{flex:1;min-width:0;padding:22px 28px;display:flex;flex-direction:column;gap:16px;overflow:hidden}
+  .k-row{display:flex;gap:14px;align-items:stretch}
+  .k-card{background:#fff;border:1px solid #E3EAEE;border-radius:18px;padding:16px 18px}
+  .k-lbl{font:700 10.5px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .k-h1{font:900 26px/1.05 var(--f-display);text-transform:uppercase;color:var(--navy);margin:0}
+  .k-h2{font:900 17px/1.1 var(--f-display);text-transform:uppercase;color:var(--navy);margin:0}
+  .k-big{font:900 30px/1 var(--f-display);color:var(--navy);margin-top:8px}
+  .k-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .k-btn{display:inline-flex;align-items:center;gap:6px;border-radius:12px;padding:10px 14px;font:900 12px/1 var(--f-display);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+  .k-btn.go{background:var(--orange);color:#fff}
+  .k-btn.sec{background:#fff;border:1px solid var(--line);color:var(--navy)}
+  .k-pill{display:inline-flex;align-items:center;gap:5px;font:700 10px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;padding:6px 9px;border-radius:99px;white-space:nowrap}
+  .k-pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  .k-pill.open{background:var(--ok-bg);color:var(--ok)}.k-pill.full{background:var(--navy);color:#fff}.k-pill.closed{background:var(--soft);color:#34566A}
+  .k-pill.live{background:#16A34A;color:#fff}.k-pill.done{background:#E5E7EB;color:#1F2937}.k-pill.draft{border:1px dashed #9AAAB5;color:#5B6E7B}
+  .k-pill.fmt{background:rgba(255,255,255,.92);color:var(--navy)}.k-pill.fmt::before,.k-pill.vibe::before{display:none}
+  .k-pill.vibe{background:rgba(6,30,44,.66);color:#fff;border:1px solid rgba(255,255,255,.22)}
+  .k-photo{position:relative;border-radius:20px;overflow:hidden;background:#0b2a3a;color:#fff}
+  .k-photo>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .k-photo::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,20,30,.82) 0%,rgba(4,20,30,.55) 50%,rgba(4,20,30,.25) 100%);z-index:1}
+  .k-photo>*:not(img){position:relative;z-index:2}
+  .k-photo.v::before{background:linear-gradient(180deg,rgba(4,20,30,.55),rgba(4,20,30,.25) 40%,rgba(4,20,30,.8))}
+  .k-steps{display:flex;gap:8px}
+  .k-steps span{flex:1;display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.1);border-radius:12px;padding:10px 12px;font-size:12px;color:#C7DAE4}
+  .k-steps span i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:900;background:rgba(255,255,255,.14);color:#fff;flex:none}
+  .k-steps span.on{background:#fff;color:var(--ink);font-weight:700}.k-steps span.on i{background:var(--navy)}
+  .k-steps span.done i{background:#16A34A}
+  .k-wz{display:flex;gap:6px;align-items:center}
+  .k-wz span{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);padding:7px 12px 7px 7px;border-radius:99px}
+  .k-wz span i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:900;background:#E7EDF1;color:var(--muted);font-size:12px}
+  .k-wz span.on{background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:700}.k-wz span.on i{background:var(--navy);color:#fff}
+  .k-wz span.done i{background:var(--ok-bg);color:var(--ok)}
+  .k-wz em{flex:1;height:2px;background:var(--line);min-width:18px}
+  .k-opt{border:1px solid #D5DEE3;border-radius:16px;padding:14px;background:#fff;display:flex;flex-direction:column;gap:4px}
+  .k-opt b{font-size:15px}.k-opt small{font-size:12px;color:var(--muted)}
+  .k-opt.on{border:2px solid var(--navy);padding:13px;background:#F3F8FB}
+  .k-opt .ic{width:36px;height:36px;border-radius:11px;background:var(--soft);display:grid;place-items:center;color:var(--navy);font-weight:900;margin-bottom:4px}
+  .k-opt.on .ic{background:var(--navy);color:#fff}
+  .k-tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ok);background:var(--ok-bg);border-radius:99px;padding:3px 7px;align-self:flex-start}
+  .k-note{background:var(--soft);border-radius:12px;padding:11px 13px;font-size:12.5px;color:#34566A}
+  .k-tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .k-tbl th{background:var(--navy);color:#fff;font:700 10px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;padding:10px 10px;text-align:center}
+  .k-tbl th:nth-child(2){text-align:left}
+  .k-tbl td{padding:10px;border-top:1px solid #EEF3F6;text-align:center;color:var(--muted)}
+  .k-tbl td.nm{text-align:left;color:var(--ink);font-weight:600}
+  .k-tbl td.pts{color:var(--ink);font-weight:900;font-size:16px}
+  .k-tbl .pos{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;font-weight:900;color:var(--ink)}
+  .k-tbl tr.m1 .pos{background:#F6C945}.k-tbl tr.m2 .pos{background:#D5DBE1}.k-tbl tr.m3 .pos{background:#F0B48A}
+  .k-tbl tr.m1 td{background:#FFFBEF}
+  .k-df{display:inline-block;min-width:36px;border-radius:99px;padding:3px 6px;font-size:11.5px;font-weight:700}
+  .k-df.up{background:var(--ok-bg);color:var(--ok)}.k-df.dn{background:#FDECEC;color:#B42318}
+  .k-av{width:30px;height:30px;border-radius:50%;background:#5D8BA3;color:#fff;display:inline-grid;place-items:center;font-size:11px;font-weight:700;flex:none}
+  .k-pl{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid #E3EAEE;border-radius:12px;background:#fff}
+  .k-pl b{flex:1;font-size:14px}
+  .k-pp{font:700 10px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;padding:6px 9px;border-radius:99px;white-space:nowrap}
+  .k-pp.paid{background:var(--navy);color:#fff}.k-pp.site{background:var(--soft);color:#34566A}.k-pp.unpaid{color:var(--orange-ink);border:1px solid var(--orange)}
+  .k-pp.ns{background:#fff;border:1px solid #D5DEE3;color:var(--muted)}
+  .k-ck{display:flex;flex-direction:column;gap:8px;font-size:13px}
+  .k-ck span{padding-left:24px;position:relative}
+  .k-ck span::before{content:"✓";position:absolute;left:0;top:0;width:17px;height:17px;border-radius:50%;background:var(--ok-bg);color:var(--ok);font-size:10px;font-weight:900;display:grid;place-items:center}
+  .k-round{background:#fff;border:1px solid #E3EAEE;border-radius:16px;overflow:hidden}
+  .k-round h4{margin:0;display:flex;align-items:center;gap:10px;background:var(--navy);color:#fff;padding:10px 14px;font:900 15px/1 var(--f-display);text-transform:uppercase}
+  .k-round h4 i{width:24px;height:24px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-style:normal;font-size:12px}
+  .k-round h4 small{margin-left:auto;font:500 11px/1 var(--f-body);text-transform:none;opacity:.8}
+  .k-m{display:grid;grid-template-columns:44px 1fr auto 1fr;gap:10px;align-items:center;padding:10px 14px;border-top:1px solid #EEF3F6}
+  .k-m:first-of-type{border-top:0}
+  .k-c{width:44px;height:46px;border-radius:12px;background:var(--soft);color:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;font:900 18px/1 var(--f-display)}
+  .k-c small{font:700 8px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
+  .k-t{display:flex;flex-direction:column;font-weight:700;font-size:14px;line-height:1.35}
+  .k-t.b{text-align:right}
+  .k-vs{font-size:11px;color:var(--muted);font-weight:700}
+  .k-court{position:relative;background:#fff;border:1px solid #E3EAEE;border-radius:18px;padding:30px 18px 22px;margin-top:22px}
+  .k-court.todo{border-left:5px solid var(--orange)}.k-court.done{border-left:5px solid #16A34A}
+  .k-sc{position:absolute;left:50%;top:-20px;transform:translateX(-50%);display:flex;gap:8px}
+  .k-sb{width:60px;height:44px;border-radius:11px;background:#E7EDF1;color:#5B6E7B;display:grid;place-items:center;font:900 26px/1 ui-monospace,Menlo,monospace;box-shadow:0 4px 12px -6px rgba(3,72,103,.35)}
+  .k-sb.win{background:var(--navy);color:#fff}.k-sb.e{color:#9DB0BC}
+  .k-teams{display:grid;grid-template-columns:1fr 1fr;font-size:16px;font-weight:600;line-height:1.5}
+  .k-teams span+span{text-align:right;border-left:1px solid #EEF3F6}
+  .k-courtlbl{position:absolute;left:50%;bottom:-12px;transform:translateX(-50%);background:#fff;border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:12px;font-weight:700}
+  .k-enter{position:absolute;right:14px;top:10px;background:var(--orange);color:#fff;border-radius:99px;padding:6px 11px;font:900 10.5px/1 var(--f-display);text-transform:uppercase}
+  .k-ok{position:absolute;right:14px;top:10px}
+  .k-tabs{display:flex;gap:8px}
+  .k-tabs span{width:64px;height:40px;border-radius:11px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-weight:700;position:relative}
+  .k-tabs span.on{border:2px solid var(--navy);background:#EEF5F9}
+  .k-tabs span.d::after{content:"✓";position:absolute;right:5px;bottom:2px;font-size:10px;color:#16A34A;font-weight:900}
+  .k-pod{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:10px;align-items:end}
+  .k-pod div{background:#fff;border:1px solid #E3EAEE;border-radius:14px;padding:10px;text-align:center;font-size:13px}
+  .k-pod div.g{border:2px solid #F6C945;background:#FFFBEF;padding:16px 10px}
+  .k-pod i{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;color:#fff;font-style:normal;font-weight:900;margin-bottom:4px}
+  .k-pod .g i{background:#E9B10C}.k-pod .s i{background:#A3ADB8}.k-pod .b i{background:#D9824A}
+  .k-pod b{display:block}
+  .k-mt{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  .k-mt div{display:flex;justify-content:space-between;padding:8px 12px;font-size:13px;color:var(--muted)}
+  .k-mt div+div{border-top:1px solid #EEF3F6}
+  .k-mt div.w{color:var(--ink);font-weight:700}.k-mt div.w b{color:var(--navy)}
+  .k-mt .meta{background:var(--soft);font-size:10.5px;padding:4px 12px}
+  .k-mt.f{border:2px solid #F6C945}.k-mt.f .meta{background:#FFF8E6;color:#8A6A00;font-weight:700}
+  .k-bar{height:6px;border-radius:99px;background:#E7EDF1;overflow:hidden}.k-bar i{display:block;height:100%;background:var(--navy)}
+  footer{margin-top:60px;color:var(--muted);font-size:14px}
+</style>
+<script>
+/* Čísla se nelámou od slov a „·“ nezačíná řádek (stejné pravidlo jako v aplikaci) */
+window.plGlue = function (root) {
+  var w = document.createTreeWalker(root || document.body, NodeFilter.SHOW_TEXT), n;
+  while ((n = w.nextNode())) {
+    if (/^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName)) continue;
+    var s = n.data, o = s.replace(/(\d[.,]?) (?=[\dA-Za-zÀ-ž(%])/g, '$1\u00a0').replace(/([A-Za-zÀ-ž]) (\d)/g, '$1\u00a0$2').replace(/ · /g, '\u00a0· ').replace(/ ([–—-]) /g, '\u00a0$1 ').replace(/(\d)[–-](\d)/g, '$1\u2060–\u2060$2').replace(/(\d) : (\d)/g, '$1\u00a0:\u00a0$2');
+    if (o !== s) n.data = o;
+  }
+};
+document.addEventListener('DOMContentLoaded', function () { plGlue(); });
+</script>
+</head>
+<body>
+<header class="pnav"><div class="wrap"><a href="index.html" class="logo"><i></i>Padel League</a><span style="display:flex;gap:16px"><a href="vizualni-vrstva.html">Vizuální vrstva</a><a href="index.html">← Prototyp</a></span></div></header>
+<div class="wrap">
+  <header class="hero-t">
+    <p class="eyebrow">Bod 3 zadání · návrh nad testovací verzí</p>
+    <h1>Návrhy přímo nad PC verzí</h1>
+    <p>Stejné obrazovky, stejné kroky, stejné pořadí a stejná data jako v testovací verzi (7. 10. 2026), jen s naší vizuální vrstvou. Nic nepřidáváme do flow. U každé obrazovky je vpravo, co se mění. Obrazovky jsou v rozlišení 1280 × 800.</p>
+    <div class="rules"><div><b>Event, ne turnaj</b>„Turnaj“ jen jako název formátu.</div><div><b>Bílá a fotky</b>Navy jen sidebar a hlavičky.</div><div><b>Oranžová = akce</b>Tlačítka a výzvy, nic jiného.</div><div><b>Nic se neposílá samo</b>„Sdílet odkaz“ jen předá text.</div></div>
+    <nav class="toc" aria-label="Obrazovky"><a href="#s1">Přehled</a><a href="#s2">Průvodce · typ</a><a href="#s3">Průvodce · platba</a><a href="#s4">Soupiska</a><a href="#s5">Rozpis</a><a href="#s6">Průběh</a><a href="#s7">Dokončeno</a><a href="#s8">Pavouk</a></nav>
+  </header>
+
+  <!-- 1 PŘEHLED -->
+  <section class="sc" id="s1"><p class="eyebrow">01 · /manage/…/prehled</p><h2 class="t">Přehled komunity</h2>
+    <div class="cols"><div class="shot"><div class="k">
+      <aside class="k-side"><div class="k-logo"><i></i>Padel League</div><div class="k-new">+ Vytvořit event</div><div class="k-comm"><b>Kuba komunity</b>Klub · Teplice</div>
+        <nav class="k-nav"><span class="on"><i>▦</i>Přehled</span><span><i>⚡</i>Eventy</span><span><i>☺</i>Hráči</span><span><i>▲</i>Analytika</span><span><i>◇</i>Moderace</span><span><i>Kč</i>Platby</span><span><i>⚙</i>Nastavení</span></nav>
+        <span class="k-sp"></span><div class="k-comm">👁 Zobrazit jako hráč</div><div class="k-user"><i>J</i><span><b>Kuba</b>Organizátor</span></div></aside>
+      <div class="k-main">
+        <div class="k-photo" style="height:120px;padding:22px 26px;display:flex;align-items:center;justify-content:space-between"><img src="assets/img/court-blur-run.jpg" alt=""><div><div class="k-lbl" style="color:#C7DAE4">Tvoje komunita</div><div class="k-h1" style="color:#fff;font-size:32px;margin-top:6px">Kuba komunity</div><div style="font-size:12.5px;opacity:.85;margin-top:4px">Teplice · 1 člen</div></div><span style="display:flex;gap:8px"><span class="k-btn sec">Zobrazit komunitu</span><span class="k-btn go">+ Vytvořit event</span></span></div>
+        <div class="k-row">
+          <div class="k-card" style="flex:1"><div class="k-lbl">Členové</div><div class="k-big">1</div><div class="k-sub">za 30 dní beze změny</div></div>
+          <div class="k-card" style="flex:1"><div class="k-lbl">Nadcházející</div><div class="k-big">2</div><div class="k-sub">9 odehraných celkem</div></div>
+          <div class="k-card" style="flex:1"><div class="k-lbl">Registrace</div><div class="k-big">108</div><div class="k-sub">za posledních 30 dní</div></div>
+          <div class="k-card" style="flex:1"><div class="k-lbl">Platby</div><div class="k-big" style="font-size:20px">Na místě</div><div class="k-sub">Kartou přes Stripe, až budeš chtít ›</div></div>
+        </div>
+        <div class="k-row" style="flex:1;min-height:0">
+          <div class="k-photo v" style="flex:1.4;padding:18px 20px;display:flex;flex-direction:column;justify-content:space-between"><img src="assets/img/court-orange-close.jpg" alt="">
+            <div style="display:flex;gap:6px"><span class="k-pill vibe">Nejbližší event · za 8 dní</span><span class="k-pill open">Otevřeno</span></div>
+            <div><div class="k-h1" style="color:#fff;font-size:30px">Americano</div><div style="font-size:13px;opacity:.9;margin-top:4px">čt 15. 10. · 08:00 · Padel Klub Novosedlice</div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:14px"><div style="flex:1"><div style="font-size:12px;margin-bottom:6px">0/12 přihlášeno · zbývá 12 míst</div><div class="k-bar" style="background:rgba(255,255,255,.25)"><i style="width:2%;background:#fff"></i></div></div><span class="k-btn sec">⤴ Sdílet odkaz</span><span class="k-btn go">Spravovat</span></div></div></div>
+          <div class="k-card" style="flex:1;display:flex;flex-direction:column;gap:10px"><div class="k-lbl">Potřebuje pozornost</div>
+            <div class="k-pl"><span class="k-av" style="background:var(--soft);color:var(--navy)">!</span><b style="font-weight:500">Padelový večer s grilem: 2 nezaplatili</b><span class="k-btn sec" style="padding:7px 10px">Připomenout</span></div>
+            <div class="k-pl"><span class="k-av" style="background:var(--soft);color:var(--navy)">Kč</span><b style="font-weight:500">Vybírej příště kartou</b><span class="k-btn sec" style="padding:7px 10px">Připojit Stripe</span></div>
+            <div class="k-lbl" style="margin-top:6px">Poslední aktivita</div>
+            <div style="font-size:13px;color:var(--muted)">Ondřej P. se přihlásil na Padelový večer s grilem · před 3 dny</div></div>
+        </div>
+      </div></div></div>
+      <div class="chg"><b>Co se mění</b><ul>
+        <li>„Tournament mode“ → <b style="display:inline">Eventy</b>, „Vytvořit turnaj“ → „Vytvořit event“.</li>
+        <li>Banner komunity a karta nejbližšího eventu jsou fotky se ztmavením, ne tmavá plocha s logem.</li>
+        <li>Zelené tlačítko WhatsApp → neutrální <b style="display:inline">„Sdílet odkaz“</b>. Otevře sdílení s předvyplněným textem, odešle ho organizátor.</li>
+        <li>Karta „Příjmy · Připojit Stripe“ → <b style="display:inline">„Platby · Na místě“</b>. Stripe je nabídka, ne podmínka.</li>
+        <li>Stav eventu jako štítek („Otevřeno“) přímo na kartě.</li>
+        <li class="was">Graf registrací zůstává, jen je přesunutý pod kartu (mimo výřez).</li>
+      </ul></div></div>
+  </section>
+
+  <!-- 2 PRŮVODCE TYP -->
+  <section class="sc" id="s2"><p class="eyebrow">02 · /turnaje/create · krok 1</p><h2 class="t">Průvodce: Typ a formát</h2>
+    <div class="cols"><div class="shot"><div class="k">
+      <aside class="k-side"><div class="k-logo"><i></i>Padel League</div><div class="k-new">+ Vytvořit event</div><div class="k-comm"><b>Kuba komunity</b>Klub · Teplice</div>
+        <nav class="k-nav"><span><i>▦</i>Přehled</span><span class="on"><i>⚡</i>Eventy</span><span><i>☺</i>Hráči</span><span><i>▲</i>Analytika</span><span><i>Kč</i>Platby</span><span><i>⚙</i>Nastavení</span></nav><span class="k-sp"></span><div class="k-user"><i>J</i><span><b>Kuba</b>Organizátor</span></div></aside>
+      <div class="k-main">
+        <div style="display:flex;align-items:center;gap:16px"><span class="k-h1" style="font-size:22px">Nový event</span><span class="k-sp"></span><div class="k-wz"><span class="on"><i>1</i>Typ a formát</span><em></em><span><i>2</i>Termín a místo</span><em></em><span><i>3</i>Hráči a platba</span><em></em><span><i>4</i>Prezentace</span></div></div>
+        <div class="k-row" style="flex:1;min-height:0">
+          <div style="width:270px;display:flex;flex-direction:column;gap:10px">
+            <div class="k-lbl">Náhled pro hráče</div>
+            <div class="k-card" style="padding:0;overflow:hidden"><div class="k-photo" style="border-radius:0;height:120px;padding:10px"><img src="assets/img/court-serve.jpg" alt=""><div style="display:flex;justify-content:space-between"><span class="k-pill vibe">Social</span><span class="k-pill draft" style="background:rgba(255,255,255,.9)">Koncept</span></div></div>
+              <div style="padding:12px 14px;display:flex;flex-direction:column;gap:4px"><span style="font:700 10.5px/1 var(--f-body);letter-spacing:.1em;color:var(--navy)">ST 7. 10. · 20:00</span><b class="k-h2">Nový event</b><span class="k-sub" style="margin:0">Místo konání</span><span style="display:flex;gap:5px;margin-top:4px"><span class="k-pp site">Americano · rotující partneři</span></span><div class="k-bar" style="margin-top:8px"><i style="width:0"></i></div><span class="k-sub">0/16 · zbývá 16 míst</span><span class="k-btn go" style="justify-content:center;margin-top:6px">Přihlásit se</span></div></div>
+            <div class="k-note">Hráči se přihlásí sami. Rozpis se připraví až po potvrzení soupisky před startem.</div>
+          </div>
+          <div class="k-card" style="flex:1;display:flex;flex-direction:column;gap:12px">
+            <div class="k-lbl">Typ eventu *</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"><div class="k-opt"><span class="ic">🏆</span><b>Competitive</b><small>Výsledky, pořadí a výkon.</small></div><div class="k-opt on"><span class="ic">◎</span><b>Social</b><small>Komunita, networking a lehčí tempo.</small></div><div class="k-opt"><span class="ic">○</span><b>Training</b><small>Volnější hraní bez tlaku.</small></div></div>
+            <div class="k-lbl">Formát *</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"><div class="k-opt on"><b>Americano</b><small>Jednotlivci, rotující partneři</small></div><div class="k-opt"><b>Mexicano</b><small>Žebříček určuje další kolo</small></div><div class="k-opt"><b>Round Robin</b><small>Páry, každý s každým</small></div><div class="k-opt"><b>Bez herního systému</b><small>Registrace bez rozpisu</small></div></div>
+            <div class="k-note"><b style="color:var(--navy)">Jak funguje Americano</b> · Každý hráč nastupuje sám. Po každém kole se losují nové dvojice i soupeři a body se sčítají do osobního žebříčku. <span class="k-pp site" style="margin-left:6px">8–24 hráčů</span></div>
+            <div class="k-lbl">Varianta Americana</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"><div class="k-opt on"><b>Classic</b><small>Jednotlivci, rotující partneři</small></div><div class="k-opt"><b>Team</b><small>Pevné dvojice po celý event</small></div><div class="k-opt"><b>Mixed</b><small>Rotace se smíšenými dvojicemi</small></div></div>
+            <span class="k-sp"></span><div style="display:flex;justify-content:space-between"><span class="k-btn sec">Zrušit</span><span class="k-btn go">Pokračovat ›</span></div>
+          </div>
+        </div>
+      </div></div></div>
+      <div class="chg"><b>Co se mění</b><ul>
+        <li>Kroky, pole i pořadí jsou beze změny.</li>
+        <li>Náhled vlevo je karta eventu se štítkem stavu „Koncept“ a fotkou místo tmavé plochy s logem.</li>
+        <li>Vybraná volba je navy rámeček, oranžová zůstává jen u „Pokračovat“.</li>
+        <li>„Nový turnaj“ → „Nový event“.</li>
+        <li class="was">Dnes: náhled na tmavém podkladu, vybrané karty oranžové, tlačítko „Registrovat a zaplatit“ i u eventu zdarma.</li>
+      </ul></div></div>
+  </section>
+
+  <!-- 3 PRŮVODCE PLATBA -->
+  <section class="sc" id="s3"><p class="eyebrow">03 · /turnaje/create · krok 3 a 4</p><h2 class="t">Průvodce: Hráči a platba</h2>
+    <div class="cols"><div class="shot"><div class="k">
+      <aside class="k-side"><div class="k-logo"><i></i>Padel League</div><div class="k-new">+ Vytvořit event</div><div class="k-comm"><b>Kuba komunity</b>Klub · Teplice</div>
+        <nav class="k-nav"><span><i>▦</i>Přehled</span><span class="on"><i>⚡</i>Eventy</span><span><i>☺</i>Hráči</span><span><i>Kč</i>Platby</span></nav><span class="k-sp"></span><div class="k-user"><i>J</i><span><b>Kuba</b>Organizátor</span></div></aside>
+      <div class="k-main">
+        <div style="display:flex;align-items:center;gap:16px"><span class="k-h1" style="font-size:22px">Nový event</span><span class="k-sp"></span><div class="k-wz"><span class="done"><i>✓</i>Typ a formát</span><em></em><span class="done"><i>✓</i>Termín a místo</span><em></em><span class="on"><i>3</i>Hráči a platba</span><em></em><span><i>4</i>Prezentace</span></div></div>
+        <div class="k-row" style="flex:1;min-height:0">
+          <div class="k-card" style="flex:1;display:flex;flex-direction:column;gap:12px">
+            <div class="k-lbl">Kdo může hrát</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"><div class="k-opt on"><b>Smíšení</b></div><div class="k-opt"><b>Pouze muži</b></div><div class="k-opt"><b>Pouze ženy</b></div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="k-opt"><small>Úroveň od</small><b>Bez omezení</b></div><div class="k-opt"><small>Úroveň do</small><b>Bez omezení</b></div></div>
+            <div class="k-lbl">Viditelnost</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"><div class="k-opt on"><b>Veřejný</b></div><div class="k-opt"><b>Jen odkaz</b></div><div class="k-opt"><b>Komunita</b></div></div>
+          </div>
+          <div class="k-card" style="flex:1;display:flex;flex-direction:column;gap:12px">
+            <div class="k-lbl">Vstupné a platba</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="k-opt on"><b>Placený</b></div><div class="k-opt"><b>Zdarma</b></div></div>
+            <div class="k-opt"><small>Vstupné za hráče</small><b style="font-size:20px">200&nbsp;Kč</b></div>
+            <div class="k-lbl">Jak se platí</div>
+            <div class="k-opt on"><span style="display:flex;gap:8px;align-items:center"><b>Na místě</b><span class="k-tag">výchozí</span></span><small>Hotově nebo převodem u kurtu. Kdo zaplatil, si odškrtáš v soupisce.</small></div>
+            <div class="k-opt"><b>Online kartou (Stripe)</b><small>Připojíš kdykoli, i po zveřejnění. Do té doby hráči platí na místě.</small></div>
+            <span class="k-sp"></span><div style="display:flex;justify-content:space-between;align-items:center"><span class="k-btn sec">Zpět</span><span class="k-btn go">Pokračovat ›</span></div>
+          </div>
+          <div class="k-card" style="width:250px;display:flex;flex-direction:column;gap:10px"><div class="k-lbl">Krok 4 · Prezentace</div>
+            <div class="k-opt"><small>Text ke sdílení</small><span style="font-size:12px;line-height:1.45">🎾 Páteční Americano<br>📅 pá 30. 10. · 18:00<br>📍 Padel Klub Novosedlice<br>👥 16 míst · Americano<br>Přihlas se tady 👇</span></div>
+            <div class="k-note">Předvyplní se, když sdílíš odkaz (WhatsApp, Messenger, SMS). Sám se nikam neposílá.</div>
+            <span class="k-sp"></span><span class="k-btn go" style="justify-content:center">Publikovat event</span><span class="k-sub" style="text-align:center;margin:0">Zveřejnit jde vždy.</span></div>
+        </div>
+      </div></div></div>
+      <div class="chg"><b>Co se mění</b><ul>
+        <li><b style="display:inline">„Platba probíhá pouze online přes Stripe“ a varování bez Stripe nahrazují dvě volby:</b> Na místě (výchozí) a Online kartou. Podle Kubova pravidla jde publikovat vždy.</li>
+        <li>„WhatsApp zpráva“ → „Text ke sdílení“ s poznámkou, že se nic neposílá samo.</li>
+        <li>„Publikovat turnaj“ → „Publikovat event“, tlačítko nikdy šedé.</li>
+        <li class="was">[OTÁZKA] V testovací verzi „na místě“ jako volba v průvodci chybí, i když ho starší eventy mají. Je to plánované?</li>
+      </ul></div></div>
+  </section>
+
+  <!-- 4 SOUPISKA -->
+  <section class="sc" id="s4"><p class="eyebrow">04 · /turnaje/{id} · krok 1 enginu</p><h2 class="t">Soupiska</h2>
+    <div class="cols"><div class="shot"><div class="k">
+      <aside class="k-side"><div class="k-logo"><i></i>Padel League</div><div class="k-new">+ Vytvořit event</div><div class="k-comm"><b>Kuba komunity</b>Klub · Teplice</div>
+        <nav class="k-nav"><span><i>▦</i>Přehled</span><span class="on"><i>⚡</i>Eventy</span><span><i>☺</i>Hráči</span><span><i>Kč</i>Platby</span></nav><span class="k-sp"></span><div class="k-user"><i>J</i><span><b>Kuba</b>Organizátor</span></div></aside>
+      <div class="k-main">
+        <div class="k-photo" style="padding:16px 20px;display:flex;flex-direction:column;gap:12px;flex:none"><img src="assets/img/court-orange-close.jpg" alt="">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="display:flex;gap:6px"><span class="k-pill fmt">Americano</span><span class="k-pill closed">Uzavřeno · příprava</span></div><div class="k-h1" style="color:#fff;margin-top:8px">Páteční Americano</div><div style="font-size:12.5px;opacity:.9;margin-top:2px">pá 30. 10. · 18:00 · Padel Klub Novosedlice · 14 hráčů</div></div><span class="k-btn sec">✎ Upravit event</span></div>
+          <div class="k-steps"><span class="on"><i>1</i>Soupiska</span><span><i>2</i>Nastavení</span><span><i>3</i>Rozpis</span><span><i>4</i>Spuštění</span></div></div>
+        <div class="k-row" style="flex:1;min-height:0">
+          <div class="k-card" style="flex:1;display:flex;flex-direction:column;gap:8px;overflow:hidden"><div style="display:flex;justify-content:space-between;align-items:center"><b class="k-h2">Hráči · 14/16</b><span style="display:flex;gap:8px"><span class="k-btn sec">⤴ Sdílet odkaz</span><span class="k-btn sec">+ Přidat hráče</span></span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div class="k-pl"><span class="k-av">TN</span><b>Tomáš Novák</b><span class="k-pp paid">Zaplaceno</span><span class="k-pp ns">Nedorazil</span></div>
+              <div class="k-pl"><span class="k-av">PS</span><b>Petr Svoboda</b><span class="k-pp site">Na místě</span><span class="k-pp ns">Nedorazil</span></div>
+              <div class="k-pl"><span class="k-av">LD</span><b>Lukáš Dvořák</b><span class="k-pp paid">Zaplaceno</span><span class="k-pp ns">Nedorazil</span></div>
+              <div class="k-pl"><span class="k-av">TH</span><b>Tereza Hájková</b><span class="k-pp unpaid">Nezaplaceno</span><span class="k-pp ns">Nedorazil</span></div>
+              <div class="k-pl"><span class="k-av">EK</span><b>Eliška Králová</b><span class="k-pp site">Na místě</span><span class="k-pp ns">Nedorazil</span></div>
+              <div class="k-pl"><span class="k-av">AJ</span><b>Anna Jelínková</b><span class="k-pp paid">Zaplaceno</span><span class="k-pp ns">Nedorazil</span></div>
+              <div class="k-pl" style="opacity:.55"><span class="k-av">KR</span><b>Klára Růžičková</b><span class="k-pp site">Na místě</span><span class="k-pp" style="background:#FDECEC;color:#B42318">Nedorazila</span></div>
+              <div class="k-pl"><span class="k-av">OP</span><b>Ondřej Procházka</b><span class="k-pp paid">Zaplaceno</span><span class="k-pp ns">Nedorazil</span></div>
+            </div>
+            <div class="k-lbl" style="margin-top:4px">Čekací listina · 2</div>
+            <div class="k-pl"><span class="k-av" style="background:var(--soft);color:var(--navy)">1</span><b>Jakub Marek</b><span class="k-btn sec" style="padding:6px 10px">Přesunout</span></div>
+          </div>
+          <div class="k-card" style="width:280px;display:flex;flex-direction:column;gap:12px"><b class="k-h2">Kontrola před startem</b>
+            <div class="k-ck"><span>Minimálně 4 hráči</span><span>Platby: 6 kartou · 5 na místě · 3 nezaplaceno</span><span>Hraje 13 (1 nedorazila)</span><span>Každé kolo odpočívá 1 hráč</span></div>
+            <div class="k-note">Nezaplaceným pošle aplikace připomínku e-mailem. <u>Připomenout 3</u></div>
+            <span class="k-sp"></span><span class="k-btn go" style="justify-content:center">Potvrdit soupisku ›</span></div>
+        </div>
+      </div></div></div>
+      <div class="chg"><b>Co se mění</b><ul>
+        <li>Hlavička eventu je fotka s ztmavením a stavem („Uzavřeno · příprava“) místo samotného navy pruhu.</li>
+        <li>U každého hráče stav platby ve třech barvách (Zaplaceno / Na místě / Nezaplaceno). Dnes je jen „Zdarma“.</li>
+        <li>„Nedorazil“ se po kliknutí zbarví a řádek zešedne.</li>
+        <li>V Kontrole před startem je počet nezaplacených a připomínka e-mailem.</li>
+        <li>„Sdílet odkaz“ je i tady. Po zveřejnění je soupiska první, co organizátor vidí.</li>
+      </ul></div></div>
+  </section>
+
+  <!-- 5 ROZPIS -->
+  <section class="sc" id="s5"><p class="eyebrow">05 · krok 3 enginu</p><h2 class="t">Rozpis</h2>
+    <div class="cols"><div class="shot"><div class="k">
+      <aside class="k-side"><div class="k-logo"><i></i>Padel League</div><div class="k-new">+ Vytvořit event</div><div class="k-comm"><b>Kuba komunity</b>Klub · Teplice</div>
+        <nav class="k-nav"><span><i>▦</i>Přehled</span><span class="on"><i>⚡</i>Eventy</span><span><i>☺</i>Hráči</span></nav><span class="k-sp"></span><div class="k-user"><i>J</i><span><b>Kuba</b>Organizátor</span></div></aside>
+      <div class="k-main">
+        <div class="k-photo" style="padding:14px 20px;flex:none"><img src="assets/img/court-orange-close.jpg" alt=""><div class="k-steps"><span class="done"><i>✓</i>Soupiska</span><span class="done"><i>✓</i>Nastavení</span><span class="on"><i>3</i>Rozpis</span><span><i>4</i>Spuštění</span></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><div><b class="k-h2">Náhled rozpisu</b><div class="k-sub">3 kola · 6 zápasů · <span style="color:var(--ok);font-weight:700">Nikdo nemá stejného parťáka 2×</span> · soupeři 4–6 ze 7</div></div><span class="k-btn sec">↻ Přegenerovat rozpis</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="k-round"><h4><i>1</i>Kolo 1<small>2 zápasy</small></h4>
+            <div class="k-m"><span class="k-c"><small>Kurt</small>1</span><div class="k-t"><span>Tomáš Novák</span><span>Jan Kučera</span></div><span class="k-vs">vs</span><div class="k-t b"><span>Petr Svoboda</span><span>Lucie Benešová</span></div></div>
+            <div class="k-m"><span class="k-c"><small>Kurt</small>2</span><div class="k-t"><span>Klára Růžičková</span><span>Martin Černý</span></div><span class="k-vs">vs</span><div class="k-t b"><span>Anna Jelínková</span><span>Lukáš Dvořák</span></div></div>
+            <div class="k-m" style="grid-template-columns:1fr;color:var(--muted);font-size:12.5px">Odpočívá: Ondřej Procházka</div></div>
+          <div class="k-round"><h4><i>2</i>Kolo 2<small>2 zápasy</small></h4>
+            <div class="k-m"><span class="k-c"><small>Kurt</small>1</span><div class="k-t"><span>Tomáš Novák</span><span>Anna Jelínková</span></div><span class="k-vs">vs</span><div class="k-t b"><span>Ondřej Procházka</span><span>Klára Růžičková</span></div></div>
+            <div class="k-m"><span class="k-c"><small>Kurt</small>2</span><div class="k-t"><span>Petr Svoboda</span><span>Martin Černý</span></div><span class="k-vs">vs</span><div class="k-t b"><span>Jan Kučera</span><span>Lukáš Dvořák</span></div></div>
+            <div class="k-m" style="grid-template-columns:1fr;color:var(--muted);font-size:12.5px">Odpočívá: Lucie Benešová</div></div>
+        </div>
+        <span class="k-sp"></span><div style="display:flex;justify-content:space-between"><span class="k-btn sec">Zpět</span><span class="k-btn go">Pokračovat ke spuštění ›</span></div>
+      </div></div></div>
+      <div class="chg"><b>Co se mění</b><ul>
+        <li>Struktura zůstává: kolo jako karta s navy hlavičkou, kurt vlevo, jména pod sebou.</li>
+        <li>Odznak kurtu je navy na světlém podkladu místo oranžového.</li>
+        <li>Řádek „Odpočívá“ je přímo v kartě kola.</li>
+        <li>Statistika partnerů je jedna věta se zelenou kontrolou.</li>
+      </ul></div></div>
+  </section>
+
+  <!-- 6 PRŮBĚH -->
+  <section class="sc" id="s6"><p class="eyebrow">06 · live</p><h2 class="t">Průběh a zadání skóre</h2>
+    <div class="cols"><div class="shot"><div class="k">
+      <aside class="k-side"><div class="k-logo"><i></i>Padel League</div><div class="k-new">+ Vytvořit event</div><div class="k-comm"><b>Kuba komunity</b>Klub · Teplice</div>
+        <nav class="k-nav"><span><i>▦</i>Přehled</span><span class="on"><i>⚡</i>Eventy</span><span><i>☺</i>Hráči</span></nav><span class="k-sp"></span><div class="k-user"><i>J</i><span><b>Kuba</b>Organizátor</span></div></aside>
+      <div class="k-main">
+        <div class="k-card" style="display:flex;align-items:center;gap:16px;padding:14px 18px"><div style="flex:1"><div style="display:flex;gap:6px"><span class="k-pill" style="background:var(--navy);color:#fff">Americano</span><span class="k-pill live">Probíhá</span></div><div class="k-h2" style="margin-top:6px;font-size:20px">Páteční Americano · aktivní kolo 2 ze 3</div></div>
+          <div class="k-tabs"><span class="d">1</span><span class="on">2</span><span>3</span></div><span class="k-btn sec">⏸ Pozastavit</span><span class="k-btn sec">✎ Opravit</span><span class="k-btn sec">⤴ Živé výsledky</span></div>
+        <div class="k-row" style="flex:1;min-height:0;gap:18px">
+          <div style="flex:1.2;display:flex;flex-direction:column;gap:4px">
+            <div class="k-court done"><div class="k-sc"><span class="k-sb">09</span><span class="k-sb win">15</span></div><span class="k-ok k-pp" style="background:var(--ok-bg);color:var(--ok)">Zapsáno</span><div class="k-teams"><span>Tomáš Novák<br>Anna Jelínková</span><span>Ondřej Procházka<br>Klára Růžičková</span></div><span class="k-courtlbl">Kurt 1</span></div>
+            <div class="k-court todo" style="margin-top:32px"><div class="k-sc"><span class="k-sb e">00</span><span class="k-sb e">00</span></div><span class="k-enter">Zadat skóre</span><div class="k-teams"><span>Petr Svoboda<br>Martin Černý</span><span>Jan Kučera<br>Lukáš Dvořák</span></div><span class="k-courtlbl">Kurt 2</span></div>
+            <div style="margin-top:22px;font-size:13px;color:var(--muted)"><b style="color:var(--ink)">Odpočívá:</b> Lucie Benešová</div>
+          </div>
+          <div class="k-card" style="flex:1;padding:0;overflow:hidden"><div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px"><b class="k-h2">Průběžné pořadí</b><span class="k-pill live">Live</span></div>
+            <table class="k-tbl"><thead><tr><th>#</th><th>Hráč</th><th>Body</th><th>V-R-P</th><th>+/−</th></tr></thead><tbody>
+              <tr class="m1"><td><span class="pos">1</span></td><td class="nm">Klára R.</td><td class="pts">29</td><td>2-0-0</td><td><span class="k-df up">+10</span></td></tr>
+              <tr class="m2"><td><span class="pos">2</span></td><td class="nm">Ondřej P.</td><td class="pts">27</td><td>2-0-0</td><td><span class="k-df up">+8</span></td></tr>
+              <tr class="m3"><td><span class="pos">3</span></td><td class="nm">Anna J.</td><td class="pts">23</td><td>1-0-1</td><td><span class="k-df up">+2</span></td></tr>
+              <tr><td><span class="pos">4</span></td><td class="nm">Tomáš N.</td><td class="pts">21</td><td>1-0-1</td><td><span class="k-df dn">−4</span></td></tr>
+              <tr><td><span class="pos">5</span></td><td class="nm">Petr S.</td><td class="pts">14</td><td>1-0-0</td><td><span class="k-df up">+4</span></td></tr></tbody></table></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px"><span class="k-btn sec">+ Kolo navíc</span><span class="k-btn go">Další kolo ›</span></div>
+      </div></div></div>
+      <div class="chg"><b>Co se mění</b><ul>
+        <li>Skóre je velké číslo nad každým týmem (jako v PadelMixu). Kliknutím na číslo se zadají body, druhý tým dostane zbytek.</li>
+        <li>Oranžový okraj = čeká na skóre, zelený = zapsáno. Vítěz je navy, poražený šedý.</li>
+        <li>Tabulka: Body a V-R-P, rozdíl jako barevný štítek. Sloupce Z, V, R, P zvlášť zabírají místo.</li>
+        <li>Stav „LIVE“ a „Probíhá“ sjednocené na <b style="display:inline">Probíhá</b>.</li>
+        <li>„Živé výsledky“ otevře odkaz a QR kód pro hráče.</li>
+      </ul></div></div>
+  </section>
+
+  <!-- 7 DOKONČENO -->
+  <section class="sc" id="s7"><p class="eyebrow">07 · dokončeno</p><h2 class="t">Odehráno: výsledky a peníze</h2>
+    <div class="cols"><div class="shot"><div class="k">
+      <aside class="k-side"><div class="k-logo"><i></i>Padel League</div><div class="k-new">+ Vytvořit event</div><div class="k-comm"><b>Kuba komunity</b>Klub · Teplice</div>
+        <nav class="k-nav"><span><i>▦</i>Přehled</span><span class="on"><i>⚡</i>Eventy</span><span><i>☺</i>Hráči</span></nav><span class="k-sp"></span><div class="k-user"><i>J</i><span><b>Kuba</b>Organizátor</span></div></aside>
+      <div class="k-main">
+        <div class="k-row" style="flex:none">
+          <div class="k-photo v" style="flex:1.2;height:200px;padding:16px 20px;display:flex;flex-direction:column;justify-content:space-between"><img src="assets/img/court-blue-orange.jpg" alt=""><div style="display:flex;gap:6px"><span class="k-pill fmt">Americano</span><span class="k-pill done">Odehráno</span></div>
+            <div><div style="color:#F6C945;font:700 11px/1 var(--f-body);letter-spacing:.14em">🏆 VÍTĚZ EVENTU</div><div class="k-h1" style="color:#fff;font-size:34px;margin-top:6px">Klára Růžičková</div><div style="font-size:13px;margin-top:4px">49 bodů · 3 výhry · +18</div></div></div>
+          <div class="k-card" style="flex:1;display:flex;flex-direction:column;gap:8px"><div class="k-lbl">Vybráno</div><div class="k-big" style="font-size:38px;margin:0">2&nbsp;400&nbsp;Kč</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="k-pp" style="background:var(--ok-bg);color:var(--ok)">Zaplaceno 12/14</span><span class="k-pp site">Přišlo 13/14</span><span class="k-pp unpaid">Nezaplaceno 2</span></div>
+            <div style="font-size:13px;color:var(--muted)">Tereza H., Jan K. · <u>Připomenout e-mailem</u></div></div>
+        </div>
+        <div class="k-row" style="flex:1;min-height:0">
+          <div class="k-card" style="flex:1.2;padding:0;overflow:hidden"><div style="padding:12px 14px;display:flex;justify-content:space-between"><b class="k-h2">Konečné pořadí</b><span class="k-sub" style="margin:0">Body po kolech ›</span></div>
+            <table class="k-tbl"><thead><tr><th>#</th><th>Hráč</th><th>Body</th><th>V-R-P</th><th>+/−</th></tr></thead><tbody>
+              <tr class="m1"><td><span class="pos">1</span></td><td class="nm">Klára Růžičková</td><td class="pts">49</td><td>3-0-0</td><td><span class="k-df up">+18</span></td></tr>
+              <tr class="m2"><td><span class="pos">2</span></td><td class="nm">Ondřej Procházka</td><td class="pts">44</td><td>2-0-1</td><td><span class="k-df up">+12</span></td></tr>
+              <tr class="m3"><td><span class="pos">3</span></td><td class="nm">Anna Jelínková</td><td class="pts">40</td><td>2-0-1</td><td><span class="k-df up">+6</span></td></tr>
+              <tr><td><span class="pos">4</span></td><td class="nm">Tomáš Novák</td><td class="pts">36</td><td>1-0-2</td><td><span class="k-df dn">−2</span></td></tr></tbody></table></div>
+          <div class="k-card" style="flex:1;display:flex;flex-direction:column;gap:10px"><div class="k-lbl">Co dál</div>
+            <div class="k-pl"><span class="k-av" style="background:var(--soft);color:var(--navy)">↻</span><b>Další event · stejné nastavení</b><span class="k-btn go" style="padding:8px 11px">Založit</span></div>
+            <div class="k-pl"><span class="k-av" style="background:var(--soft);color:var(--navy)">◎</span><b style="font-weight:500">Karta výsledku pro Instagram</b><span class="k-btn sec" style="padding:7px 10px">Sdílet</span></div>
+            <div class="k-pl"><span class="k-av" style="background:var(--soft);color:var(--navy)">Kč</span><b style="font-weight:500">Vybírej příště kartou</b><span class="k-btn sec" style="padding:7px 10px">Stripe</span></div>
+          </div>
+        </div>
+      </div></div></div>
+      <div class="chg"><b>Co se mění</b><ul>
+        <li>Vítěz je karta s fotkou, ne tmavá plocha s konfetami.</li>
+        <li><b style="display:inline">Nové:</b> vybráno, zaplaceno, přišlo a nezaplaceno s připomínkou. Kuba si tuhle funkci bere do kódu.</li>
+        <li><b style="display:inline">Nové:</b> „Co dál“ s „Další event · stejné nastavení“ jako hlavní akcí.</li>
+        <li>„Hotovo“ i „Dokončeno“ → <b style="display:inline">Odehráno</b>. „Vítěz turnaje“ → „Vítěz eventu“.</li>
+      </ul></div></div>
+  </section>
+
+  <!-- 8 PAVOUK -->
+  <section class="sc" id="s8"><p class="eyebrow">08 · /e/playoff-6-paru · záložka Playoff</p><h2 class="t">Pavouk na stránce eventu</h2>
+    <div class="cols"><div class="shot"><div class="k" style="flex-direction:column;background:#F4F7F9">
+      <div style="background:var(--navy);color:#fff;padding:12px 28px;display:flex;justify-content:space-between;align-items:center"><span class="k-logo" style="padding:0"><i></i>Padel League</span><span style="font-size:13px">Kuba</span></div>
+      <div style="padding:18px 60px;display:flex;flex-direction:column;gap:14px;flex:1;min-height:0">
+        <div class="k-photo" style="height:120px;padding:16px 22px;display:flex;flex-direction:column;justify-content:flex-end;flex:none"><img src="assets/img/court-dark-run.jpg" alt=""><div style="display:flex;gap:6px"><span class="k-pill fmt">Playoff</span><span class="k-pill vibe">Competitive</span><span class="k-pill done">Odehráno</span></div><div class="k-h1" style="color:#fff;margin-top:8px">Playoff 6 párů</div></div>
+        <div style="display:flex;gap:6px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:5px;align-self:flex-start"><span style="padding:8px 16px;border-radius:10px;font-size:13px">Přehled</span><span style="padding:8px 16px;border-radius:10px;font-size:13px;background:var(--navy);color:#fff;font-weight:700">Playoff</span><span style="padding:8px 16px;border-radius:10px;font-size:13px">Výsledky</span></div>
+        <div class="k-card" style="display:grid;grid-template-columns:repeat(3,1fr);gap:26px;align-items:center;flex:1;min-height:0">
+          <div style="display:flex;flex-direction:column;gap:10px"><div class="k-lbl">Čtvrtfinále</div>
+            <div class="k-mt"><div class="w"><span>Novák / Svoboda</span><b>–</b></div><div><span><i>volný los</i></span><b></b></div></div>
+            <div class="k-mt"><div class="w"><span>Veselý / Horák</span><b>6:3</b></div><div><span>Němec / Marek</span><b></b></div></div>
+            <div class="k-mt"><div class="w"><span>Dvořák / Černý</span><b>–</b></div><div><span><i>volný los</i></span><b></b></div></div>
+            <div class="k-mt"><div><span>Procházka / Kučera</span><b></b></div><div class="w"><span>Pokorný / Pospíšil</span><b>6:4</b></div></div></div>
+          <div style="display:flex;flex-direction:column;gap:40px"><div class="k-lbl">Semifinále</div>
+            <div class="k-mt"><div><span>Novák / Svoboda</span><b></b></div><div class="w"><span>Veselý / Horák</span><b>6:3</b></div></div>
+            <div class="k-mt"><div class="w"><span>Dvořák / Černý</span><b>6:4</b></div><div><span>Pokorný / Pospíšil</span><b></b></div></div></div>
+          <div style="display:flex;flex-direction:column;gap:16px"><div class="k-lbl">Finále</div>
+            <div class="k-mt f"><div class="meta">🏆 Finále</div><div class="w"><span>Veselý / Horák</span><b>6:4</b></div><div><span>Dvořák / Černý</span><b></b></div></div>
+            <div class="k-mt"><div class="meta">O 3. místo</div><div class="w"><span>Novák / Svoboda</span><b>7:5</b></div><div><span>Pokorný / Pospíšil</span><b></b></div></div></div>
+        </div>
+      </div>
+    </div></div>
+      <div class="chg"><b>Co se mění</b><ul>
+        <li>Fáze ve sloupcích vedle sebe místo jednoho dlouhého seznamu.</li>
+        <li>Skóre jednou („6:3“), ne „1 : 0 (6:3)“. Vítěz tučně navy, poražený šedě.</li>
+        <li>„BYE“ → „volný los“.</li>
+        <li>Finále se zlatým rámečkem, zápas o 3. místo pod ním.</li>
+        <li>Banner je fotka, stavy sjednocené („Dokončeno“ → „Odehráno“).</li>
+        <li class="was">Na telefonu fáze jako záložky, viz <a href="vizualni-vrstva.html#pavouk">Vizuální vrstva</a>.</li>
+      </ul></div></div>
+  </section>
+
+  <footer>Návrh pro PadelLeague · Princová &amp; Fikarová · podklad: testovací verze ze 7. 10. 2026 · jména a čísla jsou ukázková.</footer>
+</div>
+<script>
+/* Obrazovky 1280 × 800 se zmenší na šířku sloupce */
+(function () {
+  function fit() { document.querySelectorAll('.shot').forEach(function (s) { var k = s.firstElementChild; k.style.transform = 'scale(' + (s.clientWidth / 1280) + ')'; }); }
+  window.addEventListener('resize', fit); fit(); if (window.plGlue) plGlue();
+  if (document.fonts) document.fonts.ready.then(fit);
+})();
+</script>
+</body>
+</html>

@@ -28,8 +28,12 @@
   function frame(tone, inner, d, o, extraCls) {
     return '<div class="g g-feed tone-' + tone + (extraCls ? ' ' + extraCls : '') + '">' + inner + head(d) + foot(o) + '</div>';
   }
+  /* Story 1080 × 1920: fotka přes celou plochu, text a logo jen v bezpečné zóně Meta pro reklamy
+     (14 % nahoře = 269 px, 35 % dole = 672 px, 6 % po stranách = 65 px; my držíme 90 px). */
   function sframe(tone, inner, extraCls) {
-    return '<div class="g g-story tone-' + tone + (extraCls ? ' ' + extraCls : '') + '">' + inner + '<div class="g-sfoot"><span class="g-logo">' + LOGO.full + '</span></div></div>';
+    var bg = '', m = inner.match(/^<div class="g-photo">[\s\S]*?<div class="g-grain"><\/div><\/div>/);
+    if (m) { bg = m[0]; inner = inner.slice(m[0].length); }
+    return '<div class="g g-story tone-' + tone + (extraCls ? ' ' + extraCls : '') + '">' + bg + '<div class="s-safe">' + inner + '<div class="g-sfoot"><span class="g-logo">' + LOGO.full + '</span></div></div></div>';
   }
   function going(ev) { return ev.going.length; }
   function leftTxt(n) { return n === 1 ? 'ZBÝVÁ 1 MÍSTO' : (n >= 2 && n <= 4 ? 'ZBÝVAJÍ ' + n + ' MÍSTA' : 'ZBÝVÁ ' + n + ' MÍST'); }
@@ -162,7 +166,7 @@
       '<p class="g-sub">„Zahraju si s každým.“</p></div><div class="g-foot"><span class="g-logo">' + LOGO.full + '</span><span class="g-dots"></span></div></div>';
   };
 
-  /* ---------- STORIES 1080 × 1920 (bezpečná zóna: 250 px nahoře, 340 px dole) ---------- */
+  /* ---------- STORIES 1080 × 1920 (bezpečná zóna Meta: 269 px nahoře, 672 px dole, 65 px po stranách) ---------- */
   var S = {};
   S.st = function (d) {
     var tone = d.photo ? 'photo' : (d.tone || 'navy');

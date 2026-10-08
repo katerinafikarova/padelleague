@@ -6,7 +6,7 @@
 <title>PadelLeague · Pošli odkaz</title>
 <meta name="description" content="Nikdy víc nehoníš peníze ani jména. Pošli jeden odkaz, hráči se přihlásí a zaplatí sami.">
 <meta name="theme-color" content="#034867">
-<link rel="stylesheet" href="assets/css/app.css?v=15">
+<link rel="stylesheet" href="assets/css/app.css?v=19">
 <style>
   body{background:var(--ground);color:var(--ink);font-size:17px;line-height:1.55}
   .lp{max-width:1120px;margin:0 auto;padding-inline:20px}
@@ -47,7 +47,8 @@
   .see li{margin-bottom:8px}
   .final{position:relative;overflow:hidden;color:#fff;border-radius:30px;padding:72px 32px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px;background:#0b2a3a}
   .final>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .final::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,47,68,.25),rgba(2,47,68,.7))}
+  .final::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,20,30,.62),rgba(4,20,30,.8))}
+  .final h2{text-shadow:0 2px 16px rgba(0,0,0,.5)}
   .final>*:not(img){position:relative;z-index:1}
   .later{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px}
   .later>div{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
@@ -72,7 +73,28 @@
     section.s{padding-block:56px}
     .nav .hide-m{display:none}
   }
+  .nav .logo{white-space:nowrap}
+  @media (max-width:440px){
+    .nav .lp{gap:8px}
+    .nav .logo{font-size:12px}
+    .nav .btn.sm{font-size:0;padding:10px 12px;white-space:nowrap}
+    .nav .btn.sm::after{content:attr(data-short);font-size:11.5px;letter-spacing:.04em}
+    .nav .lang-sw button{padding:5px 8px}
+  }
+  @media (max-width:350px){.nav .lang-sw{display:none}}
 </style>
+<script>
+/* Čísla se nelámou od slov a „·“ nezačíná řádek (stejné pravidlo jako v aplikaci) */
+window.plGlue = function (root) {
+  var w = document.createTreeWalker(root || document.body, NodeFilter.SHOW_TEXT), n;
+  while ((n = w.nextNode())) {
+    if (/^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName)) continue;
+    var s = n.data, o = s.replace(/(\d[.,]?) (?=[\dA-Za-zÀ-ž(%])/g, '$1\u00a0').replace(/([A-Za-zÀ-ž]) (\d)/g, '$1\u00a0$2').replace(/ · /g, '\u00a0· ').replace(/ ([–—-]) /g, '\u00a0$1 ').replace(/(\d)[–-](\d)/g, '$1\u2060–\u2060$2').replace(/(\d) : (\d)/g, '$1\u00a0:\u00a0$2');
+    if (o !== s) n.data = o;
+  }
+};
+document.addEventListener('DOMContentLoaded', function () { plGlue(); });
+</script>
 </head>
 <body>
 <header class="nav"><div class="lp">
@@ -80,7 +102,7 @@
   <span style="display:flex;gap:14px;align-items:center">
     <a class="sm hide-m" href="#how" data-en="How it works">Jak to funguje</a><a class="sm hide-m" href="#faq" data-en="FAQ">Otázky</a>
     <span class="lang-sw" role="group" aria-label="Jazyk"><button data-lang="cs">CZ</button><button data-lang="en">EN</button></span>
-    <a class="btn sm" href="index.html#/o-new" data-cta data-en="First event free">První event zdarma</a>
+    <a class="btn sm" href="index.html#/o-new" data-cta data-short="Vytvořit event" data-en="First event free">První event zdarma</a>
   </span>
 </div></header>
 
@@ -198,6 +220,8 @@
     document.querySelectorAll('[data-cta]').forEach(function (a) { a.href = 'index.html?lang=' + lang + '#/o-new'; });
     document.querySelectorAll('[data-player]').forEach(function (a) { a.href = 'index.html?lang=' + lang + '#/p-event'; });
     document.querySelectorAll('[data-lang]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-lang') === lang); });
+    document.querySelectorAll('[data-short]').forEach(function (b) { b.setAttribute('data-short', lang === 'en' ? 'Create event' : 'Vytvořit event'); });
+    if (window.plGlue) plGlue();
   }
   document.querySelectorAll('[data-lang]').forEach(function (b) { b.addEventListener('click', function () { apply(b.getAttribute('data-lang')); }); });
   apply(lang);

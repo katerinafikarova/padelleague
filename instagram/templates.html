@@ -6,7 +6,7 @@
 <title>Systém šablon PadelLeague</title>
 <meta name="description" content="Osm šablon pro Instagram PadelLeague. Formulář vlevo živě přepisuje grafiku vpravo.">
 <meta name="theme-color" content="#022F44">
-<link rel="stylesheet" href="graphics.css?v=10">
+<link rel="stylesheet" href="graphics.css?v=14">
 <style>
   :root{--ui:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
   *{box-sizing:border-box}
@@ -41,6 +41,14 @@
   .hint{font-size:13px;color:#A9C0CC;margin:4px 0 0}
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0B2A3A;color:#fff;padding:12px 16px;border-radius:12px;font-size:14px;z-index:9;box-shadow:0 10px 30px rgba(0,0,0,.4)}
   :focus-visible{outline:2px solid #F97316;outline-offset:2px}
+  .zones-t{display:flex;gap:8px;align-items:center;font-size:13.5px;color:#fff;margin-top:12px;cursor:pointer}
+  .zones-t input{width:18px;height:18px;accent-color:#F97316}
+  .zone{position:absolute;inset:0;pointer-events:none;display:none;z-index:5}
+  body.zones .zone{display:block}
+  .zone i{position:absolute;background:repeating-linear-gradient(45deg,rgba(239,68,68,.38) 0 6px,rgba(239,68,68,.18) 6px 12px)}
+  .zone b{position:absolute;border:1px dashed #22C55E}
+  .zone em{position:absolute;left:4px;font:600 9px/1 var(--ui);font-style:normal;color:#fff;background:rgba(0,0,0,.55);padding:2px 4px;border-radius:4px}
+  .zone .crop{position:absolute;top:0;bottom:0;width:3.125%;background:rgba(239,68,68,.32)}
   @media (max-width:860px){section{grid-template-columns:1fr}.fit.feed{width:min(280px,100%)}}
 </style>
 </head>
@@ -50,7 +58,8 @@
     <div>
       <div class="brand"><i></i>Padel League</div>
       <h1>Systém <span>šablon</span></h1>
-      <p class="lede">Jeden design, libovolně mnoho grafik. Vlevo uprav data tak, jak je pošle aplikace, vpravo se grafika okamžitě překreslí. Každou jde stáhnout jako PNG ve skutečném rozměru.</p>
+      <p class="lede">Jeden design, libovolně mnoho grafik. Vlevo uprav data tak, jak je pošle aplikace, vpravo se grafika okamžitě překreslí. PNG se stahuje v rozlišení, které doporučuje Meta pro reklamy: příspěvek 1440 × 1800, story 1440 × 2560.</p>
+      <label class="zones-t"><input type="checkbox" id="zones" checked> Ukázat ochranné zóny Meta (story: 14 % nahoře, 35 % dole, 6 % po stranách · příspěvek: ořez 3 : 4 v profilu)</label>
     </div>
     <nav><a href="index.html">← Instagram profil</a><a href="../index.html">Prototyp aplikace</a></nav>
   </header>
@@ -58,7 +67,7 @@
 </div>
 <script src="logos.js?v=5"></script>
 <script src="content.js?v=10"></script>
-<script src="templates.js?v=10"></script>
+<script src="templates.js?v=12"></script>
 <script>
 (function () {
   'use strict';
@@ -116,7 +125,7 @@
         if (v.tier !== 'streak') out.unshift(['feed', T.feed({ t: 'ach', tier: +v.tier }, { i: +v.tier, n: 4 }), 'Příspěvek']);
         return out;
       } },
-    { n: '08', name: 'Milník', meta: 'Příspěvek 1080 × 1350 · design brief: „100 hráčů, první turnaj v…“',
+    { n: '08', name: 'Milník', meta: 'Příspěvek 1080 × 1350 · design brief: „100 hráčů, první event v…“',
       fields: [['n', 'Číslo', '1 000'], ['label', 'Co', 'PŘIHLÁŠENÝCH HRÁČŮ'], ['sub', 'Podtitulek', 'Za 3 měsíce, bez jediného účtu.']],
       render: function (v) { return [['feed', T.feed({ t: 'milestone', n: v.n, label: v.label, sub: v.sub }), 'Příspěvek']]; } }
   ];
@@ -137,12 +146,16 @@
     [].slice.call(form.elements).forEach(function (el) { v[el.name] = el.value; });
     var out = TPL[k].render(v), box = document.getElementById('p' + k);
     box.innerHTML = out.map(function (o, i) {
-      return '<div class="slot"><div class="fit ' + o[0] + '" data-w="1080" data-h="' + (o[0] === 'story' ? 1920 : 1350) + '"><div class="gi">' + o[1] + '</div></div><span class="cap">' + o[2] + ' · ' + (o[0] === 'story' ? '1080 × 1920' : '1080 × 1350') + '</span><button class="dl" data-k="' + k + '" data-i="' + i + '">Stáhnout PNG</button></div>';
+      var zone = o[0] === 'story'
+        ? '<div class="zone" aria-hidden="true"><i style="left:0;right:0;top:0;height:14%"></i><i style="left:0;right:0;bottom:0;height:35%"></i><i style="left:0;top:14%;bottom:35%;width:6%"></i><i style="right:0;top:14%;bottom:35%;width:6%"></i><b style="left:6%;right:6%;top:14%;bottom:35%"></b><em style="top:3%">profil, „Sponzorováno“</em><em style="bottom:30%">popisek, tlačítko, odpověď</em></div>'
+        : '<div class="zone" aria-hidden="true"><span class="crop" style="left:0"></span><span class="crop" style="right:0"></span><b style="left:6%;right:6%;top:3%;bottom:3%"></b><em style="top:2%">ořez v mřížce profilu</em></div>';
+      return '<div class="slot"><div class="fit ' + o[0] + '" data-w="1080" data-h="' + (o[0] === 'story' ? 1920 : 1350) + '"><div class="gi">' + o[1] + '</div>' + zone + '</div><span class="cap">' + o[2] + ' · PNG ' + (o[0] === 'story' ? '1440 × 2560' : '1440 × 1800') + '</span><button class="dl" data-k="' + k + '" data-i="' + i + '">Stáhnout PNG</button></div>';
     }).join('');
     box._out = out; fit(box);
   }
   function fit(root) { root.querySelectorAll('.fit').forEach(function (el) { el.firstChild.style.transform = 'scale(' + (el.clientWidth / +el.dataset.w) + ')'; }); }
   TPL.forEach(function (_, k) { draw(k); });
+  var zt = document.getElementById('zones'); document.body.classList.toggle('zones', zt.checked); zt.addEventListener('change', function () { document.body.classList.toggle('zones', zt.checked); });
   list.addEventListener('input', function (e) { var f = e.target.closest('form'); if (f) draw(+f.dataset.k); });
   window.addEventListener('resize', function () { fit(document); });
   if (document.fonts) document.fonts.ready.then(function () { fit(document); });
@@ -153,12 +166,12 @@
   list.addEventListener('click', function (e) {
     var b = e.target.closest('.dl'); if (!b) return;
     var o = document.getElementById('p' + b.dataset.k)._out[+b.dataset.i], w = 1080, h = o[0] === 'story' ? 1920 : 1350;
-    toast('Připravuji PNG ' + w + ' × ' + h + '…');
+    toast('Připravuji PNG ' + Math.round(w * 4 / 3) + ' × ' + Math.round(h * 4 / 3) + '…');
     loadH2C(function () {
       var box = document.createElement('div'); box.style.cssText = 'position:fixed;left:-30000px;top:0;width:' + w + 'px;height:' + h + 'px'; box.innerHTML = o[1]; document.body.appendChild(box);
       var imgs = [].slice.call(box.querySelectorAll('img'));
       Promise.all(imgs.map(function (im) { return im.complete ? 1 : new Promise(function (r) { im.onload = im.onerror = r; }); }))
-        .then(function () { return window.html2canvas(box.firstChild, { width: w, height: h, scale: 1, useCORS: true, backgroundColor: null, logging: false }); })
+        .then(function () { return window.html2canvas(box.firstChild, { width: w, height: h, scale: 4 / 3, useCORS: true, backgroundColor: null, logging: false }); })
         .then(function (cv) { cv.toBlob(function (bl) { var a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'padelleague-sablona-' + TPL[+b.dataset.k].n + '-' + (+b.dataset.i + 1) + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500); box.remove(); toast('Staženo'); }, 'image/png'); })
         .catch(function () { box.remove(); toast('Export se nepovedl. Otevři stránku přes GitHub Pages nebo lokální server.'); });
     });

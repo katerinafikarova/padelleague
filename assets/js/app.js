@@ -18,14 +18,16 @@
   function t(k, o) {
     var s = D[lang][k]; if (s === undefined) s = D.cs[k]; if (s === undefined) return k;
     if (o) Object.keys(o).forEach(function (x) { s = s.split('{' + x + '}').join(o[x]); });
-    return s;
+    return glue(s);
   }
-  function P(k, n) { var f = D[lang][k], i = lang === 'cs' ? (n === 1 ? 0 : (n >= 2 && n <= 4 ? 1 : 2)) : (n === 1 ? 0 : 1); return f[i].split('{n}').join(n); }
+  function glue(s) { return String(s).replace(/(\d\.?) (?=[\dA-Za-zÀ-ž])/g, '$1\u00a0').replace(/ (\d)/g, function (m, d, i, str) { return /[A-Za-zÀ-ž]$/.test(str.slice(0, i)) ? '\u00a0' + d : m; }).replace(/ · /g, '\u00a0· '); }
+  function P(k, n) { var f = D[lang][k], i = lang === 'cs' ? (n === 1 ? 0 : (n >= 2 && n <= 4 ? 1 : 2)) : (n === 1 ? 0 : 1); return glue(f[i].split('{n}').join(n)); }
   function cap1(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
   /* ---------- datum ---------- */
   function dm(w) { var d = 30 + 7 * w, m = 10; if (d > 31) { d -= 31; m = 11; } return { d: d, m: m }; }
-  function fDate(w) { var x = dm(w); return lang === 'cs' ? t('day_short') + ' ' + x.d + '. ' + x.m + '.' : t('day_short') + ' ' + x.d + ' ' + (x.m === 10 ? 'Oct' : 'Nov'); }
+  function fDate(w) { return nb(fDate0(w)); }
+  function fDate0(w) { var x = dm(w); return lang === 'cs' ? t('day_short') + ' ' + x.d + '. ' + x.m + '.' : t('day_short') + ' ' + x.d + ' ' + (x.m === 10 ? 'Oct' : 'Nov'); }
   function fLong(w) { var x = dm(w); return lang === 'cs' ? t('day_long') + ' ' + x.d + '. ' + D.cs.months_long[x.m] : t('day_long') + ' ' + x.d + ' ' + D.en.months_long[x.m]; }
   function fClose(w) { var x = dm(w), d = x.d - 1, m = x.m; if (d < 1) { d = 31; m = 10; } return lang === 'cs' ? t('day_close') + ' ' + d + '. ' + m + '., 18:00' : t('day_close') + ' ' + d + ' ' + (m === 10 ? 'Oct' : 'Nov') + ', 18:00'; }
   function fCard(w) { var x = dm(w); return lang === 'cs' ? x.d + '. ' + x.m + '. 2026' : x.d + ' ' + (x.m === 10 ? 'Oct' : 'Nov') + ' 2026'; }
@@ -37,7 +39,7 @@
       ev: { custom: null, format: 'Americano', week: 0, start: '18:00', venue: 'Padel Klub Novosedlice', address: 'Trnovanská 123, Teplice',
         courts: 4, cap: 16, price: 200, slug: 'patecni-americano', photo: 'court-orange-close.jpg', pay: 'card', type: 'social' },
       players: mkPlayers(9), waitlist: [],
-      me: { name: 'Jana Malá', contact: '+420 777 123 456', status: null },
+      me: { name: 'Jana Malá', contact: 'jana.mala@example.com', status: null },
       method: 'apple', stripe: 'active', orgName: 'Kuba', cfg: { courts: 4, mode: 'free', rounds: 4, pts: 24 }, hasComm: false, account: false, orgMode: false, wz: 0, pendingPub: false, stripeBack: 'o-new', community: 'Kuba komunity', city: 'Teplice',
       draft: null, more: false, acc: false, allNames: false, shuffle: 0,
       sched: null, play: { round: 0, scores: [] }, last: null,
@@ -51,10 +53,11 @@
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function initials(n) { return n.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2); }
   function short(n) { var p = n.split(' '); return p[0] + (p[1] && p[1][0] !== '(' ? ' ' + p[1][0] + '.' : ''); }
-  function kc(n) { return n === 0 ? t('free') : n.toLocaleString('cs-CZ').replace(/ /g, ' ') + ' Kč'; }
+  function kc(n) { return n === 0 ? t('free') : n.toLocaleString('cs-CZ').replace(/\s/g, '\u00a0') + '\u00a0Kč'; }
+  function nb(s) { return String(s).replace(/(\d\.?) (?=[\dA-Za-zÁ-ž])/g, '$1\u00a0').replace(/ (\d)/g, '\u00a0$1'); }
   function evName() { return S.ev.nm ? S.ev.nm[lang] : S.ev.custom || t('evName', { f: S.ev.format }); }
   function evDate() { return S.ev.when ? wShort(S.ev.when) : fDate(S.ev.week); }
-  function wShort(w) { return D[lang].dows_short[w.dow] + ' ' + (lang === 'cs' ? w.d + '. ' + w.m + '.' : w.d + ' ' + (w.m === 10 ? 'Oct' : 'Nov')); }
+  function wShort(w) { return nb(D[lang].dows_short[w.dow] + ' ' + (lang === 'cs' ? w.d + '. ' + w.m + '.' : w.d + ' ' + (w.m === 10 ? 'Oct' : 'Nov'))); }
   function wLong(w) { return D[lang].dows_long[w.dow] + ' ' + (lang === 'cs' ? w.d + '. ' : w.d + ' ') + D[lang].months_long[w.m]; }
   function wPrev(w) { return w.d > 1 ? { d: w.d - 1, m: w.m, dow: (w.dow + 6) % 7 } : { d: 31, m: 10, dow: (w.dow + 6) % 7 }; }
   function endTime() { var p = S.ev.start.split(':'); return ('0' + ((+p[0] + 2) % 24)).slice(-2) + ':' + p[1]; }
@@ -127,9 +130,9 @@
     var cur = e.id === S.pick, n = heGoing(e), cap = cur ? S.ev.cap : e.cap, l = Math.max(0, cap - n), price = cur ? S.ev.price : e.price;
     var nm = cur ? evName() : (e.nm ? e.nm[lang] : t('evName', { f: e.format }));
     var mine = cur && S.me.status === 'in';
-    var foot = mine ? '<span class="hc-st ok">' + t('b_in') + '</span>' : l === 0 ? '<span class="hc-st">' + t('h_full') + '</span>' : '<span class="hc-st' + (l <= 2 ? ' hot' : '') + '">' + n + '/' + cap + ' · ' + P('spotsLeft', l) + '</span>';
+    var foot = mine ? '<span class="hc-st ok">' + t('b_in') + '</span>' : l === 0 ? '<span class="hc-st">' + t('h_full') + '</span>' : '<span class="hc-st' + (l <= 2 ? ' hot' : '') + '">' + n + '/' + cap + '\u00a0· ' + P('spotsLeft', l) + '</span>';
     return '<button class="hcard" data-act="pick" data-arg="' + e.id + '"><div class="hc-img"><img src="' + IMG + e.photo + '" alt="" loading="lazy"><span class="pill glassy">' + t('v_' + e.vibe) + '</span><span class="hc-price">' + kc(price) + '</span></div>' +
-      '<div class="hc-b"><div class="hc-date">' + cap1(wShort(heWhen(e))) + ' · ' + (cur ? S.ev.start : e.start) + '</div><b class="hc-t">' + esc(nm) + '</b><div class="hc-m">' + esc(cur ? S.ev.venue : e.venue) + ' · ' + esc(e.city) + '</div>' +
+      '<div class="hc-b"><div class="hc-date">' + cap1(wShort(heWhen(e))) + '\u00a0· ' + (cur ? S.ev.start : e.start) + '</div><b class="hc-t">' + esc(nm) + '</b><div class="hc-m">' + esc(cur ? S.ev.venue : e.venue) + '\u00a0· ' + esc(e.city) + '</div>' +
       '<div class="hc-tags"><span>' + esc(e.format) + '</span><span>' + t('lv_' + e.level) + '</span></div>' +
       '<div class="hc-cap"><i style="width:' + Math.round(n / cap * 100) + '%"></i></div>' +
       '<div class="hc-f">' + foot + '<span class="hc-go">' + t(mine ? 'h_detail' : l === 0 ? 'h_go_wait' : 'h_go') + ' ›</span></div></div></button>';
@@ -145,10 +148,10 @@
       '<div class="h-filters"><div class="hchips" role="group" aria-label="' + t('h_city') + '">' + hChip('city', 'all', t('h_all')) + CITIES.map(function (c) { return hChip('city', c, c); }).join('') + '</div>' +
       '<div class="hchips" role="group" aria-label="' + t('h_when') + '">' + hChip('when', 'all', t('h_any')) + hChip('when', 'week', t('h_week')) + hChip('when', 'wkend', t('h_wkend')) +
       '<button class="hchip' + (f.free ? ' on' : '') + '" data-act="hf" data-arg="free:1" aria-pressed="' + f.free + '">' + t('h_free') + '</button></div></div>' +
-      '<div class="h-sec"><div class="lbl">' + t('h_upcoming') + ' · ' + P('h_count', list.length) + '</div>' + (filtered ? '<button class="link" data-act="hf" data-arg="reset">' + t('h_reset') + '</button>' : '') + '</div>' +
+      '<div class="h-sec"><div class="lbl">' + t('h_upcoming') + '\u00a0· ' + P('h_count', list.length) + '</div>' + (filtered ? '<button class="link" data-act="hf" data-arg="reset">' + t('h_reset') + '</button>' : '') + '</div>' +
       (list.length ? '<div class="hgrid">' + list.map(heCard).join('') + '</div>' : '<div class="empty"><p>' + t('h_none') + '</p><button class="link" data-act="hf" data-arg="reset">' + t('h_reset') + '</button></div>') +
       '<div class="acc' + (S.pastOpen ? ' open' : '') + '"><button data-act="pastOpen"><span>' + t('h_past') + '</span><span class="chev">▾</span></button><div class="inner">' +
-      HE_PAST.map(function (p) { return '<button class="row" data-act="toast" data-arg="h_res_t"><span><b>' + esc(p.nm) + '</b><span class="sub">' + cap1(wShort(p.when)) + ' · ' + t('h_won', { w: esc(p.win) }) + '</span></span><span class="r">' + t('h_res') + ' ▸</span></button>'; }).join('') + '</div></div>' +
+      HE_PAST.map(function (p) { return '<button class="row" data-act="toast" data-arg="h_res_t"><span><b>' + esc(p.nm) + '</b><span class="sub">' + cap1(wShort(p.when)) + '\u00a0· ' + t('h_won', { w: esc(p.win) }) + '</span></span><span class="r">' + t('h_res') + ' ▸</span></button>'; }).join('') + '</div></div>' +
       '<button class="row h-org" data-go="o-new"><span><b>' + t('h_org') + '</b><span class="sub">' + t('h_org_sub') + '</span></span><span class="r">→</span></button>' +
       '</div>');
   };
@@ -181,9 +184,9 @@
     var badge = { open: '<span class="pill glassy">' + t('b_open') + '</span>', last: '<span class="pill glassy"><b>' + t('b_last', { n: l }) + '</b></span>', full: '<span class="pill glassy">' + t('b_full') + '</span>',
       'in': '<span class="pill ok">' + t('b_in') + '</span>', wait: '<span class="pill wait">' + t('b_wait', { n: S.waitlist.indexOf(S.me.name) + 1 }) + '</span>' }[st];
     var who = S.players.slice(0, 5).map(function (p) { return '<span class="av">' + initials(p.n) + '</span>'; }).join('') + (n > 5 ? '<span class="av">+' + (n - 5) + '</span>' : '');
-    var line = (st === 'full' || st === 'wait') ? t('full_waiting', { w: S.waitlist.length }) : t('going', { n: n }) + ' · ' + P('spotsLeft', l);
+    var line = (st === 'full' || st === 'wait') ? t('full_waiting', { w: S.waitlist.length }) : t('going', { n: n }) + '\u00a0· ' + P('spotsLeft', l);
     var dock;
-    if (st === 'open' || st === 'last') dock = '<button class="cta" data-act="sheet" data-arg="register">' + (!S.ev.price ? t('cta_free') : cardPay() ? t(st === 'last' ? 'cta_last' : 'cta_pay', { price: kc(S.ev.price) }) : t('cta_site', { price: kc(S.ev.price) })) + '</button>';
+    if (st === 'open' || st === 'last') dock = '<button class="cta" data-act="sheet" data-arg="register">' + (!S.ev.price ? t('cta_free') : cardPay() ? t(st === 'last' ? 'cta_last' : 'cta_pay', { price: kc(S.ev.price) }) : t('cta_site', { price: kc(S.ev.price) })) + '</button>' + (S.ev.price && !cardPay() ? '<p class="fine">' + t('dock_site') + '</p>' : '');
     else if (st === 'full') dock = '<button class="cta navy" data-act="sheet" data-arg="waitlist">' + t('cta_wait') + '</button><p class="fine">' + t('wait_fine') + '</p>';
     else if (st === 'in') dock = '<button class="cta" data-act="share" data-arg="player">' + t('cta_invite') + '</button><button class="link" data-act="sheet" data-arg="cancel">' + t('cant_come') + '</button>';
     else dock = '<button class="cta" data-act="share" data-arg="player">' + t('cta_invite') + '</button><button class="link" data-act="leaveWait">' + t('leave_wait') + '</button>';
@@ -192,7 +195,7 @@
       '<button class="back-all" data-go="p-home">← ' + t('all_events') + '</button>' +
       '<div class="photo grain"><img src="' + IMG + S.ev.photo + '" alt=""><div class="badge">' + badge + '</div>' +
       '<div class="over-title">' + esc(evName()) + '</div>' +
-      '<div class="glass">' + glassKV([[t('k_datetime'), evDate() + ' · ' + S.ev.start], [t('k_entry'), kc(S.ev.price)], [t('k_location'), S.ev.venue, 1], [t('k_format'), S.ev.format], [t('k_level'), S.ev.level && S.ev.level !== 'all' ? t('lv_' + S.ev.level) : t('all_levels')]]) + '</div></div>' +
+      '<div class="glass">' + glassKV([[t('k_datetime'), evDate() + '\u00a0· ' + S.ev.start, 1], [t('k_entry'), kc(S.ev.price)], [t('k_format'), S.ev.format], [t('k_location'), S.ev.venue, 1], [t('k_level'), S.ev.level && S.ev.level !== 'all' ? t('lv_' + S.ev.level) : t('all_levels'), 1]]) + '</div></div>' +
       '<div class="going"><div class="ring" style="--p:' + pct() + '"><span>' + n + '/' + S.ev.cap + '</span></div><div><div class="t">' + line + '</div><div class="avatars">' + who + '</div></div></div>' +
       '<div><div class="lbl" style="margin:2px 2px 8px">' + t('who_playing') + '</div>' + namesBlock() + '</div>' +
       '<div class="acc' + (S.acc ? ' open' : '') + '"><button data-act="acc"><span>' + t('details') + '</span><span class="chev">▾</span></button><div class="inner"><dl class="dl">' +
@@ -208,25 +211,29 @@
     return screen('', status() + top(ib('✕', 'data-go="p-event"', 'close')) +
       '<div class="scroll" style="gap:16px;padding-top:6px">' +
       '<div style="display:flex;align-items:center;gap:14px"><div class="check" aria-hidden="true">✓</div><h1 class="h-caps" style="color:var(--navy)">' + t('in_title', { name: esc(S.me.name.split(' ')[0]) }) + '</h1></div>' +
-      '<div class="photo grain" style="min-height:230px"><img src="' + IMG + S.ev.photo + '" alt=""><div class="glass">' + glassKV([[t('k_event'), evName()], cardPay() || !S.ev.price ? [t('k_paid'), kc(S.ev.price)] : [t('k_pay'), t('pay_onsite_v', { price: kc(S.ev.price) })], [t('k_when'), evDate() + ' · ' + S.ev.start + ' · ' + S.ev.venue, 1]]) + '</div></div>' +
+      '<div class="photo grain" style="min-height:230px"><img src="' + IMG + S.ev.photo + '" alt=""><div class="glass">' + glassKV([[t('k_event'), evName()], cardPay() || !S.ev.price ? [t('k_paid'), kc(S.ev.price)] : [t('k_pay'), t('pay_onsite_v', { price: kc(S.ev.price) }), 1], [t('k_when'), evDate() + '\u00a0· ' + S.ev.start + '\u00a0· ' + S.ev.venue, 1]]) + '</div></div>' +
       '<div><div class="lbl" style="margin-bottom:8px">' + t('who_count', { n: n, cap: S.ev.cap }) + '</div><div style="display:flex;flex-direction:column;gap:6px">' +
-      list.map(function (nm, i) { return '<div class="ln' + (i === 0 ? ' me' : '') + '"><span>' + (n - i) + ' · ' + esc(nm) + '</span><span>' + (i === 0 ? t('you') : '') + '</span></div>'; }).join('') + '</div></div>' +
+      list.map(function (nm, i) { return '<div class="ln' + (i === 0 ? ' me' : '') + '"><span>' + (n - i) + '\u00a0· ' + esc(nm) + '</span><span>' + (i === 0 ? t('you') : '') + '</span></div>'; }).join('') + '</div></div>' +
       '<p class="p muted" style="font-size:14.5px">' + t('in_note') + '</p>' +
       '</div><div class="dock"><button class="cta" data-act="share" data-arg="player">' + t('cta_invite') + '</button><button class="link" data-act="toast" data-arg="added_cal">' + t('add_cal') + '</button></div>');
   };
 
+  /* Připomínka den předem chodí e-mailem. PadelLeague do WhatsAppu nic neposílá. */
   R['p-reminder'] = function () {
     var inn = S.me.status === 'in', l = left();
-    return screen('wa', status('17:00') +
-      '<div class="top">' + ib('←', 'data-go="p-event"', 'back') + '<div class="ttl wa-ttl">PadelLeague<br><span>' + t('biz') + '</span></div><span class="ib ghost"></span></div>' +
-      '<div class="scroll" style="padding-top:14px;gap:10px"><div class="sysmsg">' + t('thursday') + '</div>' +
-      (inn ? '<div class="bubble in"><button class="prev" data-go="p-event"><img src="' + IMG + S.ev.photo + '" alt=""><div><b>' + esc(evName()) + '</b>' + t('rem_prev', { start: S.ev.start, n: going(), cap: S.ev.cap }) + '</div></button>' +
-        t('rem_msg', { name: esc(S.me.name.split(' ')[0]), start: S.ev.start, venue: esc(S.ev.venue), address: esc(S.ev.address), n: going(), cap: S.ev.cap }) + (l ? t('rem_more', { left: P('spotsLeft', l) }) : '') +
-        '<br><button class="wa-link" data-go="p-event">padelleague.eu/e/' + S.ev.slug + '</button><div class="time">17:00</div></div>' +
-        '<div class="bubble in">' + t('rem_cancel', { link: '<button class="wa-link" data-act="sheet" data-arg="cancel">' + t('tap_here') + '</button>' }) + '<div class="time">17:00</div></div>'
+    return screen('mail', status('17:00') +
+      '<div class="top">' + ib('←', 'data-go="p-event"', 'back') + '<div class="ttl">' + t('mail_inbox') + '</div><span class="ib ghost"></span></div>' +
+      '<div class="scroll" style="padding-top:8px;gap:12px">' +
+      (inn ? '<div class="mail-h"><span class="av" style="margin:0">PL</span><div><b>PadelLeague</b><small>' + t('mail_to', { mail: esc(S.me.contact) }) + '\u00a0· ' + t('thursday') + ' 17:00</small></div></div>' +
+        '<h1 class="h-mid" style="font-size:22px">' + t('mail_subj', { name: esc(evName()) }) + '</h1>' +
+        '<div class="photo grain" style="min-height:180px"><img src="' + IMG + S.ev.photo + '" alt=""><div class="glass">' + glassKV([[t('k_datetime'), t('tomorrow') + '\u00a0· ' + S.ev.start], [t('k_location'), S.ev.venue], [t('d_addr'), S.ev.address, 1]]) + '</div></div>' +
+        '<p class="p" style="font-size:15px">' + t('mail_msg', { name: esc(S.me.name.split(' ')[0]), n: going(), cap: S.ev.cap }) + (l ? ' ' + t('mail_more', { left: P('spotsLeft', l) }) : '') + '</p>' +
+        '<button class="cta" data-go="p-event">' + t('open_event') + '</button>' +
+        '<div class="note-box"><b>' + t('mail_cant') + '</b> ' + t('mail_cant_t') + ' <button class="link" style="display:inline;padding:0" data-act="sheet" data-arg="cancel">' + t('cant_come') + '</button></div>'
         : '<div class="empty"><p>' + t('rem_none', { name: esc(evName()) }) + '</p><button class="cta" style="max-width:240px" data-go="p-event">' + t('open_event') + '</button></div>') +
       '</div>');
   };
+
 
   /* ---------- ORGANIZÁTOR ----------
      Vstupenka je event, ne komunita: první obrazovka je Vytvoř event (průvodce ve 4 krocích jako v aplikaci),
@@ -243,7 +250,7 @@
     var d = S.draft || { photo: S.ev.photo, week: S.ev.week, start: S.ev.start };
     return screen('', status() + top(ib('←', 'data-go="o-new"', 'back'), '', langSwitch()) +
       '<div class="scroll" style="gap:16px;padding-top:6px">' +
-      '<div class="mini-ev"><img src="' + IMG + d.photo + '" alt=""><span><b>' + esc(draftName()) + '</b><small>' + fDate(d.week) + ' · ' + d.start + '</small></span><span class="pill ok">' + t('su_ready') + '</span></div>' +
+      '<div class="mini-ev"><img src="' + IMG + d.photo + '" alt=""><span><b>' + esc(draftName()) + '</b><small>' + fDate(d.week) + '\u00a0· ' + d.start + '</small><span class="pill ok" style="margin-top:6px">' + t('su_ready') + '</span></span></div>' +
       '<h1 class="h-caps" style="font-size:30px">' + t('su_title') + '</h1>' +
       '<p class="p muted">' + t('su_sub') + '</p>' +
       '<button class="row" data-act="signup" style="justify-content:center;background:#000;color:#fff;border-color:#000"><b>' + t('su_apple') + '</b></button>' +
@@ -286,7 +293,7 @@
       '<div class="scroll" style="gap:12px">' +
       '<div class="lbl">' + t('h_next') + '</div>' +
       '<button class="card-ev grain" data-go="o-manage"><img src="' + IMG + S.ev.photo + '" alt=""><div class="glass"><div class="sring" style="--p:' + pct() + '"><span>' + n + '/' + S.ev.cap + '</span></div>' +
-      '<div class="kv"><div class="v">' + esc(evName()) + '</div><div class="l" style="margin-top:4px">' + evDate() + ' · ' + (left() ? P('spotsLeft', left()) : t('b_full')) + '</div></div></div></button>' +
+      '<div class="kv"><div class="v">' + esc(evName()) + '</div><div class="l" style="margin-top:4px">' + evDate() + '\u00a0· ' + (left() ? P('spotsLeft', left()) : t('b_full')) + '</div></div></div></button>' +
       '<button class="row" data-act="share" data-arg="org"><span>' + t('h_share') + '</span><span class="r">⤴</span></button>' + last +
       '</div><div class="dock"><button class="cta" data-act="newEvent">' + t('h_new') + '</button></div>');
   };
@@ -352,7 +359,7 @@
       '<div class="lbl">' + t('n_banner') + '</div><div class="pics">' + PHOTOS.map(function (p) { return '<button class="' + (d.photo === p ? 'on' : '') + '" data-act="dphoto" data-arg="' + p + '" aria-label="' + t('n_banner') + '"><img src="' + IMG + p + '" alt=""></button>'; }).join('') + '</div>' +
       '<label class="field"><span class="lbl">' + t('n_desc') + '</span><textarea rows="3" placeholder="' + t('n_desc_ph') + '"></textarea></label>' +
       '<label class="field"><span class="lbl">' + t('n_cancel') + '</span><input value="' + t('n_cancel_v') + '"></label>' +
-      '<div class="lbl">' + t('n_wa') + '</div><div class="wa-prev"><div class="bubble out">' + esc(waText(d)).replace(/\n/g, '<br>') + '<div class="time">20:51</div></div></div>' +
+      '<div class="lbl">' + t('n_wa') + '</div><p class="fine" style="text-align:left;margin-top:-6px">' + t('n_wa_s') + '</p><div class="wa-prev"><div class="bubble out">' + esc(waText(d)).replace(/\n/g, '<br>') + '<div class="time">20:51</div></div></div>' +
       '<button class="row" data-act="sheet" data-arg="preview"><span>' + t('n_preview_row') + '</span><span class="r">▸</span></button>';
     var dock = d.edit ? '<button class="cta" data-act="publish">' + t('n_save') + '</button>' + (st < 3 ? '<button class="link" data-act="wzNext">' + t('wz_next', { s: t(WZ[st + 1]) }) + '</button>' : '')
       : st < 3 ? '<button class="cta" data-act="wzNext">' + t('wz_next', { s: t(WZ[st + 1]) }) + '</button>' + (st ? '<button class="link" data-act="wz" data-arg="' + (st - 1) + '">' + t('back') + '</button>' : (S.account ? '' : '<button class="link" data-act="demoTry">' + t('demo_try') + '</button>'))
@@ -378,27 +385,20 @@
   var PAYK = { paid: 'pay_paid', unpaid: 'pay_unpaid', site: 'pay_site' };
   R['o-live'] = function () {
     var n = S.players.length;
-    var list = n ? S.players.map(function (p, i) { return '<div class="row"><span>' + (i + 1) + ' · ' + esc(p.n) + '</span><span class="pill ' + p.pay + '">' + t(PAYK[p.pay]) + '</span></div>'; }).join('') +
+    var list = n ? S.players.map(function (p, i) { return '<div class="row"><span>' + (i + 1) + '\u00a0· ' + esc(p.n) + '</span><span class="pill ' + p.pay + '">' + t(PAYK[p.pay]) + '</span></div>'; }).join('') +
       '<button class="row" data-go="o-manage"><b>' + t('l_manage') + '</b><span class="r">▸</span></button>'
-      : '<div class="empty slim"><p>' + t('l_empty') + '</p></div>';
+      : '<div class="empty slim"><p>' + t('l_empty') + '</p><button class="link" data-act="fastForward">' + t('demo_signups') + '</button></div>';
     return screen('', status() + top(ib('✕', 'data-go="o-home"', 'close'), '', '<span class="pill ok">' + t('live') + '</span>') +
       '<div class="scroll" style="gap:12px;padding-top:2px">' +
       '<div class="lbl">' + t('l_eyebrow') + '</div>' +
       '<div class="mini-ev big"><img src="' + IMG + S.ev.photo + '" alt=""><span><b>' + esc(evName()) + '</b><small>' + t('l_meta', { format: S.ev.format, date: evDate(), start: S.ev.start, courts: P('courts', S.ev.courts) }) + '</small></span></div>' +
-      '<div class="going"><div class="ring" style="--p:' + Math.round(n / S.ev.cap * 100) + '"><span>' + n + '/' + S.ev.cap + '</span></div><div><div class="t">' + t('l_signed', { n: n }) + '</div><div class="s">' + cap1(P('spotsLeft', Math.max(0, S.ev.cap - n))) + ' · ' + kc(S.ev.price) + (S.ev.price ? ' ' + t(cardPay() ? 'l_bycard' : 'l_onsite') : '') + '</div></div></div>' +
+      '<div class="going"><div class="ring" style="--p:' + Math.round(n / S.ev.cap * 100) + '"><span>' + n + '/' + S.ev.cap + '</span></div><div><div class="t">' + t('l_signed', { n: n }) + '</div><div class="s">' + cap1(P('spotsLeft', Math.max(0, S.ev.cap - n))) + '\u00a0· ' + kc(S.ev.price) + (S.ev.price ? ' ' + t(cardPay() ? 'l_bycard' : 'l_onsite') : '') + '</div></div></div>' +
       '<div class="lbl">' + t('l_list') + '</div>' + list +
       '<div class="note-box">' + t('l_sched', { close: evClose() }) + '</div>' +
-      '</div><div class="dock"><button class="cta" data-act="sendWA">' + t('l_cta') + '</button><button class="link" data-act="share" data-arg="org">' + t('l_link') + '</button></div>');
+      '</div><div class="dock"><button class="cta" data-act="share" data-arg="org">⤴ ' + t('l_cta') + '</button><button class="link" data-act="shareTo" data-arg="copy">' + t('copy_link') + '</button></div>');
   };
 
-  R['o-wa'] = function () {
-    return screen('wa', status('12:13') +
-      '<div class="top">' + ib('←', 'data-go="o-live"', 'back') + '<div class="ttl wa-ttl">Padel Teplice 🎾<br><span>' + t('wa_members') + '</span></div><span class="ib ghost"></span></div>' +
-      '<div class="scroll" style="padding-top:14px;gap:10px"><div class="sysmsg">' + t('today') + '</div>' +
-      '<div class="bubble out"><div class="prev"><img src="' + IMG + S.ev.photo + '" alt=""><div><b>' + esc(evName()) + '</b>' + evDate() + ' · ' + kc(S.ev.price) + '</div></div>' + esc(chatMsg()) + '<br><span class="wa-link">padelleague.eu/e/' + S.ev.slug + '</span><div class="time">12:13 ✓✓</div></div>' +
-      (S.posted ? '<div class="bubble in"><div class="who">Klára</div>' + t('wa_r1') + '<div class="time">12:20</div></div><div class="bubble in"><div class="who">Petr</div>' + t('wa_r2') + '<div class="time">12:41</div></div><div class="bubble in"><div class="who">Filip</div>' + t('wa_r3') + '<div class="time">13:02</div></div>' : '') +
-      '</div><div class="dock">' + (S.posted ? '<button class="cta" data-go="o-live">' + t('wa_back') + '</button>' : '<button class="cta white" data-act="fastForward">' + t('wa_ff') + '</button><p class="fine">' + t('wa_fine') + '</p>') + '</div>');
-  };
+
 
   /* Engine na mobilu: stejné 4 kroky jako PC verze (Soupiska → Nastavení → Rozpis → Spuštění) */
   var ENG = ['en1', 'en2', 'en3', 'en4'];
@@ -406,7 +406,7 @@
     return '<div class="wz eng" role="list">' + ENG.map(function (k, i) { return '<span role="listitem" class="' + (i === cur ? 'on' : i < cur ? 'done' : '') + '"><i>' + (i < cur ? '✓' : i + 1) + '</i><span>' + t(k) + '</span></span>'; }).join('') + '</div>';
   }
   function evHead(state) {
-    return '<div class="ev-head"><div class="pills"><span class="pill fmt">' + esc(S.ev.format) + '</span><span class="pill st-' + state + '">' + t('st_' + state) + '</span></div><b>' + esc(evName()) + '</b><small>' + evDate() + ' · ' + S.ev.start + ' · ' + esc(S.ev.venue) + '</small></div>';
+    return '<div class="ev-head"><div class="pills"><span class="pill fmt">' + esc(S.ev.format) + '</span><span class="pill st-' + state + '">' + t('st_' + state) + '</span></div><b>' + esc(evName()) + '</b><small>' + evDate() + '\u00a0· ' + S.ev.start + '\u00a0· ' + esc(S.ev.venue) + '</small></div>';
   }
   function payCounts() { var o = { paid: 0, site: 0, unpaid: 0 }; S.players.forEach(function (p) { o[p.pay]++; }); return o; }
 
@@ -414,10 +414,10 @@
     var here = S.players.filter(present), pc = payCounts(), n = S.players.length;
     var rows = S.players.map(function (p, i) {
       return '<div class="pl-row' + (p.noshow ? ' off' : '') + '"><span class="av">' + initials(p.n) + '</span><span class="nm">' + esc(p.n) + '</span>' +
-        '<button class="pill ' + p.pay + '" data-act="cyclePay" data-arg="' + i + '">' + t(PAYK[p.pay]) + '</button>' +
-        '<button class="pill ns' + (p.noshow ? ' on' : '') + '" data-act="attend" data-arg="' + i + '">' + t(p.noshow ? 'noshow' : 'ns_btn') + '</button></div>';
+        '<span class="pl-act"><button class="pill ' + p.pay + '" data-act="cyclePay" data-arg="' + i + '">' + t(PAYK[p.pay]) + '</button>' +
+        '<button class="pill ns' + (p.noshow ? ' on' : '') + '" data-act="attend" data-arg="' + i + '">' + t(p.noshow ? 'noshow' : 'ns_btn') + '</button></span></div>';
     }).join('') || '<div class="empty"><p>' + t('mg_empty') + '</p></div>';
-    var wl = S.waitlist.map(function (nm, i) { return '<div class="row"><span>' + (i + 1) + ' · ' + esc(nm) + '</span><button class="r" style="color:var(--navy);font-weight:700;text-decoration:underline" data-act="moveIn" data-arg="' + i + '">' + t('move_in') + '</button></div>'; }).join('');
+    var wl = S.waitlist.map(function (nm, i) { return '<div class="row"><span>' + (i + 1) + '\u00a0· ' + esc(nm) + '</span><button class="r" style="color:var(--navy);font-weight:700;text-decoration:underline" data-act="moveIn" data-arg="' + i + '">' + t('move_in') + '</button></div>'; }).join('');
     var restN = Math.max(0, here.length - Math.min(S.cfg.courts, Math.floor(here.length / 4)) * 4);
     var check = [[n >= 4, t('ck_min')], [true, t('ck_pay', { a: pc.paid, b: pc.site, c: pc.unpaid })], [true, t('ck_play', { n: here.length })], [true, restN ? t('ck_rest', { n: restN }) : t('ck_all')]];
     return screen('', status() + top(ib('←', 'data-go="o-live"', 'back'), t('en1'), ib('⋯', 'data-act="sheet" data-arg="evmenu"', 'more')) +
@@ -488,7 +488,7 @@
     }).join('');
     return screen('', status() + top(ib('←', 'data-go="o-setup"', 'back'), t('en3'), ib('↻', 'data-act="reshuffle"', 'shuffle')) +
       engBar(2) + '<div class="scroll" style="gap:12px">' +
-      '<div class="sc-stats"><span>' + P('rounds', S.sched.length) + ' · ' + P('matches', matches) + '</span><span class="' + (partnerStats() ? 'warn' : 'ok') + '">' + t(partnerStats() ? 'sc_rep' : 'sc_norep') + '</span></div>' +
+      '<div class="sc-stats"><span>' + P('rounds', S.sched.length) + '\u00a0· ' + P('matches', matches) + '</span><span class="' + (partnerStats() ? 'warn' : 'ok') + '">' + t(partnerStats() ? 'sc_rep' : 'sc_norep') + '</span></div>' +
       '<button class="row" data-act="reshuffle"><span>' + t('sc_regen') + '</span><span class="r">↻</span></button>' + rds +
       '</div><div class="dock"><button class="cta" data-act="sheet" data-arg="launch">' + t('sc_next') + '</button></div>');
   };
@@ -518,7 +518,7 @@
       : '<button class="cta" data-act="round" data-arg="' + (r + 1) + '">' + t('next_round') + ' →</button>';
     return screen('', status() + top(ib('←', 'data-go="o-schedule"', 'back'), '', '<span class="top-icons">' + ib('⤴', 'data-act="sheet" data-arg="live"', 'share_live') + ib('☰', 'data-act="sheet" data-arg="board"', 'board') + ib('⋯', 'data-act="sheet" data-arg="livemenu"', 'more') + '</span>') +
       '<div class="scroll" style="gap:14px">' +
-      '<div class="mx-head"><div><b>' + esc(evName()) + '</b><small>' + esc(S.ev.format) + ' · ' + evDate() + '</small></div><div class="meta"><span>' + S.cfg.pts + ' ◎</span><span>' + S.players.filter(present).length + ' 👤</span></div></div>' +
+      '<div class="mx-head"><div><b>' + esc(evName()) + '</b><small>' + esc(S.ev.format) + '\u00a0· ' + evDate() + '</small></div><div class="meta"><span>' + S.cfg.pts + ' ◎</span><span>' + S.players.filter(present).length + ' 👤</span></div></div>' +
       '<div class="rtabs2">' + tabs + '</div><div class="lbl" style="text-align:center;margin-top:-6px">' + t('rounds_lbl') + '</div>' + courts +
       (rd.rest.length ? '<div class="mx-rest"><b>' + t('resting_h') + '</b><span>' + rd.rest.map(short).map(esc).join(', ') + '</span></div>' : '') +
       (todo ? '<p class="fine">' + t('left_score', { k: P('toScore', todo) }) + ' · <button class="link" style="display:inline;padding:0" data-act="autofill">' + t('demo_fill') + '</button></p>' : '') +
@@ -586,7 +586,7 @@
       : '<div class="d-row"><span>' + t('d_none_owe') + '</span><span class="pill ok">✓</span></div>';
     var table = st.slice(0, 10).map(function (p, i) { return '<tr><td>' + (i + 1) + '</td><td>' + esc(p.n) + '</td><td class="num">' + p.pts + '</td></tr>'; }).join('');
     return screen('desk', '<div class="d-bar"><span class="logo"><i></i>' + esc(orgLabel()) + '</span><nav>' + nav.map(function (x, i) { return '<span class="' + (i === 1 ? 'on' : '') + '">' + x + '</span>'; }).join('') + '</nav>' + langSwitch() + '</div>' +
-      '<div class="d-main"><div class="d-head"><div><div class="lbl">' + fLong(L.week) + ' · ' + esc(S.ev.venue) + '</div><h1 class="h-caps" style="font-size:34px;margin-top:6px">' + t('af_done', { name: esc(evName()) }) + '</h1></div>' +
+      '<div class="d-main"><div class="d-head"><div><div class="lbl">' + fLong(L.week) + '\u00a0· ' + esc(S.ev.venue) + '</div><h1 class="h-caps" style="font-size:34px;margin-top:6px">' + t('af_done', { name: esc(evName()) }) + '</h1></div>' +
       '<button class="cta d-cta" data-act="nextEvent">' + t('af_next') + '<small>' + t('af_same', { date: fDate(S.ev.week + 1) }) + '</small></button></div>' +
       '<div class="d-grid"><div class="d-col">' +
       '<section class="d-card"><div class="lbl">' + t('collected') + '</div><div class="money">' + kc(L.collected) + '</div>' +
@@ -601,22 +601,25 @@
       '</div></div><p class="fine" style="text-align:left;margin-top:14px"><button class="link" style="display:inline" data-go="o-after">← ' + t('d_mobile') + '</button></p></div>');
   };
 
+  /* Karta výsledku = instagramová story 9:16. Text a logo jen v ochranné zóně Meta (14 % nahoře, 35 % dole, 6 % po stranách). */
   R['o-card'] = function () {
     var L = S.last, w = L.stand[0];
     return screen('', status() + top(ib('←', 'data-go="o-after"', 'back'), t('cd_title')) +
-      '<div class="scroll"><div class="somecard grain"><img src="' + IMG + 'court-blue-orange.jpg" alt="">' +
-      '<div class="glass">' + glassKV([[t('cd_name'), w.n], [t('k_event'), evName() + ' · ' + orgLabel()], [t('cd_details'), fCard(L.week) + ' · ' + S.city]]) +
-      '<div class="kv"><div class="l">' + t('cd_points') + '</div><div class="v" style="font-size:36px;line-height:1">' + w.pts + '</div></div><div class="kv"><div class="l">' + t('cd_result') + '</div><div class="v" style="font-size:32px;line-height:1">' + t('cd_winner') + '</div></div></div>' +
-      '<div class="won">#1<small>' + t('cd_of', { n: L.showed }) + '</small></div><div class="some-foot">' + t('cd_foot') + '</div></div></div>' +
+      '<div class="scroll"><div class="somecard grain"><img src="' + IMG + 'court-blue-orange.jpg" alt=""><div class="sc-safe">' +
+      '<div class="glass sc-glass">' + glassKV([[t('cd_name'), w.n, 1], [t('k_event'), evName() + '\u00a0· ' + orgLabel(), 1], [t('cd_details'), fCard(L.week) + '\u00a0· ' + S.city, 1]]) +
+      '<div class="kv big"><div class="l">' + t('cd_points') + '</div><div class="v">' + w.pts + '</div></div><div class="kv big"><div class="l">' + t('cd_result') + '</div><div class="v">' + t('cd_winner') + '</div></div></div>' +
+      '<div class="sc-foot"><div class="some-foot">' + t('cd_foot') + '</div><div class="won">#1<small>' + t('cd_of', { n: L.showed }) + '</small></div></div></div></div>' +
+      '<p class="fine">' + t('cd_zone') + '</p></div>' +
       '<div class="dock"><button class="cta" data-act="toast" data-arg="opening_ig">' + t('cd_ig') + '</button><button class="link" data-act="cardAll">' + t('cd_all') + '</button></div>');
   };
+
 
   R['o-next'] = function () {
     var w = S.ev.week + 1;
     function row(l, v, ch) { return '<button class="row" data-act="editNext"><span><span class="lbl">' + l + '</span><br>' + (ch ? '<span class="changed">' + v + '</span>' : v) + '</span><span class="r">' + t('edit') + '</span></button>'; }
     return screen('', status() + top(ib('✕', 'data-go="o-after"', 'close'), t('nx_title')) +
       '<div class="scroll" style="gap:10px"><h1 class="h-mid" style="font-size:24px">' + t('nx_h') + '</h1>' +
-      row(t('nx_date'), fDate(w) + ' · ' + S.ev.start + '–' + endTime(), 1) + row(t('nx_format'), S.ev.format + ' · ' + P('players', S.ev.cap)) + row(t('nx_where'), esc(S.ev.venue) + ' · ' + P('courts', S.ev.courts)) + row(t('nx_entry'), kc(S.ev.price) + (S.ev.price ? ' · ' + t(cardPay() ? 'nx_card' : 'nx_site') : '')) +
+      row(t('nx_date'), fDate(w) + '\u00a0· ' + S.ev.start + '–' + endTime(), 1) + row(t('nx_format'), S.ev.format + '\u00a0· ' + P('players', S.ev.cap)) + row(t('nx_where'), esc(S.ev.venue) + '\u00a0· ' + P('courts', S.ev.courts)) + row(t('nx_entry'), kc(S.ev.price) + (S.ev.price ? '\u00a0· ' + t(cardPay() ? 'nx_card' : 'nx_site') : '')) +
       '<p class="fine" style="text-align:left">' + t('nx_fine') + '</p>' +
       '</div><div class="dock"><button class="cta" data-act="publishNext">' + t('nx_cta') + '</button></div>');
   };
@@ -625,9 +628,9 @@
   var SH = {};
   SH.register = function () {
     var free = !S.ev.price, site = !free && !cardPay();
-    return '<div class="grab"></div><h2 class="h-mid">' + t('s_join', { name: esc(evName()) }) + '</h2><p class="fine" style="text-align:left;margin-top:-6px">' + evDate() + ' · ' + S.ev.start + ' · ' + esc(S.ev.venue) + '</p>' +
+    return '<div class="grab"></div><h2 class="h-mid">' + t('s_join', { name: esc(evName()) }) + '</h2><p class="fine" style="text-align:left;margin-top:-6px">' + evDate() + '\u00a0· ' + S.ev.start + '\u00a0· ' + esc(S.ev.venue) + '</p>' +
       '<label class="field"><span class="lbl">' + t('your_name') + '</span><input id="f-name" autocomplete="name" value="' + esc(S.me.name) + '"></label>' +
-      '<label class="field"><span class="lbl">' + t('contact') + '</span><input id="f-contact" autocomplete="tel" value="' + esc(S.me.contact) + '"></label>' +
+      '<label class="field"><span class="lbl">' + t('contact') + '</span><input id="f-contact" autocomplete="email" type="email" value="' + esc(S.me.contact) + '"></label>' +
       (free || site ? '' : '<div class="methods">' + [['apple', ' Pay'], ['google', 'G Pay'], ['card', t('card')]].map(function (m) { return '<button class="' + (S.method === m[0] ? 'on' : '') + '" data-act="method" data-arg="' + m[0] + '">' + m[1] + '</button>'; }).join('') + '</div>' +
         (S.method === 'card' ? '<label class="field"><span class="lbl">' + t('card_no') + '</span><input value="4242 4242 4242 4242"></label><div class="two"><label class="field"><span class="lbl">' + t('card_exp') + '</span><input value="12 / 28"></label><label class="field"><span class="lbl">CVC</span><input value="123"></label></div>' : '')) +
       '<button class="cta" data-act="' + (free || site ? 'joinFree' : 'pay') + '">' + (free ? t('cta_free') : site ? t('cta_site_join') : t('pay_join', { price: kc(S.ev.price) })) + '</button>' +
@@ -654,7 +657,7 @@
     var msg = org ? chatMsg() : t('sh_pmsg', { name: evName(), date: evDate(), Left: cap1(P('spotsLeft', left())) });
     return '<div class="grab"></div><h2 class="h-mid">' + t(org ? 'sh_org' : 'sh_player') + '</h2>' +
       '<div class="bubble out" style="max-width:100%;align-self:stretch">' + esc(msg) + '<br><span class="wa-link">padelleague.eu/e/' + S.ev.slug + '</span></div>' +
-      '<div class="share-grid"><button class="w" data-act="shareTo" data-arg="wa"><i>✆</i>WhatsApp</button><button class="ig" data-act="shareTo" data-arg="ig"><i>◎</i>Stories</button><button data-act="shareTo" data-arg="copy"><i>⧉</i>' + t('copy_link') + '</button><button data-act="shareTo" data-arg="qr"><i>▦</i>' + t('qr') + '</button></div>' +
+      '<p class="fine" style="text-align:left">' + t('sh_note') + '</p><div class="share-grid"><button class="w" data-act="shareTo" data-arg="wa"><i>✆</i>WhatsApp</button><button class="ig" data-act="shareTo" data-arg="ig"><i>◎</i>Stories</button><button data-act="shareTo" data-arg="copy"><i>⧉</i>' + t('copy_link') + '</button><button data-act="shareTo" data-arg="qr"><i>▦</i>' + t('qr') + '</button></div>' +
       '<button class="link" data-act="close">' + t('close') + '</button>';
   };
   SH.pmenu = function () {
@@ -693,7 +696,7 @@
   SH.preview = function () {
     var d = S.draft, nm = d.custom || t('evName', { f: d.format });
     return '<div class="grab"></div><div class="lbl">' + t('pv_lbl') + '</div><div class="photo grain" style="min-height:260px"><img src="' + IMG + (d.photo || S.ev.photo) + '" alt=""><div class="over-title">' + esc(nm) + '</div>' +
-      '<div class="glass">' + glassKV([[t('k_datetime'), fDate(d.week) + ' · ' + d.start], [t('k_entry'), kc(d.price)], [t('k_location'), d.venue, 1], [t('k_format'), d.format], [t('k_spots'), P('players', d.cap)]]) + '</div></div><button class="cta" data-act="close">' + t('pv_back') + '</button>';
+      '<div class="glass">' + glassKV([[t('k_datetime'), fDate(d.week) + '\u00a0· ' + d.start, 1], [t('k_entry'), kc(d.price)], [t('k_spots'), P('players', d.cap)], [t('k_location'), d.venue, 1], [t('k_format'), d.format, 1]]) + '</div></div><button class="cta" data-act="close">' + t('pv_back') + '</button>';
   };
   /* Zadání skóre jako v PadelMixu: klepneš na číslo týmu, vybereš jeho body, druhý tým dostane zbytek */
   SH.score = function () {
@@ -826,7 +829,6 @@
     shareTo: function (a) {
       var url = location.origin + location.pathname + '#/p-event';
       if (a === 'copy') { try { if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function () {}); } catch (e) { /* */ } S.sheet = null; toast(t('copied')); return; }
-      if (a === 'wa' && S.ctx === 'org') { S.sheet = null; go('o-wa'); return; }
       S.sheet = null; toast(t({ wa: 'opening_wa', ig: 'opening_ig', qr: 'qr_ready' }[a]));
     },
     signup: function () { S.account = true; if (S.pendingPub) A.publish(); else go('o-home'); },
@@ -874,12 +876,11 @@
       S.players = []; S.waitlist = []; S.sched = null; S.posted = false; S.me.status = null;
       go('o-live');
     },
-    sendWA: function () { go('o-wa'); },
     fastForward: function () {
       var n = Math.max(0, S.ev.cap - 2), off = S.ev.week % 3;
       S.players = [];
       for (var i = 0; i < n; i++) S.players.push({ n: NAMES[(i + off) % NAMES.length], pay: cardPay() ? PAYS[i % PAYS.length] : (i % 5 === 4 ? 'unpaid' : 'site'), noshow: false });
-      S.posted = true; render();
+      S.posted = true; toast(t('demo_signups_t', { n: n }));
     },
     cyclePay: function (a) { var p = S.players[+a], order = ['unpaid', 'paid', 'site']; p.pay = order[(order.indexOf(p.pay) + 1) % 3]; if (S.last && location.hash.indexOf('o-after') > -1) S.last = summary(); render(); },
     remind: function (a) { var p = S.players[+a]; toast(t('remind_t', { n: p ? p.n.split(' ')[0] : '' })); },
@@ -945,7 +946,8 @@
   /* ---------- DESKTOP: obal podle typu obrazovky ---------- */
   var ORG_NAV = [['o-home', 'dk_home', '⌂'], ['o-new', 'dk_new', '+'], ['o-manage', 'dk_players', '☰'], ['o-schedule', 'dk_sched', '▦'], ['o-play', 'dk_play', '▶'], ['o-after', 'dk_after', '★'], ['o-next', 'dk_next', '↻'], ['o-card', 'dk_card', '◎']];
   function kind(r) {
-    if (r === 'p-chat' || r === 'p-reminder' || r === 'o-wa') return 'wa';
+    if (r === 'p-reminder') return 'mail';
+    if (r === 'p-chat') return 'wa';
     if (r === 'o-signup' || r === 'o-community' || r === 'o-stripe') return 'auth';
     if (r.indexOf('o-') === 0) return 'org';
     return 'site';
@@ -953,6 +955,7 @@
   function deskUrl(r) {
     var k = kind(r), slug = S.community.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-');
     if (k === 'wa') return 'web.whatsapp.com';
+    if (k === 'mail') return t('mail_url');
     if (r === 'o-stripe') return 'connect.stripe.com/setup';
     if (k === 'auth') return 'app.padelleague.eu/' + (r === 'o-signup' ? 'registrace' : 'nova-komunita');
     if (k === 'org') return 'app.padelleague.eu/' + slug + '/' + ({ 'o-home': '', 'o-new': 'novy-event', 'o-live': 'event/' + S.ev.slug, 'o-manage': 'event/' + S.ev.slug + '/hraci', 'o-schedule': 'event/' + S.ev.slug + '/rozpis', 'o-play': 'event/' + S.ev.slug + '/zive', 'o-after': 'event/' + S.ev.slug + '/souhrn', 'o-after-d': 'event/' + S.ev.slug + '/souhrn', 'o-next': 'dalsi-event', 'o-card': 'event/' + S.ev.slug + '/karta' }[r] || '');
@@ -970,12 +973,12 @@
         '<div class="dk-main r-' + r + '">' + inner + '</div></div>';
     }
     if (k === 'wa') {
-      var chats = r === 'o-wa' ? [['Padel Teplice 🎾', '12:13', 1], ['PadelLeague', 'včera', 0], ['Tomáš Novák', 'po', 0], ['Rodina 🏡', 'ne', 0]] :
-        r === 'p-reminder' ? [['PadelLeague', '17:00', 1], ['Padel Teplice 🎾', '18:40', 0], ['Klára', 'út', 0], ['Rodina 🏡', 'ne', 0]] : [['Padel Teplice 🎾', '18:40', 1], ['PadelLeague', 'čt', 0], ['Klára', 'út', 0], ['Rodina 🏡', 'ne', 0]];
+      var chats = [['Padel Teplice 🎾', '18:40', 1], ['Klára', 'út', 0], ['Tomáš Novák', 'po', 0], ['Rodina 🏡', 'ne', 0]];
       return '<div class="dk-wa"><aside class="dk-wa-list"><div class="dk-wa-h"><b>Chaty</b></div><div class="dk-wa-search">Hledat</div>' +
         chats.map(function (c) { return '<div class="dk-wa-chat' + (c[2] ? ' on' : '') + '"><i>' + esc(c[0].charAt(0)) + '</i><span><b>' + esc(c[0]) + '</b><small>' + (c[2] ? '…' : '') + '</small></span><em>' + c[1] + '</em></div>'; }).join('') +
         '</aside><div class="dk-main r-' + r + '">' + inner + '</div></div>';
     }
+    if (k === 'mail') return '<div class="dk-mail"><aside class="dk-mail-list"><b>' + t('mail_inbox') + '</b><div class="on"><b>PadelLeague</b><small>' + t('mail_subj', { name: esc(evName()) }) + '</small></div><div><b>Klub Novosedlice</b><small>' + t('mail_other') + '</small></div></aside><div class="dk-main r-' + r + '">' + inner + '</div></div>';
     if (k === 'auth') return '<div class="dk-auth"><div class="dk-main r-' + r + '">' + inner + '</div></div>';
     return '<div class="dk-site"><header class="dk-head"><button class="logo" data-go="p-home"><i></i>Padel League</button><nav class="dk-nav"><button class="' + (r === 'p-home' ? 'on' : '') + '" data-go="p-home">' + t('nav_events') + '</button><button data-go="o-new">' + t('nav_org') + '</button></nav><span class="dk-head-r">' + langSwitch() + '<button class="dk-login" data-act="toast" data-arg="m_login_t">' + t('m_login') + '</button></span></header><div class="dk-main r-' + r + '">' + inner + '</div></div>';
   }

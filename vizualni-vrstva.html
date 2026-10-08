@@ -6,16 +6,16 @@
 <title>PadelLeague · Vizuální vrstva</title>
 <meta name="description" content="Návrh vizuální vrstvy nad průvodcem a enginem PadelLeague: stavy, karty, rozpis, tabulky, pavouk.">
 <meta name="theme-color" content="#034867">
-<link rel="stylesheet" href="assets/css/app.css?v=16">
+<link rel="stylesheet" href="assets/css/app.css?v=19">
 <style>
   body{background:var(--ground);color:var(--ink);font-size:16px;line-height:1.5}
   .wrap{max-width:1160px;margin:0 auto;padding:0 20px 80px}
   .nav{background:var(--navy);color:#fff}
   .nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:14px;padding-bottom:14px}
   .nav a{color:#fff;text-decoration:none;font-size:14px;opacity:.85}
-  header.top{padding:48px 0 12px}
-  header.top h1{margin:0;font:900 clamp(32px,5vw,56px)/.95 var(--f-display);text-transform:uppercase;color:var(--navy)}
-  header.top p{max-width:70ch;color:var(--muted);margin:16px 0 0}
+  header.vtop{padding:48px 0 12px}
+  header.vtop h1{margin:0;font:900 clamp(32px,5vw,56px)/.95 var(--f-display);text-transform:uppercase;color:var(--navy)}
+  header.vtop p{max-width:70ch;color:var(--muted);margin:16px 0 0}
   .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
   .toc a{background:#fff;border:1px solid var(--line);border-radius:99px;padding:7px 13px;font-size:13.5px;color:var(--ink);text-decoration:none}
   section.s{padding-top:56px}
@@ -78,6 +78,7 @@
   /* tabulka */
   .tbl{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
   .tbl table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .tbl{overflow:hidden}
   .tbl th{background:var(--navy);color:#fff;font:700 10.5px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;padding:12px 10px;text-align:center}
   .tbl th:nth-child(2){text-align:left}
   .tbl td{padding:12px 10px;border-top:1px solid #EEF3F6;text-align:center;color:var(--muted);font-size:14.5px}
@@ -89,7 +90,7 @@
   .tbl tr.me td{background:#EEF5F9}
   .df{display:inline-block;min-width:38px;border-radius:99px;padding:3px 6px;font-size:12px;font-weight:700}
   .df.up{background:var(--ok-bg);color:var(--ok)}.df.dn{background:#FDECEC;color:#B42318}.df.eq{background:var(--soft);color:#5B6E7B}
-  @media (max-width:620px){.tbl .hide-m{display:none}}
+  @media (max-width:620px){.tbl .hide-m{display:none}.tbl th,.tbl td{padding:10px 5px;font-size:13.5px}.tbl .pos{width:22px;height:22px}.df{min-width:0}}
 
   /* pavouk */
   .br{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;align-items:center;margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px}
@@ -125,11 +126,23 @@
   .ph .in{border-radius:28px;background:var(--ground);padding:14px;display:flex;flex-direction:column;gap:10px}
   footer{margin-top:64px;color:var(--muted);font-size:14px}
 </style>
+<script>
+/* Čísla se nelámou od slov a „·“ nezačíná řádek (stejné pravidlo jako v aplikaci) */
+window.plGlue = function (root) {
+  var w = document.createTreeWalker(root || document.body, NodeFilter.SHOW_TEXT), n;
+  while ((n = w.nextNode())) {
+    if (/^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName)) continue;
+    var s = n.data, o = s.replace(/(\d[.,]?) (?=[\dA-Za-zÀ-ž(%])/g, '$1\u00a0').replace(/([A-Za-zÀ-ž]) (\d)/g, '$1\u00a0$2').replace(/ · /g, '\u00a0· ').replace(/ ([–—-]) /g, '\u00a0$1 ').replace(/(\d)[–-](\d)/g, '$1\u2060–\u2060$2').replace(/(\d) : (\d)/g, '$1\u00a0:\u00a0$2');
+    if (o !== s) n.data = o;
+  }
+};
+document.addEventListener('DOMContentLoaded', function () { plGlue(); });
+</script>
 </head>
 <body>
 <header class="nav"><div class="wrap"><a href="index.html" class="logo" style="opacity:1"><i></i>Padel League</a><a href="index.html">← Prototyp</a></div></header>
 <div class="wrap">
-  <header class="top">
+  <header class="vtop">
     <p class="eyebrow">Bod 3 zadání · návrh</p>
     <h1>Vizuální vrstva nad enginem</h1>
     <p>Kroky, pořadí a logika jsou z testovací verze a nemění se. Tady je jen vzhled: stavy, karty, rozpis, živé skóre, tabulky, pavouk a skupiny. Každá sekce má poznámku, co se liší od testovací verze ze 7. 10. 2026. Pravidla: „event“ místo „turnaj“, bílé pozadí a fotky, navy jen hlavičky, oranžová jen akce.</p>

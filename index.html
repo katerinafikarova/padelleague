@@ -10,7 +10,7 @@
 <meta property="og:image" content="assets/img/court-orange-close.jpg">
 <meta name="theme-color" content="#034867">
 <link rel="preload" href="assets/fonts/satoshi-900.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/app.css?v=17">
+<link rel="stylesheet" href="assets/css/app.css?v=19">
 </head>
 <body>
 <div class="shell">
@@ -46,7 +46,6 @@
         <li><a href="#/o-new" data-route="o-new">Vytvoř event (4 kroky jako v aplikaci)</a></li>
         <li><a href="#/o-signup" data-route="o-signup">Účet až při zveřejnění</a></li>
         <li><a href="#/o-live" data-route="o-live">Zveřejněno: seznam přihlášených</a></li>
-        <li><a href="#/o-wa" data-route="o-wa">Sdílení do WhatsAppu</a></li>
         <li><a href="#/o-manage" data-route="o-manage">Engine 1: Soupiska a platby</a></li>
         <li><a href="#/o-setup" data-route="o-setup">Engine 2: Nastavení (kurty, kola, body)</a></li>
         <li><a href="#/o-schedule" data-route="o-schedule">Engine 3: Rozpis + 4: Spuštění ★</a></li>
@@ -58,7 +57,7 @@
         <li><a href="#/o-home" data-route="o-home">Domov organizátora</a></li>
       </ol>
       <details class="why"><summary>Co se změnilo</summary><ul>
-        <li><b>Vytvoř event je první obrazovka.</b> Kroky, pořadí i pole jsou z testovací verze (Typ a formát → Termín a místo → Hráči a platba → Prezentace), včetně variant Americana, uzávěrky, minima hráčů, délky, klubu, úrovní, viditelnosti a WhatsApp zprávy. Tady je převedené na telefon.</li>
+        <li><b>Vytvoř event je první obrazovka.</b> Kroky, pořadí i pole jsou z testovací verze (Typ a formát → Termín a místo → Hráči a platba → Prezentace), včetně variant Americana, uzávěrky, minima hráčů, délky, klubu, úrovní, viditelnosti a textu ke sdílení. Tady je převedené na telefon.</li>
         <li><b>Engine po zveřejnění</b> má stejné 4 kroky jako PC verze: Soupiska → Nastavení → Rozpis → Spuštění. Pak Průběh (live) a Dokončeno.</li>
         <li><b>Zveřejnit není nikdy šedé.</b> Platba na místě je výchozí, Stripe jde připojit kdykoli, i po zveřejnění.</li>
         <li><b>Po zveřejnění seznam přihlášených</b>, ne prázdný rozpis. Rozpis vzniká po uzávěrce.</li>
@@ -66,7 +65,7 @@
         <li><b>Průběh podle PadelMixu:</b> jedno kolo na obrazovce, velké skóre u každého týmu, klepnutím na číslo se zadají body (druhý tým dostane zbytek), kola jako záložky s ✓, velké „Další kolo“, „Kolo navíc“ a potvrzení „Dokončit event?“. Pořadí, body po kolech a živé výsledky s QR jsou za ikonami nahoře.</li>
         <li><b>Po eventu jako PadelMix:</b> čísla (hráči, kola, zápasy, body), tabulka Body + V-R-P, zajímavosti (série, největší výhra, nejvíc bodů), body po kolech a sdílení výsledků.</li>
         <li><b>Po eventu „Co dál“:</b> komunita, platby kartou, žebříček. Odemyká se až po prvním odehraném eventu.</li>
-        <li><b>Pryč:</b> přepínač „Nejdřív poslat odkaz hráčům“ (aplikace do WhatsAppu nic neposílá, jen předá text) a „Poslat kartu všem hráčům“.</li>
+        <li><b>Aplikace nic neposílá do WhatsAppu.</b> Pryč je přepínač „Nejdřív poslat odkaz hráčům“, obrazovka „Sdílení do WhatsAppu“ i „Poslat kartu všem hráčům“. Tlačítko „Sdílet odkaz“ jen otevře sdílení s předvyplněným textem, odešle ho organizátor. Připomínka hráčům chodí e-mailem.</li>
         <li><b>Na počítači</b> se organizátor ukazuje v telefonu, PC verze je hotová v aplikaci.</li>
       </ul></details>
     </nav>
@@ -78,7 +77,7 @@
         <li><a href="#/p-chat" data-route="p-chat">… nebo odkaz ve WhatsApp skupině</a></li>
         <li><a href="#/p-event" data-route="p-event">Stránka eventu</a></li>
         <li><a href="#/p-in" data-route="p-in">Jsi ve hře + pozvat kamaráda</a></li>
-        <li><a href="#/p-reminder" data-route="p-reminder">Připomínka den předem</a></li>
+        <li><a href="#/p-reminder" data-route="p-reminder">Připomínka den předem (e-mail)</a></li>
       </ol>
       <details class="why"><summary>Co se změnilo</summary><ul>
         <li><b>Stránka eventu zůstává</b> (velká fotka, karta s údaji, kdo už jde, přihlášení bez účtu, jedno oranžové tlačítko).</li>
@@ -98,7 +97,7 @@
 
     <nav class="flowgrp" aria-label="Vizuální vrstva">
       <h2>5 · Vizuální vrstva nad enginem</h2>
-      <ol><li><a class="ext" href="vizualni-vrstva.html">Stavy, karty, tabulky, pavouk (návrh)</a></li></ol>
+      <ol><li><a class="ext" href="pc-navrhy.html">Návrhy přímo nad PC verzí (8 obrazovek)</a></li><li><a class="ext" href="vizualni-vrstva.html">Stavy, karty, tabulky, pavouk (komponenty)</a></li></ol>
     </nav>
 
     <div class="ctrls">
@@ -124,7 +123,7 @@
   </main>
 </div>
 <button class="map-btn" data-panel aria-label="Mapa prototypu">Mapa</button>
-<script src="assets/js/i18n.js?v=17"></script>
-<script src="assets/js/app.js?v=17"></script>
+<script src="assets/js/i18n.js?v=19"></script>
+<script src="assets/js/app.js?v=19"></script>
 </body>
 </html>

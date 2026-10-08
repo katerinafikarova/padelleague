@@ -226,3 +226,63 @@
 .g-shade{background:linear-gradient(180deg,rgba(8,14,18,.38) 0%,rgba(8,14,18,0) 32%,rgba(8,14,18,0) 55%,rgba(8,14,18,.62) 100%)}
 .g-shade.soft{background:linear-gradient(180deg,rgba(8,14,18,0) 45%,rgba(8,14,18,.5) 100%)}
 .g-shade.strong{background:rgba(8,14,18,.42)}
+
+/* ===== Ochranné zóny Meta pro Stories a Reels (Meta Ads Guide): 14 % nahoře, 35 % dole, 6 % po stranách =====
+   1080 × 1920 → volné 269 px nahoře, 672 px dole, 65 px po stranách. Text, logo a nálepky jen uvnitř. */
+.g-story .s-safe{position:absolute;left:90px;right:90px;top:269px;bottom:672px;z-index:4;display:flex;flex-direction:column;justify-content:center;gap:24px}
+.g-story .s-safe>*{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important}
+.g-story .s-safe .s-body{gap:18px}
+.g-story .s-safe .g-title{font-size:92px}
+.g-story .s-safe .g-title.md{font-size:76px}
+.g-story .s-safe .g-eye{font-size:26px}
+.g-story .s-safe .g-txt{font-size:34px;line-height:1.35}
+.g-story .s-safe .g-sfoot{position:relative;margin-top:6px;display:flex;justify-content:center}
+.g-story .s-safe .s-sticker{margin-top:6px;padding:20px 30px;font-size:32px}
+.g-story .s-safe .s-sticker.low{align-self:center}
+/* makety v zóně menší */
+.g-story .s-safe .s-mock .m-og{height:250px}
+.g-story .s-safe .s-mock .m-og-glass{padding:20px 24px;gap:12px 16px}
+.g-story .s-safe .s-mock .m-og-glass .kv b{font-size:26px}
+.g-story .s-safe .s-mock .m-og-txt{padding:14px 8px 2px}
+.g-story .s-safe .m-wa{padding:22px;gap:12px}
+.g-story .s-safe .m-wa-top{padding:16px 22px}
+.g-story .s-safe .m-bubble{font-size:24px;padding:14px 20px}
+.g-story .s-safe .m-org{padding:30px;gap:10px}
+.g-story .s-safe .m-money{font-size:80px}
+.g-story .s-safe .m-row{font-size:24px;padding:12px 0}
+/* tým, místa, skóre, vítězové, odemčeno, FAQ */
+.g-story .s-safe .s-team{margin:10px 0;gap:30px}
+.g-story .s-safe .g-av.big{width:150px;height:150px;font-size:54px;margin-bottom:14px}
+.g-story .s-safe .s-team b{font-size:40px}
+.g-story .s-safe .s-ring{width:300px;height:300px;margin:0 auto}
+.g-story .s-safe .s-ring::before{inset:26px}
+.g-story .s-safe .s-ring b{font-size:100px}
+.g-story .s-safe .s-score{padding:30px 32px;margin-top:10px}
+.g-story .s-safe .s-score strong{font-size:110px}
+.g-story .s-safe .s-score b{font-size:34px}
+.g-story .s-safe .s-date{font-size:190px}
+.g-story .s-safe .s-podium{gap:12px}
+.g-story .s-safe .s-prow{padding:18px 28px}
+.g-story .s-safe .s-prow span{font-size:46px}.g-story .s-safe .s-prow b{font-size:42px}.g-story .s-safe .s-prow em{font-size:30px}
+.g-story .s-safe .s-ach{margin:0}
+.g-story .s-safe .s-ach .g-racket{width:250px}
+.g-story .s-safe .s-answer{font-size:42px;padding:36px 42px;margin-top:6px}
+/* karta hráče jako story */
+.g-story.g-card .s-safe{justify-content:center}
+.g-story.g-card .s-safe .g-cardbox{padding:40px 44px;gap:24px}
+.g-story.g-card .s-safe .g-cardbox .kv b{font-size:36px}
+.g-story.g-card .s-safe .g-cardbox .kv b.xl{font-size:76px}
+.g-story.g-card .s-safe .g-card-sym{position:absolute!important;top:40px!important;right:44px!important;left:auto!important;width:60px}
+.g-story.g-card .s-safe .g-won{position:absolute!important;right:24px!important;top:auto!important;bottom:118px!important;width:170px;height:170px}
+.g-story.g-card .s-safe .g-won b{font-size:50px}
+.g-story.g-card .s-safe .g-won span{font-size:15px}
+.g-story .s-safe{gap:18px}
+.g-story .s-safe .m-wa .m-list{line-height:1.38}
+.g-story .s-safe .m-bubble{font-size:23px;padding:12px 18px}
+
+/* Kontrast: bílý text na fotce min. 4,5 : 1 (měřeno na 90. percentilu jasu pod textem). Neutrální tmavý přechod, fotka zůstává fotkou. */
+.g-shade{background:linear-gradient(180deg,rgba(8,14,18,.66) 0%,rgba(8,14,18,.5) 30%,rgba(8,14,18,.5) 62%,rgba(8,14,18,.78) 100%)}
+.g-shade.soft{background:linear-gradient(180deg,rgba(8,14,18,.5) 0%,rgba(8,14,18,.45) 45%,rgba(8,14,18,.75) 100%)}
+.g-shade.strong{background:rgba(8,14,18,.58)}
+.tone-photo .g-title,.tone-photo .g-eye,.tone-photo .g-txt,.tone-photo .g-sub,.tone-photo .g-num,.tone-photo .g-tag{text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.g-shade{background:linear-gradient(180deg,rgba(8,14,18,.7) 0%,rgba(8,14,18,.56) 30%,rgba(8,14,18,.56) 62%,rgba(8,14,18,.8) 100%)}

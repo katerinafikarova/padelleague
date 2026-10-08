@@ -11,7 +11,7 @@ Celé česky, písmo Satoshi, barvy a grid podle JVS.
 ## Jak otevřít
 
 - Online: `…/padelleague/instagram/` (stejný GitHub Pages web jako prototyp aplikace).
-- Lokálně: dvojklik na `index.html`. Vše funguje kromě exportu PNG (prohlížeč z disku nepustí obrázky do plátna). Pro export použij online verzi nebo lokální server.
+- Lokálně: dvojklik na `index.html`. Vše funguje kromě exportu PNG (1440 × 1800 / 1440 × 2560) (prohlížeč z disku nepustí obrázky do plátna). Pro export použij online verzi nebo lokální server.
 
 ## Co kde je
 
@@ -41,6 +41,7 @@ Všechno se mění v `content.js`, grafiky se překreslí samy:
 
 - Mřížka: klepni na příspěvek. Karusel se posouvá swipem, šipkami ‹ › nebo klávesami ← →. Na počítači se mezi příspěvky přechází šipkami po stranách okna, zavírá se ✕, Esc nebo klikem mimo.
 - Stories: klepni na avatar (aktivní story) nebo na highlight. Klepnutí vpravo/vlevo = další/předchozí, podržení = pauza, šipky a Esc na klávesnici.
+- Ochranné zóny Meta: text a logo ve stories jsou jen mezi 14 % shora a 35 % zdola a 6 % od stran (Meta Ads Guide, Stories i Reels). Na `templates.html` je přepínač, který zóny zakreslí. Příspěvky drží text 6 % od stran, takže je neořízne ani mřížka profilu 3 : 4.
 - Export: tlačítko v panelu „Proč takhle“ nebo ikona ↓ v prohlížeči stories. Šablony na `templates.html` mají tlačítko u každé grafiky.
 
 Lidé, komunity a místa jsou fiktivní. Reálné účty z analýzy jsou jen v panelu jako zdroj inspirace.

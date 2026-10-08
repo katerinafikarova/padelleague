@@ -796,3 +796,52 @@ button.logo{color:inherit;padding:0}
 .hl span{font-size:12.5px;color:var(--muted);font-weight:700}
 .hl b{font-size:15px;line-height:1.3}
 .rtabs2 button{display:grid;place-items:center;text-align:center}
+
+/* ===== Kolo 2d: e-mailová připomínka ===== */
+.mail-h{flex:none;display:flex;align-items:center;gap:10px}
+.mail-h .av{width:40px;height:40px;font-size:13px}
+.mail-h b{display:block;font-size:15px}
+.mail-h small{font-size:12.5px;color:var(--muted)}
+.dk-mail{display:flex;background:#F4F6F8}
+.dk-mail-list{flex:none;width:300px;background:#fff;border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:6px}
+.dk-mail-list>b{font-size:18px;padding:0 8px 8px}
+.dk-mail-list div{padding:10px;border-radius:10px;font-size:13.5px}
+.dk-mail-list div.on{background:#EEF5F9}
+.dk-mail-list small{display:block;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ===== Kolo 2d: kontrast bílého textu na fotkách ===== */
+.photo::before,.somecard::before,.card-ev::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(4,20,30,.62) 0%,rgba(4,20,30,.22) 34%,rgba(4,20,30,.12) 52%,rgba(4,20,30,.66) 100%)}
+.photo .over-title{text-shadow:0 2px 14px rgba(0,0,0,.6),0 1px 2px rgba(0,0,0,.45)}
+.glass{background:rgba(6,30,44,.74)}
+.pill.glassy{background:rgba(6,30,44,.66);color:#fff;border:1px solid rgba(255,255,255,.22)}
+.hc-img::after{background:linear-gradient(180deg,rgba(4,20,30,.45),rgba(4,20,30,.1) 45%,rgba(4,20,30,.35))}
+.some-foot,.won{z-index:3}
+.win-card::after{background:linear-gradient(180deg,rgba(4,20,30,.55),rgba(4,20,30,.88))}
+.win-card .in{text-shadow:0 1px 8px rgba(0,0,0,.45)}
+
+/* ===== Kolo 2d: vše se vejde do buněk ===== */
+.pl-row{display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:10px;row-gap:6px;align-items:center}
+.pl-row .pl-act{grid-column:2;display:flex;gap:6px;flex-wrap:wrap}
+.pl-row .pill{white-space:nowrap}
+.af-money .money{font-size:44px;white-space:nowrap}
+.st-tbl.mx.full .st-h,.st-tbl.mx.full .st-r{grid-template-columns:24px minmax(0,1fr) 42px 52px 44px;gap:3px}
+.st-h span,.st-r span,.st-r b{min-width:0}
+.st-tbl.mx .st-h span:not(:nth-child(2)){text-align:center}
+.pc-s,.sb,.hc-price,.money,.stat4 b,.seg3 b,.stepper b,.est b,.st-r b,.vrp,.df{white-space:nowrap}
+.mini-ev b{overflow-wrap:break-word}
+.win-card::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(4,20,30,.6) 0%,rgba(4,20,30,.72) 45%,rgba(4,20,30,.88) 100%)}
+.win-card .in{z-index:2}
+.win-card small{background:rgba(255,255,255,.16)}
+
+/* ===== Karta výsledku = story 9:16 s ochrannou zónou Meta ===== */
+.somecard{aspect-ratio:9/16;min-height:0;flex:none;width:100%}
+.sc-safe{position:absolute;left:6%;right:6%;top:14%;bottom:35%;z-index:2;display:flex;flex-direction:column;justify-content:space-between;gap:8px}
+.somecard .glass.sc-glass{position:static;grid-template-columns:1fr 1fr;gap:8px 10px;padding:12px 14px}
+.sc-glass .kv .v{font-size:13px}
+.sc-glass .kv .l{font-size:8.5px}
+.sc-glass .kv.big .v{font-size:26px;line-height:1}
+.sc-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.sc-foot .some-foot{position:static;font-size:10px;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.sc-foot .won{position:static;width:62px;height:62px;flex:none;font-size:15px}
+.r-o-card .somecard{width:min(380px,100%)}
+.somecard::before{background:linear-gradient(180deg,rgba(4,20,30,.55) 0%,rgba(4,20,30,.35) 30%,rgba(4,20,30,.55) 60%,rgba(4,20,30,.72) 100%)}
