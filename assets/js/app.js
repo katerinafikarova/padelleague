@@ -20,7 +20,7 @@
     if (o) Object.keys(o).forEach(function (x) { s = s.split('{' + x + '}').join(o[x]); });
     return glue(s);
   }
-  function glue(s) { return String(s).replace(/(\d\.?) (?=[\dA-Za-zÀ-ž])/g, '$1\u00a0').replace(/ (\d)/g, function (m, d, i, str) { return /[A-Za-zÀ-ž]$/.test(str.slice(0, i)) ? '\u00a0' + d : m; }).replace(/ · /g, '\u00a0· '); }
+  function glue(s) { return String(s).replace(/(\d\.?) (?=[\dA-Za-zÀ-ž])/g, '$1\u00a0').replace(/ (\d)/g, function (m, d, i, str) { return /[A-Za-zÀ-ž]$/.test(str.slice(0, i)) ? '\u00a0' + d : m; }).replace(/ · /g, '\u00a0· ').replace(/([eE])-mail/g, '$1\u2011mail'); }
   function P(k, n) { var f = D[lang][k], i = lang === 'cs' ? (n === 1 ? 0 : (n >= 2 && n <= 4 ? 1 : 2)) : (n === 1 ? 0 : 1); return glue(f[i].split('{n}').join(n)); }
   function cap1(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
@@ -40,7 +40,7 @@
         courts: 4, cap: 16, price: 200, slug: 'patecni-americano', photo: 'court-orange-close.jpg', pay: 'card', type: 'social' },
       players: mkPlayers(9), waitlist: [],
       me: { name: 'Jana Malá', contact: 'jana.mala@example.com', status: null },
-      method: 'apple', stripe: 'active', orgName: 'Kuba', cfg: { courts: 4, mode: 'free', rounds: 4, pts: 24 }, hasComm: false, account: false, orgMode: false, wz: 0, pendingPub: false, stripeBack: 'o-new', community: 'Kuba komunity', city: 'Teplice',
+      method: 'apple', stripe: 'active', orgName: 'Jakub', cfg: { courts: 4, mode: 'free', rounds: 4, pts: 24 }, hasComm: false, account: false, orgMode: false, wz: 0, pendingPub: false, stripeBack: 'o-new', community: 'Jakubova komunita', city: 'Teplice',
       draft: null, more: false, acc: false, allNames: false, shuffle: 0,
       sched: null, play: { round: 0, scores: [] }, last: null,
       sheet: null, ctx: 'player', pick: 'pa', hf: { city: 'all', when: 'all', free: false }, scoreTarget: null, toast: null, stripeStep: 0, posted: false
@@ -75,7 +75,8 @@
   function status(time) { return '<div class="status"><span>' + (time || '18:42') + '</span><span>●●● 5G</span></div>'; }
   function top(l, title, r) { return '<div class="top">' + (l || '<span class="ib ghost"></span>') + '<div class="ttl">' + (title || '') + '</div>' + (r || '<span class="ib ghost"></span>') + '</div>'; }
   function ib(sym, attrs, label) { return '<button class="ib" ' + attrs + ' aria-label="' + t(label) + '">' + sym + '</button>'; }
-  var LOGO = '<span class="logo"><i></i>Padel League</span>';
+  var LOGO = '<span class="logo svg" aria-label="PadelLeague">' + (window.PL_LOGO ? window.PL_LOGO.full : 'Padel League') + '</span>';
+  var WA_IC = '<svg class="wa-ic" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2.2A9.7 9.7 0 0 0 3.6 16.8L2.3 21.7l5-1.3A9.7 9.7 0 1 0 12 2.2zm0 17.7a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9zm4.4-6c-.2-.1-1.4-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3z"/></svg>';
   function glassKV(pairs) { return pairs.map(function (p) { return '<div class="kv' + (p[2] ? ' full' : '') + '"><div class="l">' + p[0] + '</div><div class="v">' + esc(p[1]) + '</div></div>'; }).join(''); }
   function screen(cls, inner) { return '<div class="screen ' + (cls || '') + '">' + inner + '</div>'; }
   function go(r) { if (location.hash === '#/' + r) render(); else location.hash = '/' + r; }
@@ -107,7 +108,7 @@
     { id: 'pa', nm: null, format: 'Americano', when: null, start: '18:00', venue: 'Padel Klub Novosedlice', city: 'Teplice', address: 'Trnovanská 123, Teplice', price: 200, cap: 16, n: 9, vibe: 'social', level: 'all', photo: 'court-orange-close.jpg', slug: 'patecni-americano', org: null },
     { id: 'mx', nm: { cs: 'Sobotní Mexicano', en: 'Saturday Mexicano' }, format: 'Mexicano', when: { d: 31, m: 10, dow: 5 }, start: '10:00', venue: 'Padel Písečná', city: 'Teplice', address: 'Písečná 5, Teplice', price: 250, cap: 16, n: 14, vibe: 'comp', level: 'mid', photo: 'court-serve.jpg', slug: 'sobotni-mexicano', org: 'Padel Písečná' },
     { id: 'ho', nm: { cs: 'Holky na kurt', en: 'Girls on court' }, format: 'Americano', when: { d: 1, m: 11, dow: 6 }, start: '17:00', venue: 'Padel Arena Ústí', city: 'Ústí n. L.', address: 'Masarykova 40, Ústí nad Labem', price: 0, cap: 12, n: 6, vibe: 'social', level: 'beg', photo: 'court-reach.jpg', slug: 'holky-na-kurt', org: 'Padel Holky Ústí' },
-    { id: 'tm', nm: { cs: 'Středeční liga', en: 'Wednesday league' }, format: 'Round Robin', when: { d: 4, m: 11, dow: 2 }, start: '19:00', venue: 'Padel Klub Novosedlice', city: 'Teplice', address: 'Trnovanská 123, Teplice', price: 300, cap: 16, n: 16, vibe: 'comp', level: 'adv', photo: 'court-dark-run.jpg', slug: 'stredecni-liga', org: 'Kuba komunity' },
+    { id: 'tm', nm: { cs: 'Středeční liga', en: 'Wednesday league' }, format: 'Round Robin', when: { d: 4, m: 11, dow: 2 }, start: '19:00', venue: 'Padel Klub Novosedlice', city: 'Teplice', address: 'Trnovanská 123, Teplice', price: 300, cap: 16, n: 16, vibe: 'comp', level: 'adv', photo: 'court-dark-run.jpg', slug: 'stredecni-liga', org: 'Jakubova komunita' },
     { id: 'ra', nm: { cs: 'Ranní Americano', en: 'Morning Americano' }, format: 'Americano', when: { d: 5, m: 11, dow: 3 }, start: '07:00', venue: 'Padel Club Hostivař', city: 'Praha', address: 'Švehlova 32, Praha 10', price: 180, cap: 8, n: 4, vibe: 'social', level: 'all', photo: 'court-blur-run.jpg', slug: 'ranni-americano', org: 'Ranní padel Praha' },
     { id: 'pl', nm: { cs: 'Pardubická liga · 3. kolo', en: 'Pardubice league · round 3' }, format: 'Round Robin', when: { d: 7, m: 11, dow: 5 }, start: '09:00', venue: 'Padel Park Pardubice', city: 'Pardubice', address: 'Hlaváčova 12, Pardubice', price: 350, cap: 16, n: 10, vibe: 'comp', level: 'mid', photo: 'court-blue-orange.jpg', slug: 'pardubicka-liga', org: 'Padel liga Pardubice' }
   ];
@@ -156,19 +157,28 @@
       '</div>');
   };
 
+  /* Náhled odkazu ve WhatsAppu = Open Graph eventu: obrázek 1200 × 630 (fotka, název, termín, obsazenost, logo), titulek, popis, doména */
+  function ogImage() {
+    var l = left();
+    return '<div class="og-img"><img src="' + IMG + S.ev.photo + '" alt=""><span class="og-logo">' + (window.PL_LOGO ? window.PL_LOGO.full : '') + '</span>' +
+      '<div class="og-txt"><b>' + esc(evName()) + '</b><span>' + evDate() + '\u00a0· ' + S.ev.start + '\u00a0· ' + esc(S.ev.venue) + '</span></div>' +
+      '<span class="og-pill' + (l <= 2 ? ' hot' : '') + '">' + (l ? t('og_left', { n: going(), cap: S.ev.cap, left: P('spotsLeft', l) }) : t('og_full')) + '</span></div>';
+  }
   R['p-chat'] = function () {
     return screen('wa', status('18:40') +
       '<div class="top">' + ib('←', 'data-go="start"', 'back') + '<div class="ttl wa-ttl">Padel Teplice 🎾<br><span>' + t('chat_members') + '</span></div><span class="ib ghost"></span></div>' +
       '<div class="scroll" style="padding-top:14px;gap:10px">' +
       '<div class="sysmsg">' + t('today') + '</div>' +
-      '<div class="bubble in"><div class="who">' + t('chat_org') + '</div>' +
-      '<button class="prev" data-go="p-event"><img src="' + IMG + S.ev.photo + '" alt=""><div><b>' + esc(evName()) + '</b>' + t('chat_prev', { date: evDate(), price: kc(S.ev.price), n: going(), cap: S.ev.cap }) + '</div></button>' +
+      '<div class="bubble in og-bubble"><div class="who">' + t('chat_org') + '</div>' +
+      '<button class="og" data-go="p-event" aria-label="' + esc(evName()) + '">' + ogImage() +
+      '<span class="og-meta"><b>' + t('og_title', { name: esc(evName()), date: evDate(), start: S.ev.start }) + '</b><span>' + t('og_desc', { n: going(), cap: S.ev.cap, price: kc(S.ev.price), venue: esc(S.ev.venue) }) + '</span><em>padelleague.eu</em></span></button>' +
       esc(chatMsg()) + '<br><button class="wa-link" data-go="p-event">padelleague.eu/e/' + S.ev.slug + '</button><div class="time">18:31</div></div>' +
       '<div class="bubble in"><div class="who">Klára</div>' + t('chat_r1') + '<div class="time">18:35</div></div>' +
       '<div class="bubble in"><div class="who">Tomáš</div>' + t('chat_r2') + '<div class="time">18:38</div></div>' +
       '<p class="fine" style="margin-top:auto">' + t('chat_hint') + '</p>' +
       '</div>');
   };
+
 
   function namesBlock() {
     var list = S.players.map(function (p) { return p.n; });
@@ -190,14 +200,14 @@
     else if (st === 'full') dock = '<button class="cta navy" data-act="sheet" data-arg="waitlist">' + t('cta_wait') + '</button><p class="fine">' + t('wait_fine') + '</p>';
     else if (st === 'in') dock = '<button class="cta" data-act="share" data-arg="player">' + t('cta_invite') + '</button><button class="link" data-act="sheet" data-arg="cancel">' + t('cant_come') + '</button>';
     else dock = '<button class="cta" data-act="share" data-arg="player">' + t('cta_invite') + '</button><button class="link" data-act="leaveWait">' + t('leave_wait') + '</button>';
-    return screen('', status() + top('<button class="logo" data-go="p-home" aria-label="' + t('all_events') + '"><i></i>Padel League</button>', '', ib('☰', 'data-act="sheet" data-arg="pmenu"', 'menu')) +
+    return screen('', status() + top('<button class="logo svg" data-go="p-home" aria-label="' + t('all_events') + '">' + (window.PL_LOGO ? window.PL_LOGO.full : 'Padel League') + '</button>', '', ib('☰', 'data-act="sheet" data-arg="pmenu"', 'menu')) +
       '<div class="scroll">' +
       '<button class="back-all" data-go="p-home">← ' + t('all_events') + '</button>' +
-      '<div class="photo grain"><img src="' + IMG + S.ev.photo + '" alt=""><div class="badge">' + badge + '</div>' +
-      '<div class="over-title">' + esc(evName()) + '</div>' +
-      '<div class="glass">' + glassKV([[t('k_datetime'), evDate() + '\u00a0· ' + S.ev.start, 1], [t('k_entry'), kc(S.ev.price)], [t('k_format'), S.ev.format], [t('k_location'), S.ev.venue, 1], [t('k_level'), S.ev.level && S.ev.level !== 'all' ? t('lv_' + S.ev.level) : t('all_levels'), 1]]) + '</div></div>' +
+      '<div class="photo grain ev-hero"><img src="' + IMG + S.ev.photo + '" alt=""><div class="badge">' + badge + '</div>' +
+      '<div class="over-title">' + esc(evName()) + '</div><span class="spacer"></span>' +
+      '<div class="glass">' + glassKV([[t('k_datetime'), evDate() + '\u00a0· ' + S.ev.start, 1], [t('k_entry'), kc(S.ev.price)], [t('k_format'), S.ev.format], [t('k_location'), S.ev.venue], [t('k_level'), S.ev.level && S.ev.level !== 'all' ? t('lv_' + S.ev.level) : t('all_levels')]]) + '</div></div>' +
       '<div class="going"><div class="ring" style="--p:' + pct() + '"><span>' + n + '/' + S.ev.cap + '</span></div><div><div class="t">' + line + '</div><div class="avatars">' + who + '</div></div></div>' +
-      '<div><div class="lbl" style="margin:2px 2px 8px">' + t('who_playing') + '</div>' + namesBlock() + '</div>' +
+      '<div class="acc acc-names' + (S.accNames ? ' open' : '') + '"><button data-act="accNames"><span>' + t('who_playing') + '</span><span class="chev">▾</span></button><div class="inner">' + namesBlock() + '</div></div>' +
       '<div class="acc' + (S.acc ? ' open' : '') + '"><button data-act="acc"><span>' + t('details') + '</span><span class="chev">▾</span></button><div class="inner"><dl class="dl">' +
       '<dt>' + t('d_org') + '</dt><dd>' + esc(S.ev.org || orgLabel()) + '</dd><dt>' + t('d_addr') + '</dt><dd>' + esc(S.ev.address) + '</dd><dt>' + t('d_time') + '</dt><dd>' + evLong() + ', ' + S.ev.start + '–' + endTime() + '</dd>' +
       '<dt>' + t('d_format') + '</dt><dd>' + t({ Mexicano: 'd_format_mx', 'Round Robin': 'd_format_rr' }[S.ev.format] || 'd_format_txt') + '</dd><dt>' + t('d_close') + '</dt><dd>' + evClose() + '</dd><dt>' + t('d_cancel') + '</dt><dd>' + t('d_cancel_txt') + '</dd></dl>' +
@@ -240,11 +250,15 @@
      účet až při zveřejnění, komunita, Stripe a žebříček až po prvním odehraném eventu. */
   function orgLabel() { return S.hasComm ? S.community : S.orgName; }
   function draftName() { var d = S.draft; return d ? (d.custom || t('evName', { f: d.format })) : evName(); }
+  function doneLbl() { return t(S.ev.type === 'comp' ? 'st_done' : 'st_held'); }
   function cardPay() { return S.ev.price > 0 && S.ev.pay === 'card' && S.stripe === 'active'; }
   function orgReset() {
     S.orgMode = true; S.account = false; S.hasComm = false; S.stripe = 'none'; S.ev.pay = 'site';
     S.last = null; S.draft = null; S.wz = 0;
+    /* Přímý odkaz na krok průvodce z výčtu zadání: index.html?wz=2&pay=card#/o-new */
+    if (DL) { S.wz = DL.wz; if (DL.pay) S.ev.pay = DL.pay; DL = null; }
   }
+  var DL = (function () { try { var u = new URLSearchParams(location.search), w = u.get('wz'); return w ? { wz: Math.max(0, Math.min(3, +w)), pay: u.get('pay') } : null; } catch (e) { return null; } })();
 
   R['o-signup'] = function () {
     var d = S.draft || { photo: S.ev.photo, week: S.ev.week, start: S.ev.start };
@@ -256,7 +270,7 @@
       '<button class="row" data-act="signup" style="justify-content:center;background:#000;color:#fff;border-color:#000"><b>' + t('su_apple') + '</b></button>' +
       '<button class="row" data-act="signup" style="justify-content:center"><b>G&nbsp; ' + t('su_google') + '</b></button>' +
       '<div class="lbl" style="text-align:center">' + t('su_or') + '</div>' +
-      '<label class="field"><span class="lbl">E-mail</span><input id="su-email" type="email" value="kuba@padelteplice.cz"></label>' +
+      '<label class="field"><span class="lbl">E-mail</span><input id="su-email" type="email" value="jakub@padelteplice.cz"></label>' +
       '<label class="field"><span class="lbl">' + t('su_pass') + '</span><input id="su-pass" type="password" value="prototyp"></label>' +
       '<p class="fine">' + t('su_fine') + '</p>' +
       '</div><div class="dock"><button class="cta" data-act="signup">' + t('su_cta') + '</button><button class="link" data-act="signup">' + t('su_have') + '</button></div>');
@@ -288,8 +302,8 @@
   R['o-home'] = function () {
     var n = going();
     var last = S.last ? '<div class="lbl" style="margin-top:6px">' + t('h_last') + '</div><button class="row" data-go="o-after"><span>' + t('h_last_row', { money: kc(S.last.collected), s: S.last.showed, w: esc(short(S.last.winner)) }) + '</span><span class="r">▸</span></button>' +
-      '<div class="lbl" style="margin-top:6px">' + t('nx_steps') + '</div>' + nextSteps() : '<p class="fine" style="text-align:left">' + t('h_first') + '</p>';
-    return screen('', status() + top('<span class="logo"><i></i>' + esc(S.hasComm ? S.community : 'Padel League') + '</span>', '', ib('☰', 'data-act="sheet" data-arg="omenu"', 'menu')) +
+      '<div class="lbl" style="margin-top:6px">' + t('nx_steps') + '</div>' + nextSteps() : (S.stripe !== 'active' ? '<button class="step-card" data-act="connectStripe" data-arg="o-home"><i>Kč</i><span><b>' + t('ns_stripe_any') + '</b><small>' + t('ns_stripe_any_s') + '</small></span><em>→</em></button>' : '') + '<p class="fine" style="text-align:left">' + t('h_first') + '</p>';
+    return screen('', status() + top((S.hasComm ? '<span class="logo"><i></i>' + esc(S.community) + '</span>' : LOGO), '', ib('☰', 'data-act="sheet" data-arg="omenu"', 'menu')) +
       '<div class="scroll" style="gap:12px">' +
       '<div class="lbl">' + t('h_next') + '</div>' +
       '<button class="card-ev grain" data-go="o-manage"><img src="' + IMG + S.ev.photo + '" alt=""><div class="glass"><div class="sring" style="--p:' + pct() + '"><span>' + n + '/' + S.ev.cap + '</span></div>' +
@@ -298,74 +312,99 @@
       '</div><div class="dock"><button class="cta" data-act="newEvent">' + t('h_new') + '</button></div>');
   };
 
-  /* Průvodce Vytvoř event: kroky a pořadí podle aplikace, tady jen vizuální vrstva */
-  /* Průvodce Vytvoř event: kroky, pořadí a pole přesně podle testovací verze aplikace (PC), tady převedené na telefon */
+  /* Průvodce Vytvoř event: kroky, pořadí a pole jako v aplikaci, převedené na telefon.
+     Kolo 3: vybraná volba plně vybarvená, písmo min. 16 px, krátké popisky, skutečné ikony, méně polí na obrazovce. */
+  var IC = (function () {
+    function s(p) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; }
+    return {
+      comp: s('<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 6h3v2a3 3 0 0 1-3 3M7 6H4v2a3 3 0 0 0 3 3"/>'),
+      social: s('<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 4a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/>'),
+      train: s('<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>'),
+      'Americano': s('<path d="M4 9a8 8 0 0 1 14-3l2 2M20 15a8 8 0 0 1-14 3l-2-2"/><path d="M20 4v4h-4M4 20v-4h4"/>'),
+      'Mexicano': s('<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>'),
+      'Round Robin': s('<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>'),
+      'Turnaj': s('<path d="M3 5h5v4H3zM3 15h5v4H3zM8 7h3v10H8M11 12h4M15 9h6v6h-6z"/>'),
+      'Playoff': s('<path d="M3 4h4v4M3 16h4v4M7 6h3v12H7M10 12h4M14 10h7v4h-7z"/>'),
+      'Bez herního systému': s('<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>'),
+      more: s('<path d="M6 9l6 6 6-6"/>')
+    };
+  })();
   var FMT = {
-    'Americano': ['fs_am', 'fx_am', ['ft_rot', 'ft_ind', '8–24']],
-    'Mexicano': ['fs_mx', 'fx_mx', ['ft_live', 'ft_ind', '8–24']],
-    'Round Robin': ['fs_rr', 'fx_rr', ['ft_pairs', 'ft_all', '6–16']],
-    'Turnaj': ['fs_tn', 'fx_tn', ['ft_pairs', 'ft_groups', '8–32']],
-    'Playoff': ['fs_po', 'fx_po', ['ft_pairs', 'ft_ko', '4–32']],
-    'Bez herního systému': ['fs_nx', 'fx_nx', ['ft_reg', 'ft_noeng']]
+    'Americano': ['fs_am', 'fx_am'],
+    'Mexicano': ['fs_mx', 'fx_mx'],
+    'Round Robin': ['fs_rr', 'fx_rr'],
+    'Turnaj': ['fs_tn', 'fx_tn'],
+    'Playoff': ['fs_po', 'fx_po'],
+    'Bez herního systému': ['fs_nx', 'fx_nx']
   };
   function fmtList(type) { return type === 'comp' ? ['Americano', 'Mexicano', 'Round Robin', 'Turnaj', 'Playoff'] : ['Americano', 'Mexicano', 'Round Robin', 'Bez herního systému']; }
   var WZ = ['wz1', 'wz2', 'wz3', 'wz4'];
   var PHOTOS = ['court-orange-close.jpg', 'court-serve.jpg', 'court-reach.jpg', 'court-blue-orange.jpg'];
   var CLUBS = ['Padel Klub Novosedlice', 'Padel Písečná', 'Padel Arena Ústí'];
+  /* Poplatky u platby kartou: 6 % PadelLeague + Stripe 1,5 % + 6,50 Kč (běžná evropská karta). Na místě bez poplatků. */
+  function feeOf(p) { return p > 0 ? Math.round(p * 0.06 + p * 0.015 + 6.5) : 0; }
   function newDraft(w) {
     return { custom: S.ev.custom, format: S.ev.format, variant: 'Classic', week: w, start: S.ev.start, deadline: '1d', venue: S.ev.venue, place: 'club', courts: S.ev.courts, cap: S.ev.cap, min: 4, dur: '2 h',
       price: S.ev.price, pay: S.ev.pay || 'site', type: S.ev.type || 'social', photo: S.ev.photo, gender: 'mix', vis: 'pub', force: false };
   }
   function chipRow(act, items, cur) { return '<div class="choice">' + items.map(function (x) { return '<button class="' + (cur === x[0] ? 'on' : '') + '" data-act="' + act + '" data-arg="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>'; }
-  function stepper(k, v, label) { return '<div class="stepper"><button data-act="step" data-arg="' + k + ':-' + (k === 'cap' ? 4 : k === 'price' ? 50 : 1) + '" aria-label="−">−</button><b>' + label + '</b><button data-act="step" data-arg="' + k + ':' + (k === 'cap' ? 4 : k === 'price' ? 50 : 1) + '" aria-label="+">+</button></div>'; }
+  function stepper(k, v, label) { return '<div class="stepper"><button data-act="step" data-arg="' + k + ':-' + (k === 'cap' ? 4 : k === 'price' ? 10 : 1) + '" aria-label="−">−</button>' + ((k === 'cap' || k === 'price') ? '<button class="stepv" data-act="numpad" data-arg="' + k + '" aria-label="' + t('np_edit') + ': ' + label + '"><b>' + label + '</b><i aria-hidden="true">✎</i></button>' : '<b>' + label + '</b>') + '<button data-act="step" data-arg="' + k + ':' + (k === 'cap' ? 4 : k === 'price' ? 10 : 1) + '" aria-label="+">+</button></div>'; }
   function waText(d) { return t('wa_tpl', { name: d.custom || t('evName', { f: d.format }), date: fDate(d.week), start: d.start, venue: d.venue, cap: d.cap, format: d.format }); }
+  function sec(title, inner, extra) { return '<section class="wz-sec"><h2 class="wz-q">' + title + (extra || '') + '</h2>' + inner + '</section>'; }
   R['o-new'] = function () {
     var d = S.draft || (S.draft = newDraft(S.ev.week)), st = S.wz;
     if (fmtList(d.type).indexOf(d.format) < 0) d.format = 'Americano';
     var bar = '<div class="wz" role="list">' + WZ.map(function (k, i) { return '<button role="listitem" class="' + (i === st ? 'on' : i < st ? 'done' : '') + '" data-act="wz" data-arg="' + i + '"' + (i === st ? ' aria-current="step"' : '') + '><i>' + (i < st ? '✓' : i + 1) + '</i><span>' + t(k) + '</span></button>'; }).join('') + '</div>';
-    function opt(k, h, s, tag) { return '<button class="opt' + (d.pay === k ? ' on' : '') + '" data-act="dpay" data-arg="' + k + '"><i></i><span><b>' + h + (tag ? ' <em>' + tag + '</em>' : '') + '</b><small>' + s + '</small></span></button>'; }
-    var body, f = FMT[d.format];
+    function opt(k, h, s, tag) { return '<button class="tile row-t' + (d.pay === k ? ' on' : '') + '" data-act="dpay" data-arg="' + k + '" aria-pressed="' + (d.pay === k) + '"><span class="tt"><b>' + h + (tag ? ' <em>' + tag + '</em>' : '') + '</b><small>' + s + '</small></span></button>'; }
+    var body;
     if (st === 0) body =
-      '<div class="lbl">' + t('n_type') + '</div><div class="types">' + [['comp', 'v_comp', 'vt_comp', '🏆'], ['social', 'v_social', 'vt_social', '◎'], ['train', 'v_train', 'vt_train', '○']].map(function (x) {
-        return '<button class="' + (d.type === x[0] ? 'on' : '') + '" data-act="dtype" data-arg="' + x[0] + '"><i>' + x[3] + '</i><b>' + t(x[1]) + '</b><small>' + t(x[2]) + '</small></button>'; }).join('') + '</div>' +
-      '<div class="lbl">' + t('k_format') + '</div><div class="formats">' + fmtList(d.type).map(function (k) { return '<button class="fm' + (d.format === k ? ' on' : '') + '" data-act="format" data-arg="' + k + '"><b>' + t('fmt_' + k.replace(/ /g, '_')) + '</b><span>' + t(FMT[k][0]) + '</span></button>'; }).join('') + '</div>' +
-      (d.format === 'Americano' ? '<div class="lbl">' + t('n_variant') + '</div>' + chipRow('dvar', [['Classic', 'Classic'], ['Team', 'Team'], ['Mixed', 'Mixed']], d.variant) : '') +
-      '<div class="note-box"><b>' + t('fx_how', { f: t('fmt_' + d.format.replace(/ /g, '_')) }) + '</b><br>' + t(f[1]) + '<div class="tags">' + f[2].map(function (x) { return '<span>' + (/^\d/.test(x) ? t('ft_players', { n: x }) : t(x)) + '</span>'; }).join('') + '</div></div>';
+      sec(t('n_type'), '<div class="tiles1">' + [['comp', 'v_comp', 'vt_comp'], ['social', 'v_social', 'vt_social'], ['train', 'v_train', 'vt_train']].map(function (x) {
+        var on = d.type === x[0];
+        return '<button class="tile row-t' + (on ? ' on' : '') + '" data-act="dtype" data-arg="' + x[0] + '" aria-pressed="' + on + '"><span class="ic">' + IC[x[0]] + '</span><span class="tt"><b>' + t(x[1]) + '</b><small>' + t(x[2]) + '</small></span></button>'; }).join('') + '</div>') +
+      sec(t('k_format'), '<div class="tiles2">' + fmtList(d.type).map(function (k) {
+        var on = d.format === k;
+        return '<button class="tile' + (on ? ' on' : '') + '" data-act="format" data-arg="' + k + '" aria-pressed="' + on + '"><span class="ic">' + IC[k] + '</span><b>' + t('fmt_' + k.replace(/ /g, '_')) + '</b><small>' + t(FMT[k][0]) + '</small></button>'; }).join('') + '</div>' +
+        '<p class="wz-hint">' + t(FMT[d.format][1]) + '</p>') +
+      (d.format === 'Americano' ? sec(t('n_variant'), '<div class="seg-f">' + [['Classic', 'var_classic'], ['Team', 'var_team'], ['Mixed', 'var_mixed']].map(function (x) { return '<button class="' + (d.variant === x[0] ? 'on' : '') + '" data-act="dvar" data-arg="' + x[0] + '" aria-pressed="' + (d.variant === x[0]) + '">' + t(x[1]) + '</button>'; }).join('') + '</div>') : '');
     else if (st === 1) {
       var rest = d.cap - d.courts * 4;
+      var dlTxt = { none: t('dl_none'), '1d': t('dl_1d'), '3d': t('dl_3d'), '1w': t('dl_1w'), '2w': t('dl_2w') }[d.deadline];
       body =
-        '<div class="two"><label class="field"><span class="lbl">' + t('n_when') + '</span><select id="d-week">' + [0, 1, 2].map(function (o) { var w = S.ev.week + o; return '<option value="' + w + '"' + (w === d.week ? ' selected' : '') + '>' + fDate(w) + '</option>'; }).join('') + '</select></label>' +
-        '<label class="field"><span class="lbl">' + t('n_start') + '</span><select id="d-start">' + ['17:00', '18:00', '19:00', '20:00'].map(function (v) { return '<option' + (v === d.start ? ' selected' : '') + '>' + v + '</option>'; }).join('') + '</select></label></div>' +
-        '<div class="lbl">' + t('n_dead') + ' <span class="opt-l">' + t('optional') + '</span></div>' + chipRow('ddead', [['none', t('dl_none')], ['1d', t('dl_1d')], ['3d', t('dl_3d')], ['1w', t('dl_1w')], ['2w', t('dl_2w')]], d.deadline) +
-        '<div class="field"><span class="lbl">' + t('n_players') + '</span>' + stepper('cap', d.cap, P('players', d.cap)) + '<div class="choice mini">' + [8, 12, 16, 24, 32, 48].map(function (n) { return '<button class="' + (d.cap === n ? 'on' : '') + '" data-act="dcap" data-arg="' + n + '">' + n + '</button>'; }).join('') + '</div></div>' +
-        '<div class="two"><div class="field"><span class="lbl">' + t('n_min') + '</span>' + stepper('min', d.min, d.min) + '</div><div class="field"><span class="lbl">' + t('n_courts') + '</span>' + stepper('courts', d.courts, d.courts) + '</div></div>' +
-        '<div class="lbl">' + t('n_dur') + '</div>' + chipRow('ddur', [['1 h', '1 h'], ['1,5 h', '1,5 h'], ['2 h', '2 h'], ['3 h', '3 h'], ['4 h', '4 h'], ['all', t('dur_all')]], d.dur) +
-        '<p class="fine" style="text-align:left;margin-top:-4px">' + (rest > 0 ? t('rest_n', { n: P('players', rest) }) : t('rest_none')) + '</p>' +
-        '<div class="lbl">' + t('n_where') + '</div><div class="opts">' + ['club', 'own'].map(function (k) { return '<button class="opt' + (d.place === k ? ' on' : '') + '" data-act="dplace" data-arg="' + k + '"><i></i><span><b>' + t('pl_' + k) + '</b><small>' + t('pl_' + k + '_s') + '</small></span></button>'; }).join('') + '</div>' +
-        (d.place === 'club' ? '<label class="field"><span class="lbl">' + t('n_club') + '</span><select id="d-venue">' + CLUBS.map(function (c) { return '<option' + (c === d.venue ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select></label>'
-          : '<label class="field"><span class="lbl">' + t('n_place') + '</span><input id="d-venue" value="' + esc(d.venue) + '"></label>');
-    } else if (st === 2) body =
-      '<div class="lbl">' + t('n_gender') + '</div>' + chipRow('dgen', [['mix', t('g_mix')], ['m', t('g_m')], ['w', t('g_w')]], d.gender) +
-      '<div class="two"><label class="field"><span class="lbl">' + t('lv_from') + '</span><select><option>' + t('no_limit') + '</option>' + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) { return '<option>' + t('lv_n', { n: n }) + '</option>'; }).join('') + '</select></label>' +
-      '<label class="field"><span class="lbl">' + t('lv_to') + '</span><select><option>' + t('no_limit') + '</option>' + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) { return '<option>' + t('lv_n', { n: n }) + '</option>'; }).join('') + '</select></label></div>' +
-      '<button class="row" data-act="dforce"><span><b>' + t('lv_force') + '</b><br><small class="muted">' + t('lv_force_s') + '</small></span><span class="sw' + (d.force ? ' on' : '') + '"></span></button>' +
-      '<div class="lbl">' + t('n_vis') + '</div>' + chipRow('dvis', [['pub', t('v_pub')], ['link', t('v_link')], ['com', t('v_com')]], d.vis) +
-      '<div class="lbl">' + t('n_entry') + '</div>' + chipRow('dpaid', [['paid', t('paid')], ['free', t('free')]], d.price > 0 ? 'paid' : 'free') +
-      (d.price > 0 ? '<div class="field"><span class="lbl">' + t('n_price') + '</span>' + stepper('price', d.price, kc(d.price)) + '</div>' +
-        '<div class="lbl">' + t('n_pay') + '</div><div class="opts">' + opt('site', t('pay_site_h'), t('pay_site_s'), t('default')) + opt('card', t('pay_card_h'), t(S.stripe === 'active' ? 'pay_card_on' : 'pay_card_s')) + '</div>' +
-        (d.pay === 'card' && S.stripe !== 'active' ? '<div class="note-box">' + t('n_card_note') + ' <button class="link" style="display:inline;padding:0" data-act="connectStripe" data-arg="o-new">' + t('st_btn') + ' →</button></div>' : '') : '');
-    else body =
-      '<label class="field"><span class="lbl">' + t('n_name') + ' *</span><input id="d-name" value="' + esc(d.custom || '') + '" placeholder="' + esc(t('evName', { f: d.format })) + '"></label>' +
-      '<div class="lbl">' + t('n_banner') + '</div><div class="pics">' + PHOTOS.map(function (p) { return '<button class="' + (d.photo === p ? 'on' : '') + '" data-act="dphoto" data-arg="' + p + '" aria-label="' + t('n_banner') + '"><img src="' + IMG + p + '" alt=""></button>'; }).join('') + '</div>' +
-      '<label class="field"><span class="lbl">' + t('n_desc') + '</span><textarea rows="3" placeholder="' + t('n_desc_ph') + '"></textarea></label>' +
-      '<label class="field"><span class="lbl">' + t('n_cancel') + '</span><input value="' + t('n_cancel_v') + '"></label>' +
-      '<div class="lbl">' + t('n_wa') + '</div><p class="fine" style="text-align:left;margin-top:-6px">' + t('n_wa_s') + '</p><div class="wa-prev"><div class="bubble out">' + esc(waText(d)).replace(/\n/g, '<br>') + '<div class="time">20:51</div></div></div>' +
+        sec(t('n_when'), '<div class="two"><label class="field big"><span class="lbl">' + t('n_date') + '</span><select id="d-week">' + [0, 1, 2].map(function (o) { var w = S.ev.week + o; return '<option value="' + w + '"' + (w === d.week ? ' selected' : '') + '>' + fDate(w) + '</option>'; }).join('') + '</select></label>' +
+          '<label class="field big"><span class="lbl">' + t('n_start') + '</span><select id="d-start">' + ['17:00', '18:00', '19:00', '20:00'].map(function (v) { return '<option' + (v === d.start ? ' selected' : '') + '>' + v + '</option>'; }).join('') + '</select></label></div>') +
+        sec(t('n_players'), '<div class="field big">' + stepper('cap', d.cap, P('players', d.cap)) + '<div class="choice mini">' + [8, 12, 16, 24, 32].map(function (n) { return '<button class="' + (d.cap === n ? 'on' : '') + '" data-act="dcap" data-arg="' + n + '">' + n + '</button>'; }).join('') + '</div></div>') +
+        sec(t('n_where'), '<div class="seg-f">' + ['club', 'own'].map(function (k) { return '<button class="' + (d.place === k ? 'on' : '') + '" data-act="dplace" data-arg="' + k + '">' + t('pl_' + k) + '</button>'; }).join('') + '</div>' +
+          (d.place === 'club' ? '<label class="field big"><span class="lbl">' + t('n_club') + '</span><select id="d-venue">' + CLUBS.map(function (c) { return '<option' + (c === d.venue ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select></label>'
+            : '<label class="field big"><span class="lbl">' + t('n_place') + '</span><input id="d-venue" value="' + esc(d.venue) + '"></label>')) +
+        '<div class="acc wz-more' + (S.more2 ? ' open' : '') + '"><button data-act="more2" aria-expanded="' + !!S.more2 + '"><span><b>' + t('n_more2') + '</b><small>' + t('n_more2_s', { dl: dlTxt, min: d.min, c: P('courts', d.courts), dur: d.dur === 'all' ? t('dur_all') : d.dur }) + '</small></span><span class="chev">' + IC.more + '</span></button><div class="inner">' +
+          '<div class="lbl">' + t('n_dead') + '</div>' + chipRow('ddead', [['none', t('dl_none')], ['1d', t('dl_1d')], ['3d', t('dl_3d')], ['1w', t('dl_1w')]], d.deadline) +
+          '<div class="two"><div class="field"><span class="lbl">' + t('n_min') + '</span>' + stepper('min', d.min, d.min) + '</div><div class="field"><span class="lbl">' + t('n_courts') + '</span>' + stepper('courts', d.courts, d.courts) + '</div></div>' +
+          '<div class="lbl">' + t('n_dur') + '</div>' + chipRow('ddur', [['1,5 h', '1,5 h'], ['2 h', '2 h'], ['3 h', '3 h'], ['all', t('dur_all')]], d.dur) +
+          '<p class="fine" style="text-align:left">' + (rest > 0 ? t('rest_n', { n: P('players', rest) }) : t('rest_none')) + '</p></div></div>';
+    } else if (st === 2) {
+      var fee = feeOf(d.price);
+      body =
+        sec(t('n_entry'), '<div class="seg-f">' + [['paid', t('paid')], ['free', t('free')]].map(function (x) { var on = (d.price > 0 ? 'paid' : 'free') === x[0]; return '<button class="' + (on ? 'on' : '') + '" data-act="dpaid" data-arg="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>' +
+          (d.price > 0 ? '<div class="field big"><span class="lbl">' + t('n_price') + '</span>' + stepper('price', d.price, kc(d.price)) + '</div>' : '')) +
+        (d.price > 0 ? sec(t('n_pay'), '<div class="tiles1">' + opt('site', t('pay_site_h'), t('pay_site_s'), t('default')) + opt('card', t('pay_card_h'), t(S.stripe === 'active' ? 'pay_card_on' : 'pay_card_s')) + '</div>' +
+          (d.pay === 'card' ? '<div class="fee-box" aria-live="polite"><div><span>' + t('fee_player') + '</span><b>' + kc(d.price) + '</b></div><div><span>' + t('fee_fees') + '</span><b>−' + kc(fee) + '</b></div><div class="net"><span>' + t('fee_you') + '</span><b>' + kc(d.price - fee) + '</b></div><small>' + t('fee_how') + '</small></div>' +
+            (S.stripe !== 'active' ? '<div class="note-box">' + t('n_card_note') + ' <button class="link" style="display:inline;padding:0" data-act="connectStripe" data-arg="o-new">' + t('st_btn') + ' →</button></div>' : '')
+            : '<div class="fee-box site"><div class="net"><span>' + t('fee_you_site') + '</span><b>' + kc(d.price) + '</b></div><small>' + t('fee_site') + '</small></div>')) : '') +
+        sec(t('n_who'), '<div class="lbl">' + t('n_gender') + '</div>' + chipRow('dgen', [['mix', t('g_mix')], ['m', t('g_m')], ['w', t('g_w')]], d.gender) +
+          '<div class="lbl" style="margin-top:6px">' + t('n_vis') + '</div>' + chipRow('dvis', [['pub', t('v_pub')], ['link', t('v_link')], ['com', t('v_com')]], d.vis) +
+          '<div class="two" style="margin-top:6px"><label class="field"><span class="lbl">' + t('lv_from') + '</span><select><option>' + t('no_limit') + '</option>' + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) { return '<option>' + t('lv_n', { n: n }) + '</option>'; }).join('') + '</select></label>' +
+          '<label class="field"><span class="lbl">' + t('lv_to') + '</span><select><option>' + t('no_limit') + '</option>' + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) { return '<option>' + t('lv_n', { n: n }) + '</option>'; }).join('') + '</select></label></div>');
+    } else body =
+      sec(t('n_name'), '<label class="field big"><input id="d-name" aria-label="' + t('n_name') + '" value="' + esc(d.custom || '') + '" placeholder="' + esc(t('evName', { f: d.format })) + '"></label>') +
+      sec(t('n_banner'), '<div class="pics">' + PHOTOS.map(function (p) { return '<button class="' + (d.photo === p ? 'on' : '') + '" data-act="dphoto" data-arg="' + p + '" aria-label="' + t('n_banner') + '"><img src="' + IMG + p + '" alt=""></button>'; }).join('') + '</div>') +
+      sec(t('n_wa'), '<p class="wz-hint" style="margin-top:0">' + t('n_wa_s') + '</p><div class="wa-prev"><div class="bubble out">' + esc(waText(d)).replace(/\n/g, '<br>') + '<div class="time">20:51</div></div></div>') +
+      '<div class="acc wz-more' + (S.more3 ? ' open' : '') + '"><button data-act="more3" aria-expanded="' + !!S.more3 + '"><span><b>' + t('n_desc') + ' · ' + t('n_cancel') + '</b><small>' + t('optional') + '</small></span><span class="chev">' + IC.more + '</span></button><div class="inner"><label class="field"><span class="lbl">' + t('n_desc') + '</span><textarea rows="3" placeholder="' + t('n_desc_ph') + '"></textarea></label><label class="field"><span class="lbl">' + t('n_cancel') + '</span><input value="' + t('n_cancel_v') + '"></label></div></div>' +
       '<button class="row" data-act="sheet" data-arg="preview"><span>' + t('n_preview_row') + '</span><span class="r">▸</span></button>';
     var dock = d.edit ? '<button class="cta" data-act="publish">' + t('n_save') + '</button>' + (st < 3 ? '<button class="link" data-act="wzNext">' + t('wz_next', { s: t(WZ[st + 1]) }) + '</button>' : '')
       : st < 3 ? '<button class="cta" data-act="wzNext">' + t('wz_next', { s: t(WZ[st + 1]) }) + '</button>' + (st ? '<button class="link" data-act="wz" data-arg="' + (st - 1) + '">' + t('back') + '</button>' : (S.account ? '' : '<button class="link" data-act="demoTry">' + t('demo_try') + '</button>'))
       : '<button class="cta" data-act="publish">' + t('n_publish') + '</button><button class="link" data-act="toast" data-arg="draft_t">' + t('n_draft') + '</button>';
     return screen('', status() + top(ib('✕', 'data-go="' + (S.account ? 'o-home' : 'start') + '"', 'close'), d.edit ? t('n_edit') : t('n_title'), '<button class="link" style="color:var(--navy);font-weight:700;text-decoration:none" data-act="sheet" data-arg="preview">' + t('n_preview') + '</button>') +
-      bar + '<div class="scroll" style="gap:12px;padding-top:4px">' + body + '</div><div class="dock">' + dock + '</div>');
+      bar + '<div class="scroll wz-body">' + body + '</div><div class="dock">' + dock + '</div>');
   };
 
   R['o-stripe'] = function () {
@@ -395,7 +434,7 @@
       '<div class="going"><div class="ring" style="--p:' + Math.round(n / S.ev.cap * 100) + '"><span>' + n + '/' + S.ev.cap + '</span></div><div><div class="t">' + t('l_signed', { n: n }) + '</div><div class="s">' + cap1(P('spotsLeft', Math.max(0, S.ev.cap - n))) + '\u00a0· ' + kc(S.ev.price) + (S.ev.price ? ' ' + t(cardPay() ? 'l_bycard' : 'l_onsite') : '') + '</div></div></div>' +
       '<div class="lbl">' + t('l_list') + '</div>' + list +
       '<div class="note-box">' + t('l_sched', { close: evClose() }) + '</div>' +
-      '</div><div class="dock"><button class="cta" data-act="share" data-arg="org">⤴ ' + t('l_cta') + '</button><button class="link" data-act="shareTo" data-arg="copy">' + t('copy_link') + '</button></div>');
+      '</div><div class="dock"><button class="cta wa" data-act="shareWA">' + WA_IC + t('l_cta_wa') + '</button><button class="link" data-act="share" data-arg="org">' + t('l_link') + '</button></div>');
   };
 
 
@@ -508,10 +547,10 @@
     var tabs = S.sched.map(function (_, i) { return '<button class="' + (i === r ? 'on' : '') + (roundDone(i) ? ' done' : '') + '" data-act="round" data-arg="' + i + '" aria-label="' + t('round', { n: i + 1 }) + '">' + (i + 1) + (roundDone(i) ? '<i>✓</i>' : '') + '</button>'; }).join('');
     var courts = rd.m.map(function (mt, c) {
       var sc = S.play.scores[r][c];
-      function box(side) { var v = sc ? sc[side] : 0, win = sc && sc[side] > sc[1 - side]; return '<button class="sb' + (win ? ' win' : '') + (sc ? '' : ' empty') + '" data-act="score" data-arg="' + r + ':' + c + ':' + side + '" aria-label="' + t('score_for', { a: short(mt[side ? 'b' : 'a'][0]), b: short(mt[side ? 'b' : 'a'][1]) }) + '">' + pad2(v) + '</button>'; }
+      function box(side) { var v = sc ? sc[side] : 0, win = sc && sc[side] > sc[1 - side]; return '<button class="sb' + (win ? ' win' : '') + (sc ? '' : ' empty') + '" data-act="score" data-arg="' + r + ':' + c + ':' + side + '" aria-label="' + t('score_for', { a: short(mt[side ? 'b' : 'a'][0]), b: short(mt[side ? 'b' : 'a'][1]) }) + '">' + (sc ? pad2(v) : '–') + '</button>'; }
       return '<div class="mx"><div class="mx-sc">' + box(0) + box(1) + '</div>' +
         '<div class="mx-t"><span>' + esc(short(mt.a[0])) + '<br>' + esc(short(mt.a[1])) + '</span><span class="b">' + esc(short(mt.b[0])) + '<br>' + esc(short(mt.b[1])) + '</span></div>' +
-        '<span class="mx-c">▯ ' + t('court', { n: c + 1 }) + '</span></div>';
+        '<span class="mx-c">' + t('court', { n: c + 1 }) + '</span></div>';
     }).join('');
     var todo = S.play.scores[r].filter(function (x) { return !x; }).length;
     var dock = last ? '<div class="dock-row"><button class="cta sec" data-act="addRound">+ ' + t('add_round') + '</button><button class="cta" data-act="sheet" data-arg="finish">✓ ' + t('finish_s') + '</button></div>'
@@ -546,8 +585,10 @@
     var st = standings(), card = 0, site = 0, owe = [];
     S.players.forEach(function (p) { if (p.pay === 'paid') card++; else if (p.pay === 'site') site++; else owe.push(p.n); });
     var noshow = S.players.filter(function (p) { return p.noshow; }).map(function (p) { return p.n; });
+    var fees = card * feeOf(S.ev.price);
     return { week: S.ev.week, stand: st, winner: st[0].n, total: S.players.length, card: card, site: site, owe: owe, paid: card + site,
-      showed: S.players.length - noshow.length, noshow: noshow, collected: (card + site) * S.ev.price, price: S.ev.price };
+      showed: S.players.length - noshow.length, noshow: noshow, collected: (card + site) * S.ev.price, price: S.ev.price,
+      cardSum: card * S.ev.price, siteSum: site * S.ev.price, fees: fees, net: card * S.ev.price - fees };
   }
   function demoFinished() {
     if (S.players.length < 8) S.players = mkPlayers(16);
@@ -559,12 +600,14 @@
   R['o-after'] = function () {
     var L = S.last, st = L.stand, w = st[0];
     var owe = L.owe.map(function (n) { var i = -1; S.players.forEach(function (p, j) { if (p.n === n) i = j; }); return '<div class="row"><span>' + esc(n) + '</span><button class="r" style="text-decoration:underline" data-act="remind" data-arg="' + i + '">' + t('remind') + '</button></div>'; }).join('');
-    return screen('', status() + top(ib('←', 'data-go="o-home"', 'back'), t('af_title'), ib('⋯', 'data-act="toast" data-arg="af_menu_t"', 'more')) +
+    return screen('', status() + top(ib('←', 'data-go="o-home"', 'back'), doneLbl(), ib('⋯', 'data-act="toast" data-arg="af_menu_t"', 'more')) +
       '<div class="scroll" style="gap:12px">' +
-      '<div class="win-card grain"><img src="' + IMG + S.ev.photo + '" alt=""><div class="in"><div class="pills"><span class="pill fmt">' + esc(S.ev.format) + '</span><span class="pill st-done">' + t('st_done') + '</span></div>' +
+      '<div class="win-card grain"><img src="' + IMG + S.ev.photo + '" alt=""><div class="in"><div class="pills"><span class="pill fmt">' + esc(S.ev.format) + '</span><span class="pill st-done">' + doneLbl() + '</span></div>' +
       '<i class="cup">🏆</i><span class="lbl">' + t('winner_lbl') + '</span><b>' + esc(w.n) + '</b><small>' + t('win_line', { p: w.pts, v: P('wins', w.v), d: (w.d > 0 ? '+' : '') + w.d }) + '</small></div></div>' +
       podium(st) +
       '<div class="af-money"><div class="lbl">' + t('collected') + '</div><div class="money">' + kc(L.collected) + '</div>' +
+      '<div class="af-rows"><div><span>' + t('af_bycard', { n: L.card }) + '</span><b>' + kc(L.cardSum) + '</b></div><div><span>' + t('af_fees') + '</span><b>' + (L.fees ? '−' + kc(L.fees) : kc(0)) + '</b></div>' +
+      '<div class="net"><span>' + t('af_net') + '</span><b>' + kc(L.net) + '</b></div><div><span>' + t('af_onsite', { n: L.site }) + '</span><b>' + kc(L.siteSum) + '</b></div><div class="total"><span>' + t('af_total') + '</span><b>' + kc(L.net + L.siteSum) + '</b></div></div>' +
       '<div class="af-pills"><span class="pill ok">' + t('af_paid', { p: L.paid, t: L.total }) + '</span><span class="pill site">' + t('af_showed', { s: L.showed, t: L.total }) + '</span>' + (L.owe.length ? '<span class="pill wait">' + t('af_owe', { u: L.owe.length }) + '</span>' : '') + '</div></div>' +
       (owe ? '<div class="lbl">' + t('d_owe') + '</div>' + owe : '') +
       '<div class="stat4"><div><span>' + t('stats_players') + '</span><b>' + L.showed + '</b></div><div><span>' + t('stats_rounds') + '</span><b>' + S.sched.length + '</b></div><div><span>' + t('stats_matches') + '</span><b>' + S.sched.reduce(function (x, rd) { return x + rd.m.length; }, 0) + '</b></div><div><span>' + t('stats_pts') + '</span><b>' + S.play.scores.reduce(function (x, rd) { return x + rd.reduce(function (y, sc) { return y + (sc ? sc[0] + sc[1] : 0); }, 0); }, 0) + '</b></div></div>' +
@@ -586,11 +629,11 @@
       : '<div class="d-row"><span>' + t('d_none_owe') + '</span><span class="pill ok">✓</span></div>';
     var table = st.slice(0, 10).map(function (p, i) { return '<tr><td>' + (i + 1) + '</td><td>' + esc(p.n) + '</td><td class="num">' + p.pts + '</td></tr>'; }).join('');
     return screen('desk', '<div class="d-bar"><span class="logo"><i></i>' + esc(orgLabel()) + '</span><nav>' + nav.map(function (x, i) { return '<span class="' + (i === 1 ? 'on' : '') + '">' + x + '</span>'; }).join('') + '</nav>' + langSwitch() + '</div>' +
-      '<div class="d-main"><div class="d-head"><div><div class="lbl">' + fLong(L.week) + '\u00a0· ' + esc(S.ev.venue) + '</div><h1 class="h-caps" style="font-size:34px;margin-top:6px">' + t('af_done', { name: esc(evName()) }) + '</h1></div>' +
+      '<div class="d-main"><div class="d-head"><div><div class="lbl">' + fLong(L.week) + '\u00a0· ' + esc(S.ev.venue) + '</div><h1 class="h-caps" style="font-size:34px;margin-top:6px">' + t('af_done', { st: doneLbl().toLowerCase(), name: esc(evName()) }) + '</h1></div>' +
       '<button class="cta d-cta" data-act="nextEvent">' + t('af_next') + '<small>' + t('af_same', { date: fDate(S.ev.week + 1) }) + '</small></button></div>' +
       '<div class="d-grid"><div class="d-col">' +
       '<section class="d-card"><div class="lbl">' + t('collected') + '</div><div class="money">' + kc(L.collected) + '</div>' +
-      '<div class="d-row"><span>' + t('d_bycard') + '</span><b>' + L.card + ' × ' + kc(L.price) + '</b></div><div class="d-row"><span>' + t('d_onsite') + '</span><b>' + L.site + ' × ' + kc(L.price) + '</b></div></section>' +
+      '<div class="d-row"><span>' + t('d_bycard') + '</span><b>' + L.card + ' × ' + kc(L.price) + '</b></div>' + (L.card ? '<div class="d-row"><span>' + t('af_fees') + '</span><b>−' + kc(L.fees) + '</b></div><div class="d-row net"><span>' + t('af_net') + '</span><b>' + kc(L.net) + '</b></div>' : '') + '<div class="d-row"><span>' + t('d_onsite') + '</span><b>' + L.site + ' × ' + kc(L.price) + '</b></div><div class="d-row net"><span>' + t('af_total') + '</span><b>' + kc(L.net + L.siteSum) + '</b></div></section>' +
       '<section class="d-card"><div class="lbl">' + t('d_owe') + '</div>' + owe + '</section>' +
       '<section class="d-card"><div class="lbl">' + t('d_att') + '</div><div class="d-big">' + t('d_att_txt', { s: L.showed, t: L.total }) + '</div>' +
       (L.noshow.length ? '<div class="d-row"><span>' + t('d_noshow') + '</span><b>' + L.noshow.map(esc).join(', ') + '</b></div>' : '<div class="d-row"><span>' + t('d_all_here') + '</span></div>') + '</section>' +
@@ -606,6 +649,7 @@
     var L = S.last, w = L.stand[0];
     return screen('', status() + top(ib('←', 'data-go="o-after"', 'back'), t('cd_title')) +
       '<div class="scroll"><div class="somecard grain"><img src="' + IMG + 'court-blue-orange.jpg" alt=""><div class="sc-safe">' +
+      '<span class="sc-logo" role="img" aria-label="PadelLeague">' + (window.PL_LOGO ? window.PL_LOGO.full : 'PadelLeague') + '</span>' +
       '<div class="glass sc-glass">' + glassKV([[t('cd_name'), w.n, 1], [t('k_event'), evName() + '\u00a0· ' + orgLabel(), 1], [t('cd_details'), fCard(L.week) + '\u00a0· ' + S.city, 1]]) +
       '<div class="kv big"><div class="l">' + t('cd_points') + '</div><div class="v">' + w.pts + '</div></div><div class="kv big"><div class="l">' + t('cd_result') + '</div><div class="v">' + t('cd_winner') + '</div></div></div>' +
       '<div class="sc-foot"><div class="some-foot">' + t('cd_foot') + '</div><div class="won">#1<small>' + t('cd_of', { n: L.showed }) + '</small></div></div></div></div>' +
@@ -657,7 +701,7 @@
     var msg = org ? chatMsg() : t('sh_pmsg', { name: evName(), date: evDate(), Left: cap1(P('spotsLeft', left())) });
     return '<div class="grab"></div><h2 class="h-mid">' + t(org ? 'sh_org' : 'sh_player') + '</h2>' +
       '<div class="bubble out" style="max-width:100%;align-self:stretch">' + esc(msg) + '<br><span class="wa-link">padelleague.eu/e/' + S.ev.slug + '</span></div>' +
-      '<p class="fine" style="text-align:left">' + t('sh_note') + '</p><div class="share-grid"><button class="w" data-act="shareTo" data-arg="wa"><i>✆</i>WhatsApp</button><button class="ig" data-act="shareTo" data-arg="ig"><i>◎</i>Stories</button><button data-act="shareTo" data-arg="copy"><i>⧉</i>' + t('copy_link') + '</button><button data-act="shareTo" data-arg="qr"><i>▦</i>' + t('qr') + '</button></div>' +
+      '<button class="cta wa" data-act="shareTo" data-arg="wa">' + WA_IC + t('sh_wa') + '</button><p class="fine" style="text-align:left">' + t('sh_note') + '</p><div class="share-grid"><button class="w" data-act="shareTo" data-arg="wa"><i>' + WA_IC + '</i>WhatsApp</button><button class="ig" data-act="shareTo" data-arg="ig"><i>◎</i>Stories</button><button data-act="shareTo" data-arg="copy"><i>⧉</i>' + t('copy_link') + '</button><button data-act="shareTo" data-arg="qr"><i>▦</i>' + t('qr') + '</button></div>' +
       '<button class="link" data-act="close">' + t('close') + '</button>';
   };
   SH.pmenu = function () {
@@ -707,10 +751,30 @@
       '<button class="link" style="color:var(--navy);font-weight:700;text-decoration:none" data-act="toast" data-arg="custom_t">' + t('custom_score') + '</button>' +
       '<button class="cta white" style="border:1px solid var(--line)" data-act="resetScore">' + t('reset_score') + '</button>';
   };
+  /* Zadání čísla: na telefonu systémová číselná klávesnice, v prototypu na počítači napodobenina klávesnice iPhonu */
+  var NP = { cap: { min: 4, max: 48, t: 'np_cap', u: function (n) { return P('players', n).replace(/^\S+\s*/, ''); } }, price: { min: 10, max: 2000, t: 'np_price', u: function () { return 'Kč'; } } };
+  function touchDev() { return window.matchMedia('(pointer:coarse)').matches; }
+  function npState() { var c = NP[S.np.k], n = +S.np.v, ok = S.np.v !== '' && n >= c.min && n <= c.max; return { c: c, n: n, ok: ok }; }
+  SH.numpad = function () {
+    var z = npState(), c = z.c, keys = [['1', ''], ['2', 'ABC'], ['3', 'DEF'], ['4', 'GHI'], ['5', 'JKL'], ['6', 'MNO'], ['7', 'PQRS'], ['8', 'TUV'], ['9', 'WXYZ']];
+    var pad = touchDev() ? '' : '<div class="kb" role="group" aria-label="' + t('np_kb') + '">' + keys.map(function (k) { return '<button type="button" data-act="npKey" data-arg="' + k[0] + '"><b>' + k[0] + '</b><small>' + k[1] + '</small></button>'; }).join('') +
+      '<span></span><button type="button" data-act="npKey" data-arg="0"><b>0</b></button><button type="button" class="del" data-act="npDel" aria-label="' + t('np_del') + '">⌫</button></div>';
+    return '<div class="grab"></div><div class="np-head"><button type="button" class="link" data-act="close">' + t('cancel') + '</button><b id="np-t">' + t(c.t) + '</b><button type="button" class="np-done" data-act="npDone"' + (z.ok ? '' : ' disabled') + '>' + t('np_done') + '</button></div>' +
+      '<label class="np-field' + (S.np.v !== '' && !z.ok ? ' bad' : '') + '"><span class="sr">' + t(c.t) + '</span><input id="np-input" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" maxlength="4" value="' + esc(S.np.v) + '"' + (touchDev() ? '' : ' readonly') + ' aria-describedby="np-hint"><em>' + c.u(z.n || 0) + '</em></label>' +
+      '<p class="np-hint" id="np-hint" role="status">' + (S.np.v !== '' && !z.ok ? '⚠ ' : '') + t('np_range', { a: c.min, b: kc(c.max).replace(/\s*Kč$/, '') }) + '</p>' + pad;
+  };
+  function npRefresh() {
+    var z = npState(), sh = rootEl().querySelector('.sheet'); if (!sh) return;
+    var inp = sh.querySelector('#np-input'); if (inp && inp.value !== S.np.v) inp.value = S.np.v;
+    sh.querySelector('.np-done').disabled = !z.ok;
+    sh.querySelector('.np-field').classList.toggle('bad', S.np.v !== '' && !z.ok);
+    sh.querySelector('.np-field em').textContent = z.c.u(z.n || 0);
+    sh.querySelector('#np-hint').textContent = (S.np.v !== '' && !z.ok ? '⚠ ' : '') + t('np_range', { a: z.c.min, b: kc(z.c.max).replace(/\s*Kč$/, '') });
+  }
   SH.finish = function () {
     return '<div class="grab"></div><h2 class="h-mid">' + t('fin_title') + '</h2><p class="p muted" style="font-size:14.5px">' + t('fin_txt') + '</p>' +
       (allDone() ? '' : '<div class="note-box">' + t('fin_open', { k: P('toScore', doneCount()[1] - doneCount()[0]) }) + '</div>') +
-      '<div class="dock-row"><button class="cta white" style="border:1px solid var(--line)" data-act="close">' + t('cancel') + '</button><button class="cta" data-act="finish">' + t('finish_s') + '</button></div>';
+      '<div class="dock-row"><button class="cta white" style="border:1px solid var(--line)" data-act="close">' + t('fin_keep') + '</button><button class="cta" data-act="finish">' + t('finish') + '</button></div>';
   };
   SH.board = function () {
     return '<div class="grab"></div><h2 class="h-mid" style="text-align:center">' + t('board') + '</h2>' + standTable(standings()) +
@@ -793,6 +857,9 @@
       render();
     },
     pastOpen: function () { S.pastOpen = !S.pastOpen; render(); },
+    more2: function () { readDraft(); S.more2 = !S.more2; render(); },
+    more3: function () { readDraft(); S.more3 = !S.more3; render(); },
+    shareWA: function () { S.sheet = null; toast(t('opening_wa')); },
     pick: function (id) {
       if (id !== S.pick) {
         var e = HE.filter(function (x) { return x.id === id; })[0], b = fresh().ev;
@@ -806,6 +873,7 @@
     },
     close: closeSheet,
     acc: function () { S.acc = !S.acc; render(); },
+    accNames: function () { S.accNames = !S.accNames; render(); },
     allNames: function () { S.allNames = true; render(); },
     toast: function (k) { S.sheet = null; toast(t(k)); },
     toastRaw: function (m) { S.sheet = null; toast(m); },
@@ -855,10 +923,17 @@
     },
     newEvent: function () { S.draft = null; S.wz = 0; go('o-new'); },
     format: function (a) { readDraft(); S.draft.format = a; S.draft.custom = null; render(); },
+    numpad: function (a) {
+      readDraft(); S.np = { k: a, v: String(S.draft[a]) }; S.sheet = 'numpad'; render();
+      var i = rootEl().querySelector('#np-input'); if (i && touchDev()) { i.focus(); i.select(); }
+    },
+    npKey: function (d) { if (S.np.v.length >= 4) return; S.np.v = (S.np.v === '0' ? '' : S.np.v) + d; npRefresh(); },
+    npDel: function () { S.np.v = S.np.v.slice(0, -1); npRefresh(); },
+    npDone: function () { var z = npState(); if (!z.ok) return; S.draft[S.np.k] = z.n; if (S.np.k === 'cap' && S.draft.min > z.n) S.draft.min = z.n; S.sheet = null; render(); },
     step: function (a) {
       readDraft();
       var p = a.split(':'), k = p[0], v = +p[1], d = S.draft;
-      d[k] = Math.max(k === 'cap' ? 4 : k === 'courts' ? 1 : k === 'min' ? 2 : 0, Math.min(k === 'cap' ? 48 : k === 'courts' ? 8 : k === 'min' ? d.cap : 1000, d[k] + v));
+      d[k] = Math.max(k === 'cap' ? 4 : k === 'courts' ? 1 : k === 'min' ? 2 : k === 'price' ? 10 : 0, Math.min(k === 'cap' ? 48 : k === 'courts' ? 8 : k === 'min' ? d.cap : 2000, d[k] + v));
       render();
     },
     connectStripe: function (a) { readDraft(); S.stripeBack = a || 'o-new'; S.stripeStep = 0; go('o-stripe'); },
@@ -967,7 +1042,7 @@
     var k = kind(r);
     if (k === 'org') {
       var cur = r === 'o-after-d' ? 'o-after' : r;
-      return '<div class="dk-org"><aside class="dk-side"><div class="dk-brand"><i></i>Padel League</div><div class="dk-comm"><b>' + esc(orgLabel()) + '</b><span>' + esc(S.city) + '</span></div><nav>' +
+      return '<div class="dk-org"><aside class="dk-side"><div class="dk-brand">' + (window.PL_LOGO ? window.PL_LOGO.full : 'PadelLeague') + '</div><div class="dk-comm"><b>' + esc(orgLabel()) + '</b><span>' + esc(S.city) + '</span></div><nav>' +
         ORG_NAV.map(function (n) { return '<button class="' + (n[0] === cur ? 'on' : '') + '" data-go="' + n[0] + '"><span>' + n[2] + '</span>' + t(n[1]) + '</button>'; }).join('') +
         '</nav><span class="dk-sp"></span><button class="dk-view" data-go="p-event">' + t('em_view') + ' ↗</button><div class="dk-lang">' + langSwitch() + '</div></aside>' +
         '<div class="dk-main r-' + r + '">' + inner + '</div></div>';
@@ -980,7 +1055,7 @@
     }
     if (k === 'mail') return '<div class="dk-mail"><aside class="dk-mail-list"><b>' + t('mail_inbox') + '</b><div class="on"><b>PadelLeague</b><small>' + t('mail_subj', { name: esc(evName()) }) + '</small></div><div><b>Klub Novosedlice</b><small>' + t('mail_other') + '</small></div></aside><div class="dk-main r-' + r + '">' + inner + '</div></div>';
     if (k === 'auth') return '<div class="dk-auth"><div class="dk-main r-' + r + '">' + inner + '</div></div>';
-    return '<div class="dk-site"><header class="dk-head"><button class="logo" data-go="p-home"><i></i>Padel League</button><nav class="dk-nav"><button class="' + (r === 'p-home' ? 'on' : '') + '" data-go="p-home">' + t('nav_events') + '</button><button data-go="o-new">' + t('nav_org') + '</button></nav><span class="dk-head-r">' + langSwitch() + '<button class="dk-login" data-act="toast" data-arg="m_login_t">' + t('m_login') + '</button></span></header><div class="dk-main r-' + r + '">' + inner + '</div></div>';
+    return '<div class="dk-site"><header class="dk-head"><button class="logo svg" data-go="p-home" aria-label="PadelLeague">' + (window.PL_LOGO ? window.PL_LOGO.full : 'Padel League') + '</button><nav class="dk-nav"><button class="' + (r === 'p-home' ? 'on' : '') + '" data-go="p-home">' + t('nav_events') + '</button><button data-go="o-new">' + t('nav_org') + '</button></nav><span class="dk-head-r">' + langSwitch() + '<button class="dk-login" data-act="toast" data-arg="m_login_t">' + t('m_login') + '</button></span></header><div class="dk-main r-' + r + '">' + inner + '</div></div>';
   }
   function route() { var h = location.hash.replace(/^#\/?/, ''); return R[h] ? h : 'start'; }
   function render() {
@@ -1033,6 +1108,12 @@
   });
   document.querySelectorAll('.panel a[data-route]').forEach(function (a) { a.addEventListener('click', function () { document.querySelector('.panel').classList.remove('open'); }); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && S.sheet && S.sheet !== 'paying') closeSheet(); });
+  document.addEventListener('input', function (e) { if (e.target.id === 'np-input' && S.np) { S.np.v = e.target.value.replace(/\D/g, '').slice(0, 4); npRefresh(); } });
+  document.addEventListener('keydown', function (e) {
+    if (S.sheet !== 'numpad' || !S.np) return;
+    if (e.target.id === 'np-input' && !e.target.readOnly) { if (e.key === 'Enter') { e.preventDefault(); A.npDone(); } return; }
+    if (/^[0-9]$/.test(e.key)) { e.preventDefault(); A.npKey(e.key); } else if (e.key === 'Backspace') { e.preventDefault(); A.npDel(); } else if (e.key === 'Enter') { e.preventDefault(); A.npDone(); }
+  });
   window.addEventListener('hashchange', function () { S.sheet = null; render(); var sc = rootEl().querySelector('.scroll,.d-main'); if (sc) sc.scrollTop = 0; });
   var lastDesk = null;
   window.addEventListener('resize', function () { var d = wideDesk(); if (d !== lastDesk) { lastDesk = d; render(); } });

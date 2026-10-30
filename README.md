@@ -1,13 +1,15 @@
 # PadelLeague – klikací prototyp
 
-Klikací prototyp PadelLeague, kolo 2 podle připomínek z října 2026: **landing pro organizátory**, **organizátor na mobilu**, **hráč**, **Instagram**.
+Klikací prototyp PadelLeague, kolo 3 podle připomínek z října 2026: **landing pro organizátory**, **organizátor na mobilu**, **hráč**, **Instagram**.
 
-**Vstupenka je event, ne komunita.** Organizátor začíná na „Vytvoř event“, účet zakládá až při zveřejnění, komunita, platby kartou a žebříček se odemknou po prvním odehraném eventu. Flow (kroky, pořadí, pravidla) je z aplikace, prototyp řeší vizuál. Pravidla: slovo „event“, ne „turnaj“; bílé pozadí a fotky, navy jen hlavičky, oranžová jen tlačítka a akce; Rozpis a Průběh čitelné na kurtu jednou rukou.
+**Vstupenka je event, ne komunita.** Organizátor začíná na „Vytvoř event“, účet zakládá až při zveřejnění. Platby kartou nejsou zamčené (Stripe jde připojit kdykoli), komunita a žebříček přijdou po prvním eventu. Poplatky: na místě 0, kartou 6 % PadelLeague + Stripe 1,5 % + 6,50 Kč, organizátor vidí čistou částku už v průvodci. Flow (kroky, pořadí, pravidla) je z aplikace, prototyp řeší vizuál. Pravidla: slovo „event“, ne „turnaj“; bílé pozadí a fotky, navy jen hlavičky, oranžová jen tlačítka a akce; Rozpis a Průběh čitelné na kurtu jednou rukou.
 Vizuál podle JVS Princová & Fikarová (navy #034867, oranžová #F97316, Satoshi, fotografie s grainem a rozmazáním).
 
 Aplikace i landing jsou **česky**, angličtina je druhá jazyková verze (přepínač CZ / EN v aplikaci, v mapě vlevo i na landingu; nebo `?lang=en` v adrese).
 
 **Dvě zobrazení:** výchozí je **počítač** (okno prohlížeče: homepage s eventy a stránka eventu jako web, WhatsApp skupina hráče jako WhatsApp Web). Organizátor se i v tomto režimu ukazuje v telefonu, protože PC verze je hotová v aplikaci. Nahoře nad oknem se přepíná na **mobil** (telefon). Volba se pamatuje, odkaz `?mode=mobile` nebo `?mode=desktop` ji vynutí. Na telefonu se vždy ukáže mobilní verze.
+
+Landing, Vizuální vrstva, PC návrhy a šablony Instagramu mají dole stejný přepínač **Počítač / Mobil** (`assets/js/preview.js`). V režimu Mobil se stránka ukáže v telefonu 390 × 844. Volba se pamatuje, `?mode=mobile` nebo `?mode=desktop` ji vynutí.
 
 Čisté HTML, CSS a JavaScript. Žádná instalace ani build, funguje jako statický web (GitHub Pages, Netlify, Vercel nebo dvojklik na `index.html`).
 
@@ -18,6 +20,8 @@ Aplikace i landing jsou **česky**, angličtina je druhá jazyková verze (přep
 | `index.html` | Aplikace v okně prohlížeče (počítač) nebo v telefonu (mobil) + mapa prototypu vlevo (na skutečném telefonu přes celou obrazovku, mapa pod oranžovým štítkem „Mapa“) |
 | `pc-navrhy.html` | Návrhy přímo nad obrazovkami PC verze (přehled, průvodce, soupiska, rozpis, průběh, dokončeno, pavouk) |
 | `vizualni-vrstva.html` | Návrh vizuální vrstvy nad enginem: stavy, karty, rozpis, tabulky, pavouk |
+| `zadani.html` | Výčet všech Jakubových požadavků (kolo 2 a 3). Klepnutím se požadavek ukáže přímo v prototypu, v telefonu nebo na počítači. |
+| `pristupnost.html` | „Proč to vypadá takhle“: barvy, kontrasty, písmo, velikost tlačítek, česká typografie a mobile first, lidsky vysvětlené. |
 | `landing.html` | Landing page pro organizátora, desktop i mobil. Tlačítka vedou do registrace v prototypu. |
 | `assets/css/app.css` | Styly a design tokeny |
 | `assets/js/app.js` | Obrazovky, stavy a navigace |
@@ -30,7 +34,7 @@ Dva vstupy: **homepage s výběrem eventů** (`#/p-home`: jen nadcházející ev
 Stavy stránky: **Otevřeno, Poslední místa, Plno + čekací listina, Přihlášen**. Přepínají se v mapě vlevo.
 
 ### Cesta organizátora (mobil)
-Vytvoř event, průvodce ve 4 krocích jako v aplikaci (Typ a formát → Termín a místo → Hráči a platba → Prezentace) → účet až při zveřejnění → event je zveřejněný: seznam přihlášených, rozpis až po uzávěrce → „Sdílet odkaz“ (otevře sdílení s předvyplněným textem, odešle ho organizátor, aplikace sama nic neposílá) → hráči a platby → **Rozpis** → **Průběh a zadání skóre** → **Po eventu** (vybráno, nezaplatili, docházka, pořadí, „Co dál“: komunita, Stripe, žebříček) → Další event se stejným nastavením → karta výsledku.
+Vytvoř event, průvodce ve 4 krocích jako v aplikaci (Typ a formát → Termín a místo → Hráči a platba → Prezentace) → účet až při zveřejnění → event je zveřejněný: seznam přihlášených, rozpis až po uzávěrce → „Sdílet odkaz“ (otevře sdílení s předvyplněným textem, odešle ho organizátor, aplikace sama nic neposílá) → hráči a platby → **Rozpis** → **Průběh a zadání skóre** → **Po eventu** (vybráno, poplatky, přijde ti na účet, nezaplatili, docházka, pořadí, „Co dál“: komunita, žebříček) → Další event se stejným nastavením → karta výsledku.
 
 Zveřejnit není nikdy šedé: platba na místě je výchozí, Stripe jde připojit kdykoli. Rozpis a Průběh mají velké písmo, číslo kurtu ve čtverci, celou kartu kurtu jako tlačítko a skóre přes velká tlačítka (tým B dostane zbytek do 24).
 

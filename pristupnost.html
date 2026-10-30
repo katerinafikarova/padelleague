@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Barvy a pravidla · PadelLeague</title>
+<style>
+  @font-face{font-family:'Satoshi';src:url(assets/fonts/satoshi-400.woff2) format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:'Satoshi';src:url(assets/fonts/satoshi-500.woff2) format('woff2');font-weight:500;font-display:swap}
+  @font-face{font-family:'Satoshi';src:url(assets/fonts/satoshi-700.woff2) format('woff2');font-weight:700;font-display:swap}
+  @font-face{font-family:'Satoshi';src:url(assets/fonts/satoshi-900.woff2) format('woff2');font-weight:900;font-display:swap}
+  :root{--navy:#034867;--navy-deep:#022F44;--orange:#F97316;--ink:#0B2A3A;--muted:#4A6375;--line:#DCE5EA;--soft:#EEF3F6;--ground:#F9FAFB;--ok:#17633A;--ok-bg:#E3F4EA;--bad:#B42318;--bad-bg:#FDECEA}
+  *{box-sizing:border-box}
+  html,body{margin:0;overflow-x:clip}
+  body{font:400 17px/1.6 Satoshi,system-ui,sans-serif;color:var(--ink);background:var(--ground);-webkit-font-smoothing:antialiased}
+  :focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+  .head{position:sticky;top:0;z-index:5;background:var(--navy);color:#fff}
+  .head .in{max-width:1080px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px}
+  .head .logo{display:flex;align-items:center;min-height:44px;color:#fff}.head .logo svg{height:24px;width:auto;display:block}
+  .head nav{display:flex;gap:16px;font-size:15px;font-weight:600}
+  .head nav a{color:#fff;text-decoration:none;min-height:44px;display:inline-flex;align-items:center;opacity:.92}
+  main{max-width:1080px;margin:0 auto;padding:28px 16px 80px}
+  h1{margin:0;font:900 32px/1.2 Satoshi,sans-serif;text-transform:uppercase;color:var(--navy);padding-top:.08em}
+  h1 span{display:block;font-weight:300}
+  .lead{margin:14px 0 0;color:var(--muted);max-width:60ch;font-size:18px}
+  h2{margin:48px 0 6px;font:800 24px/1.25 Satoshi,sans-serif;color:var(--navy)}
+  h2+p{margin:0 0 18px;color:var(--muted);max-width:62ch}
+  p{max-width:66ch}
+  .sw{display:grid;grid-template-columns:1fr;gap:12px}
+  .c{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;display:grid;grid-template-columns:96px 1fr}
+  .c .chip{display:grid;place-items:center;font:900 26px/1 Satoshi,sans-serif;min-height:112px}
+  .c .tx{padding:14px 16px}
+  .c b{display:block;font-size:17px;line-height:1.3}
+  .c code{font:600 13.5px/1 ui-monospace,Menlo,monospace;color:var(--muted)}
+  .c p{margin:6px 0 0;font-size:15.5px;line-height:1.5;color:var(--ink)}
+  .r{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:14px;font-weight:700;border-radius:99px;padding:5px 11px}
+  .r.ok{background:var(--ok-bg);color:var(--ok)}.r.bad{background:var(--bad-bg);color:var(--bad)}
+  .ex{display:grid;grid-template-columns:1fr;gap:12px;margin-top:6px}
+  .bx{border-radius:18px;padding:18px;border:1px solid var(--line);background:#fff}
+  .bx h3{margin:0 0 6px;font:800 18px/1.3 Satoshi,sans-serif;color:var(--navy)}
+  .bx p{margin:0;font-size:16px}
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .btns span{display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:14px;font-weight:700;font-size:16px}
+  .rule{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;padding:16px 0;border-top:1px solid var(--line)}
+  .rule:first-of-type{border-top:0}
+  .rule i{width:44px;height:44px;border-radius:12px;background:var(--soft);display:grid;place-items:center;font-style:normal;font:900 15px/1 Satoshi,sans-serif;color:var(--navy)}
+  .rule b{display:block;font-size:17.5px;line-height:1.35}
+  .rule p{margin:4px 0 0;color:var(--ink);font-size:16px}
+  .rule small{display:block;margin-top:6px;color:var(--muted);font-size:14.5px}
+  .tgt{display:flex;gap:14px;align-items:flex-end;margin-top:10px}
+  .tgt span{display:grid;place-items:center;border-radius:12px;font-size:13px;font-weight:700}
+  .demo-caps{font:900 30px/var(--lh) Satoshi,sans-serif;text-transform:uppercase;color:var(--navy);margin:8px 0 0;padding-top:.1em}
+  footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:14.5px}
+  @media (min-width:760px){
+    h1{font-size:44px}
+    .sw{grid-template-columns:1fr 1fr}
+    .ex{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+<header class="head"><div class="in">
+  <a class="logo" href="index.html" aria-label="PadelLeague" data-logo></a>
+  <nav><a href="zadani.html">Co Jakub chtěl</a><a href="index.html">Prototyp</a></nav>
+</div></header>
+
+<main>
+  <h1>Proč to vypadá<span>takhle</span></h1>
+  <p class="lead">Krátké vysvětlení barev, písma a pravidel, podle kterých je prototyp postavený. Bez odborných řečí: proč je co tak, jak je, a co by se stalo, kdyby nebylo.</p>
+
+  <h2>Barvy a k čemu slouží</h2>
+  <p>Každá barva má jednu práci. Když oranžová znamená „sem klepni“, uživatel to pochopí za vteřinu a nemusí číst. Jakubovo pravidlo: bílé pozadí a fotky, navy jen hlavičky, oranžová jen tlačítka a akce.</p>
+  <div class="sw">
+    <div class="c"><div class="chip" style="background:#034867;color:#fff">Aa</div><div class="tx"><b>Navy</b><code>#034867</code><p>Hlavičky, nadpisy, vybraná volba v průvodci. Barva, která říká „tady jsi“.</p><span class="r ok">✓ bílý text 9,9 : 1</span></div></div>
+    <div class="c"><div class="chip" style="background:#F97316;color:#0B2A3A">Aa</div><div class="tx"><b>Oranžová</b><code>#F97316</code><p>Jen tlačítka a akce: „Vytvoř event“, „Přihlásit a zaplatit“. Nikde jinde, aby neztratila sílu.</p><span class="r ok">✓ tmavý text 5,3 : 1</span> <span class="r bad">✗ bílý text 2,8 : 1</span></div></div>
+    <div class="c"><div class="chip" style="background:#25D366;color:#0B2A3A">Aa</div><div class="tx"><b>WhatsApp zelená</b><code>#25D366</code><p>Jen tlačítko „Sdílet do WhatsAppu“. Lidi tu barvu znají, takže hned vědí, co se stane.</p><span class="r ok">✓ tmavý text 7,5 : 1</span> <span class="r bad">✗ bílý text 2,0 : 1</span></div></div>
+    <div class="c"><div class="chip" style="background:#fff;color:#0B2A3A;border-right:1px solid #DCE5EA">Aa</div><div class="tx"><b>Tmavý text</b><code>#0B2A3A</code><p>Hlavní text a text na tlačítkách. Skoro černá s nádechem navy, aby ladila se značkou.</p><span class="r ok">✓ na bílé 14,9 : 1</span></div></div>
+    <div class="c"><div class="chip" style="background:#fff;color:#577083;border-right:1px solid #DCE5EA">Aa</div><div class="tx"><b>Šedá pro vedlejší text</b><code>#577083</code><p>Popisky a vysvětlivky. Je klidnější, ale pořád čitelná. Světlejší už být nesmí.</p><span class="r ok">✓ na bílé 5,2 : 1</span></div></div>
+    <div class="c"><div class="chip" style="background:#E3F4EA;color:#17633A">✓</div><div class="tx"><b>Zelená „hotovo“</b><code>#17633A na #E3F4EA</code><p>Zaplaceno, odehráno, v pořádku. Tmavě zelený text na světle zeleném podkladu.</p><span class="r ok">✓ 6,4 : 1</span></div></div>
+  </div>
+
+  <h2>Co je kontrast a proč na něm záleží</h2>
+  <p>Kontrast říká, jak moc se text odlišuje od pozadí. Měří se poměrem: 1 : 1 je text stejné barvy jako pozadí (neviditelný), 21 : 1 je černá na bílé.</p>
+  <div class="ex">
+    <div class="bx"><h3>Pravidlo 4,5 : 1</h3><p>Mezinárodní standard přístupnosti <b>WCAG</b> (úroveň AA) chce u běžného textu aspoň 4,5 : 1, u velkého tučného textu aspoň 3 : 1. Od roku 2025 ho v EU u řady digitálních služeb vyžaduje i zákon o přístupnosti (European Accessibility Act).</p></div>
+    <div class="bx"><h3>Proč to řešíme u padelu</h3><p>Organizátor drží telefon na kurtu, často na slunci, s jasem nastaveným dolů. Hráči jsou různého věku. Co je v kanceláři na monitoru čitelné, venku na mobilu zmizí.</p></div>
+  </div>
+  <div class="bx" style="margin-top:12px"><h3>Proto tmavý text na oranžové</h3><p>Bílý text na naší oranžové má jen 2,8 : 1, a to normě nestačí. Mohli jsme oranžovou ztmavit do cihlové, ale tím bychom změnili barvu značky. Proto zůstala přesně oranžová a změnil se text na tmavý (5,3 : 1). Stejně je to u zeleného tlačítka WhatsApp.</p>
+    <div class="btns"><span style="background:#F97316;color:#0B2A3A">Vytvoř první event · Zdarma</span><span style="background:#F97316;color:#fff">Takhle ne (2,8 : 1)</span></div>
+  </div>
+
+  <h2>Písmo</h2>
+  <p>Satoshi z vizuálního stylu. Na telefonu má každý druh textu svou nejmenší velikost.</p>
+  <div class="rules">
+    <div class="rule"><i>16</i><div><b>Průvodce „Vytvoř event“: nejméně 16 px</b><p>Jakubův požadavek. Hlavní volby se čtou jedním pohledem.</p></div></div>
+    <div class="rule"><i>14</i><div><b>Běžný text a vysvětlivky: nejméně 14 px</b><p>Menší text se na telefonu čte s námahou.</p></div></div>
+    <div class="rule"><i>13</i><div><b>Popisky a štítky („Zaplaceno“, „Přihlášeno“): 13 px</b><p>Jsou krátké a tučné, takže je to ještě pohodlné.</p></div></div>
+    <div class="rule"><i>12</i><div><b>Iniciály v kolečkách a značka kurtu: 12 px</b><p>Jen 2–3 znaky v malém prostoru, nic víc.</p></div></div>
+  </div>
+
+  <h2>Verzálky a háčky</h2>
+  <p>Velkými písmeny jsou jen hlavní nadpisy, aby vynikly. Kdyby velkými byla i tlačítka a štítky, „křičí všechno a nevystoupí nic“ (Jakub).</p>
+  <div class="ex">
+    <div class="bx"><h3>Těsné řádkování (0,95)</h3><div class="demo-caps" style="--lh:.95">Tvůj event<br>je připravený.</div><p style="margin-top:8px">Háček nad Ř narazí do řádku nad ním.</p></div>
+    <div class="bx"><h3>Naše řádkování (1,2)</h3><div class="demo-caps" style="--lh:1.2">Tvůj event<br>je připravený.</div><p style="margin-top:8px">Háček sahá do 97 % výšky písma, kroužek nad Ů do 105 %. Při 1,2 zůstane mezera.</p></div>
+  </div>
+
+  <h2>Velikost tlačítek</h2>
+  <p>Konec prstu má asi 1 cm. Apple i standard WCAG proto doporučují, aby každé klepnutelné místo mělo aspoň 44 × 44 px. Menší tlačítko se na kurtu snadno mine.</p>
+  <div class="tgt" aria-hidden="true"><span style="width:28px;height:28px;background:#FDECEA;color:#B42318">28</span><span style="width:44px;height:44px;background:#E3F4EA;color:#17633A">44</span><span style="width:52px;height:52px;background:#EEF3F6;color:#034867">52</span></div>
+
+  <h2>Česká typografie</h2>
+  <div class="rules">
+    <div class="rule"><i>v&nbsp;</i><div><b>Žádné jednopísmenné slovo na konci řádku</b><p>„v“, „k“, „s“, „z“, „o“, „u“, „a“, „i“ se vždy přesunou na další řádek se slovem za sebou. Patří to k dobré české sazbě.</p></div></div>
+    <div class="rule"><i>Kč</i><div><b>Ceny, data a čísla se nelámou</b><p>„200 Kč“, „pá 30. 10.“, „3 místa“ a „e-mail“ zůstanou vždy na jednom řádku.</p></div></div>
+    <div class="rule"><i>Aa</i><div><b>Česká jména v ukázkách</b><p>Tomáš, Jana, Petr, Klára… Ukázka má vypadat jako skutečný event v Teplicích, ne jako šablona.</p></div></div>
+  </div>
+
+  <h2>Telefon na prvním místě</h2>
+  <div class="rules">
+    <div class="rule"><i>📱</i><div><b>Nejdřív telefon, pak počítač</b><p>Organizátor i hráč přijdou z WhatsAppu, tedy z telefonu. Proto se každá obrazovka navrhuje nejdřív na šířku telefonu a teprve pak se roztáhne na počítač.</p></div></div>
+    <div class="rule"><i>390</i><div><b>Náhled jako skutečný iPhone: 390 × 844 px</b><p>V náhledu „Mobil“ má obrazovka vždy rozměry iPhonu 14 / 15. Když je okno menší, zmenší se celý telefon, ne obrazovka. Stránka se tak chová přesně jako na telefonu a nikdy nepřeteče do strany.</p></div></div>
+    <div class="rule"><i>123</i><div><b>Čísla jde napsat i ručně</b><p>Počet hráčů a vstupné jde nastavit tlačítky +/−, rychlou volbou, nebo klepnutím na číslo a napsáním. Na telefonu se otevře číselná klávesnice, v prototypu na počítači její napodobenina. Hodnota se hlídá (4–48 hráčů, 10–2 000 Kč) a chyba se vysvětlí česky.</p></div></div>
+    <div class="rule"><i>PC</i><div><b>Přepínání oběma směry</b><p>Na počítači dole „Počítač / Mobil“, na telefonu vpravo záložka „PC“ a zpět „MOBIL“.</p></div></div>
+  </div>
+
+  <h2>Instagram</h2>
+  <div class="rules">
+    <div class="rule"><i>14%</i><div><b>Ochranné zóny ve stories</b><p>Nahoře 14 %, dole 35 % a po stranách 6 % zakrývá Instagram svým rozhraním (jméno, odpověď, tlačítka). Text a logo jsou proto vždy uvnitř. Do zakrytých míst patří jen fotka nebo dekorace.</p></div></div>
+    <div class="rule"><i>3:4</i><div><b>Příspěvky a mřížka profilu</b><p>Příspěvek má 4 : 5 (1080 × 1350), ale profil ho v mřížce ukáže jako 3 : 4, takže z každé strany ořízne 34 px. Text proto začíná až 104 px od okraje. Po oříznutí zbývá pořád 70 px vzduchu, nic se nelepí na hranu.</p></div></div>
+    <div class="rule"><i>Logo</i><div><b>Logo musí být čitelné i v malém náhledu</b><p>V příspěvku má logo aspoň třetinu šířky (56 px vysoké na plátně 1080 px), ve story 68 px. V aplikaci a na webu je nejméně 21 px vysoké. Menší logo by v mřížce profilu nebo v hlavičce telefonu splynulo.</p></div></div>
+    <div class="rule"><i>24</i><div><b>Vzduch uvnitř ochranné zóny</b><p>Text ani logo se nedotýkají hrany zóny. Od ní je vždy aspoň 24 px, jinak by obsah působil natlačeně.</p></div></div>
+  </div>
+
+  <footer>Kontroly běží automaticky: kontrast, velikost písma, velikost tlačítek, přetékání textu a mezery u háčků na šířkách 320, 375 a 1280 px.</footer>
+</main>
+<script src="instagram/logos.js?v=10"></script>
+<script>document.querySelectorAll('[data-logo]').forEach(function (a) { if (window.PL_LOGO) a.innerHTML = window.PL_LOGO.full; });</script>
+<script src="assets/js/typo.js?v=3"></script>
+<script src="assets/js/preview.js?v=4"></script>
+</body>
+</html>

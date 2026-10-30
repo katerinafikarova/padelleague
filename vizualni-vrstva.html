@@ -6,7 +6,7 @@
 <title>PadelLeague · Vizuální vrstva</title>
 <meta name="description" content="Návrh vizuální vrstvy nad průvodcem a enginem PadelLeague: stavy, karty, rozpis, tabulky, pavouk.">
 <meta name="theme-color" content="#034867">
-<link rel="stylesheet" href="assets/css/app.css?v=19">
+<link rel="stylesheet" href="assets/css/app.css?v=42">
 <style>
   body{background:var(--ground);color:var(--ink);font-size:16px;line-height:1.5}
   .wrap{max-width:1160px;margin:0 auto;padding:0 20px 80px}
@@ -14,13 +14,13 @@
   .nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:14px;padding-bottom:14px}
   .nav a{color:#fff;text-decoration:none;font-size:14px;opacity:.85}
   header.vtop{padding:48px 0 12px}
-  header.vtop h1{margin:0;font:900 clamp(32px,5vw,56px)/.95 var(--f-display);text-transform:uppercase;color:var(--navy)}
+  header.vtop h1{margin:0;font:900 clamp(32px,5vw,56px)/1.2 var(--f-display);text-transform:uppercase;color:var(--navy)}
   header.vtop p{max-width:70ch;color:var(--muted);margin:16px 0 0}
   .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
   .toc a{background:#fff;border:1px solid var(--line);border-radius:99px;padding:7px 13px;font-size:13.5px;color:var(--ink);text-decoration:none}
   section.s{padding-top:56px}
-  .eyebrow{font:700 12px/1 var(--f-body);letter-spacing:.16em;text-transform:uppercase;color:var(--navy)}
-  h2.t{margin:10px 0 6px;font:900 clamp(24px,3vw,34px)/1 var(--f-display);text-transform:uppercase}
+  .eyebrow{font:700 12px/1.2 var(--f-body);letter-spacing:.16em;text-transform:uppercase;color:var(--navy)}
+  h2.t{margin:10px 0 6px;font:900 clamp(24px,3vw,34px)/1.2 var(--f-display);text-transform:uppercase}
   .lead{color:var(--muted);max-width:72ch;margin:0}
   .fix{margin:16px 0 0;padding:14px 16px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;font-size:14.5px}
   .fix b{display:block;margin-bottom:4px}
@@ -38,7 +38,7 @@
   .state{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
   .state small{color:var(--muted);font-size:13px}
   .state .was{font-size:12px;color:#8A9AA6}
-  .sp{display:inline-flex;align-items:center;gap:6px;font:700 11px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;padding:7px 11px;border-radius:99px;align-self:flex-start;white-space:nowrap}
+  .sp{display:inline-flex;align-items:center;gap:6px;font:700 11px/1.2 var(--f-body);letter-spacing:.08em;text-transform:uppercase;padding:7px 11px;border-radius:99px;align-self:flex-start;white-space:nowrap}
   .sp::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
   .sp.draft{border:1px dashed #9AAAB5;color:#5B6E7B}
   .sp.open{background:var(--ok-bg);color:var(--ok)}
@@ -58,18 +58,18 @@
   .ec .im img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .ec .im::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,47,68,.1),rgba(2,47,68,.55))}
   .ec .im .sp{position:absolute;top:12px;right:12px;z-index:2}
-  .ec .im .vibe{position:absolute;top:12px;left:12px;z-index:2;background:rgba(255,255,255,.92);color:var(--navy);font:700 11px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:7px 10px;border-radius:99px}
+  .ec .im .vibe{position:absolute;top:12px;left:12px;z-index:2;background:rgba(255,255,255,.92);color:var(--navy);font:700 11px/1.2 var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:7px 10px;border-radius:99px}
   .ec .im .pr{position:absolute;right:12px;bottom:12px;z-index:2;background:#fff;color:var(--navy);font:900 14px/1 var(--f-display);padding:7px 10px;border-radius:10px}
   .ec .b{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
   .ec .d{font:700 11px/1.2 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--navy)}
-  .ec .n{font:900 18px/1.1 var(--f-display);text-transform:uppercase;color:var(--navy)}
+  .ec .n{font:900 18px/1.2 var(--f-display);text-transform:uppercase;color:var(--navy)}
   .ec .m{font-size:13px;color:var(--muted)}
   .ec .tg{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
   .ec .tg span{font-size:11.5px;padding:4px 8px;border-radius:99px;background:var(--soft);color:#34566A}
   .ec .bar{height:5px;border-radius:99px;background:#E7EDF1;margin-top:10px;overflow:hidden}
   .ec .bar i{display:block;height:100%;background:var(--navy)}
   .ec .f{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12.5px;color:var(--muted)}
-  .ec .btn{margin-top:12px;display:block;text-align:center;border-radius:14px;padding:12px;font:900 13px/1 var(--f-display);text-transform:uppercase;letter-spacing:.05em}
+  .ec .btn{margin-top:12px;display:block;text-align:center;border-radius:14px;padding:12px;font:900 13px/1.2 var(--f-display);text-transform:uppercase;letter-spacing:.05em}
   .btn.go{background:var(--orange);color:#fff}
   .btn.sec{background:#fff;border:1px solid var(--line);color:var(--navy)}
   .btn.live{background:#fff;border:2px solid #16A34A;color:#15803D}
@@ -79,7 +79,7 @@
   .tbl{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
   .tbl table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
   .tbl{overflow:hidden}
-  .tbl th{background:var(--navy);color:#fff;font:700 10.5px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;padding:12px 10px;text-align:center}
+  .tbl th{background:var(--navy);color:#fff;font:700 10.5px/1.2 var(--f-body);letter-spacing:.1em;text-transform:uppercase;padding:12px 10px;text-align:center}
   .tbl th:nth-child(2){text-align:left}
   .tbl td{padding:12px 10px;border-top:1px solid #EEF3F6;text-align:center;color:var(--muted);font-size:14.5px}
   .tbl td.nm{text-align:left;color:var(--ink);font-weight:600}
@@ -95,7 +95,7 @@
   /* pavouk */
   .br{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;align-items:center;margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px}
   .col{display:flex;flex-direction:column;gap:18px;justify-content:space-around;height:100%}
-  .col h4{margin:0 0 4px;font:700 11px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .col h4{margin:0 0 4px;font:700 11px/1.2 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
   .mt{border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative;background:#fff}
   .mt .tm{display:flex;justify-content:space-between;gap:8px;padding:9px 12px;font-size:14px;color:var(--muted)}
   .mt .tm + .tm{border-top:1px solid #EEF3F6}
@@ -117,7 +117,7 @@
   .br-m .mt{margin-bottom:10px}
 
   /* skupiny */
-  .grp h4{margin:0;padding:12px 14px;background:var(--navy);color:#fff;font:900 15px/1 var(--f-display);text-transform:uppercase;display:flex;justify-content:space-between}
+  .grp h4{margin:0;padding:12px 14px;background:var(--navy);color:#fff;font:900 15px/1.2 var(--f-display);text-transform:uppercase;display:flex;justify-content:space-between}
   .grp h4 small{font:500 12px/1 var(--f-body);text-transform:none;opacity:.8}
   .adv{display:inline-block;width:8px;height:8px;border-radius:50%;background:#16A34A;margin-right:6px}
 
@@ -125,6 +125,7 @@
   .ph{max-width:340px;margin:0 auto;border-radius:36px;padding:10px;background:#0A1C26}
   .ph .in{border-radius:28px;background:var(--ground);padding:14px;display:flex;flex-direction:column;gap:10px}
   footer{margin-top:64px;color:var(--muted);font-size:14px}
+  .btn.go{color:var(--ink)}
 </style>
 <script>
 /* Čísla se nelámou od slov a „·“ nezačíná řádek (stejné pravidlo jako v aplikaci) */
@@ -140,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () { plGlue(); });
 </script>
 </head>
 <body>
-<header class="nav"><div class="wrap"><a href="index.html" class="logo" style="opacity:1"><i></i>Padel League</a><a href="index.html">← Prototyp</a></div></header>
+<header class="nav"><div class="wrap"><a href="index.html" class="logo" style="opacity:1"><span class="pl-logo" role="img" aria-label="PadelLeague"><svg viewBox="0 0 712.4 114.1" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true"><path d="M149.1,97.9h-14.9l23.3-65.4h14l23.3,65.4h-15.2l-4.6-13.8h-21.1l-4.7,13.8ZM162.6,58.1l-4.7,14h12.9l-4.7-14c-.4-1.1-.7-2.3-1.1-3.4-.4-1.2-.6-2.2-.7-2.9-.1.8-.3,1.7-.7,2.9-.3,1.1-.7,2.3-1.1,3.5Z"/><path d="M228,97.9h-25.6V32.5h24.8c6.4,0,12.1,1.4,16.9,4.2,4.9,2.8,8.7,6.6,11.5,11.6,2.8,5,4.2,10.7,4.2,17.2s-1.3,12-4,16.9c-2.7,4.9-6.4,8.7-11.1,11.5-4.7,2.8-10.2,4.2-16.5,4.2ZM216.6,39v52.5l-6.8-6.9h16.7c3.8,0,7-.8,9.7-2.3,2.7-1.5,4.7-3.7,6.1-6.6,1.4-2.9,2.1-6.3,2.1-10.3s-.8-7.6-2.3-10.6-3.7-5.2-6.5-6.7c-2.8-1.6-6.2-2.3-10.1-2.3h-15.8l6.8-6.7Z"/><path d="M311.2,97.9h-41.6V32.5h41.6v13.3h-31.2l4-3.7v16.5h24.1v12.6h-24.1v17.2l-4-3.7h31.2v13.3Z"/><path d="M337.2,32.5v65.4h-14.3V32.5h14.3ZM325.5,97.9v-13.3h37.6v13.3h-37.6Z"/><path d="M402.8,34.6v63.3h-6.4v-63.3h6.4ZM397.5,97.9v-5.8h34.4v5.8h-34.4Z"/><path d="M479.4,97.9h-37.9v-63.3h37.8v5.8h-35.5l4-3.4v26.3h28.6v5.7h-28.6v26.5l-4-3.4h35.5v5.8Z"/><path d="M492.3,97.9h-6.5l23.3-63.3h7.9l23.5,63.3h-6.6l-6.2-16.8h-29.2l-6.2,16.8ZM512.2,43.6l-11.8,32h25.2l-11.8-32c-.1-.5-.3-.9-.4-1.4-.2-.5-.3-.9-.4-1.1,0,.3-.2.7-.3,1.2-.1.5-.3,1-.5,1.4Z"/><path d="M573.3,39.6c-4.8,0-9.1,1.1-12.6,3.4-3.6,2.2-6.4,5.4-8.3,9.4-1.9,4-2.9,8.8-2.9,14.2s1,10.2,3,14.1c2,4,4.8,7,8.4,9.1,3.6,2.1,7.8,3.2,12.5,3.2s5.3-.4,7.8-1.1c2.5-.7,4.7-1.8,6.7-3.4,2-1.6,3.6-3.7,4.7-6.3,1.2-2.6,1.8-5.8,1.8-9.6v-6.3l3.1,3.1h-26v-5.7h28.9v34.3h-5l-.8-13.1.9,1.5c-.9,2.3-2.5,4.4-4.6,6.3-2.1,1.9-4.6,3.4-7.6,4.6s-6.4,1.7-10.1,1.7c-6,0-11.2-1.3-15.8-4-4.6-2.7-8.1-6.5-10.7-11.4s-3.8-10.6-3.8-17.1,1.3-12.2,3.8-17.2,6.1-8.8,10.7-11.6c4.6-2.8,9.9-4.2,15.9-4.2s8.5.8,12.2,2.4,6.7,3.8,9.1,6.7c2.4,2.9,4,6.2,4.9,10h-6.9c-1.3-4.4-3.7-7.6-7.2-9.8-3.5-2.2-7.5-3.3-12.2-3.3Z"/><path d="M612.7,75.9v-41.3h6.4v41c0,5.5,1.5,9.8,4.4,12.7,2.9,2.9,7.2,4.4,12.7,4.4s9.5-1.5,12.5-4.5c2.9-3,4.4-7.2,4.4-12.7v-41h6.4v41.3c0,4.8-.9,8.9-2.8,12.3-1.9,3.4-4.5,6.1-8,8-3.5,1.9-7.6,2.8-12.5,2.8s-9.1-.9-12.6-2.7c-3.5-1.8-6.2-4.5-8.1-8-1.9-3.5-2.8-7.6-2.8-12.4Z"/><path d="M712.4,97.9h-37.9v-63.3h37.8v5.8h-35.5l4-3.4v26.3h28.6v5.7h-28.6v26.5l-4-3.4h35.5v5.8Z"/><path d="M98.8,31.2c-2.2,14.2-6.5,28.1-13,40.9-5.5,10.7-13.1,25.7-25.2,29.7,2.6,2,5.2,4,7.8,6-.9-17.9,1.7-35.6,7.8-52.4,3.1-8.5,7.2-16.7,12-24.4,4.1-6.6,9.2-13.8,16.5-17.2,7.3-3.4,14.8-.2,19,6.4,4.5,6.9,5.1,16,4.2,24-.7,6.9-3.1,14.6-9,18.8-6.8,4.8-15.9,3.3-23.4,1.3-19.1-5.2-37.8-12.8-56.4-19.3-7.5-2.6-10.8,9.3-3.3,11.9,10.2,3.6,20.5,7.1,30.7,10.7,10,3.5,20.1,7.7,30.5,9.8,10.3,2,21.2,1.7,29.8-4.9,7.3-5.6,11.3-14.2,12.8-23.1,3.1-18.4-2.1-44.6-23.8-48.9-21.7-4.2-36.4,18.9-44.6,35.3-11.2,22.2-16.5,47.1-15.2,72,.2,3.8,3.8,7.3,7.8,6,14.8-4.9,23.9-19.3,31-32.4,7.9-14.6,13.3-30.5,15.9-46.9,1.2-7.8-10.7-11.2-11.9-3.3h0Z"/><path d="M11.2,53.2c15,0,15-23.3,0-23.3s-15,23.3,0,23.3h0Z"/></svg></span></a><a href="index.html">← Prototyp</a></div></header>
 <div class="wrap">
   <header class="vtop">
     <p class="eyebrow">Bod 3 zadání · návrh</p>
@@ -160,10 +161,10 @@ document.addEventListener('DOMContentLoaded', function () { plGlue(); });
       <div class="state"><span class="sp full">Plno · čeká 3</span><small>Kapacita naplněná, běží čekací listina.</small><span class="was">Dnes: Plno (bez čekací listiny)</span></div>
       <div class="state"><span class="sp closed">Uzavřeno</span><small>Přihlášky zavřené, organizátor chystá soupisku a rozpis.</small><span class="was">Dnes: Uzavřeno na kartě, Příprava v enginu</span></div>
       <div class="state"><span class="sp live">Probíhá</span><small>Event se hraje, výsledky naživo.</small><span class="was">Dnes: Probíhá na kartě, LIVE v enginu</span></div>
-      <div class="state"><span class="sp done">Odehráno</span><small>Výsledky jsou konečné.</small><span class="was">Dnes: Hotovo na kartě, Dokončeno v enginu</span></div>
+      <div class="state"><span class="sp done">Odehráno / Proběhlo</span><small>Výsledky jsou konečné. „Odehráno“ u soutěžních, „Proběhlo“ u společenských a tréninkových eventů.</small><span class="was">Dnes: Hotovo na kartě, Dokončeno v enginu</span></div>
       <div class="state"><span class="sp cancel">Zrušeno</span><small>Hráči dostali e-mail, peníze se vrací.</small><span class="was">Dnes: Zrušeno</span></div>
     </div>
-    <div class="fix"><b>Co sjednocujeme</b>Pro stejný stav jsou dnes v aplikaci dvě slova (Hotovo / Dokončeno, Probíhá / LIVE, Uzavřeno / Příprava). Navrhujeme jedno slovo a jednu barvu všude. [OTÁZKA] Smíme ve stavech přejmenovat „Hotovo“ a „Dokončeno“ na „Odehráno“?</div>
+    <div class="fix"><b>Co sjednocujeme</b>Pro stejný stav jsou dnes v aplikaci dvě slova (Hotovo / Dokončeno, Probíhá / LIVE, Uzavřeno / Příprava). Navrhujeme jedno slovo a jednu barvu všude. Domluveno s Jakubem: u soutěžních eventů „Odehráno“, u společenských a tréninkových „Proběhlo“.</div>
   </section>
 
   <section class="s" id="karty">
@@ -171,21 +172,21 @@ document.addEventListener('DOMContentLoaded', function () { plGlue(); });
     <h2 class="t">Karta eventu</h2>
     <p class="lead">Homepage, stránka komunity a „Moje eventy“. Stejná karta, mění se jen štítek stavu a tlačítko.</p>
     <div class="grid g4">
-      <div><div class="ec"><div class="im"><img src="assets/img/court-orange-close.jpg" alt=""><span class="vibe">Social</span><span class="sp open">Otevřeno</span><span class="pr">200 Kč</span></div>
+      <div><div class="ec"><div class="im"><img src="assets/img/court-orange-close.jpg" alt=""><span class="vibe">Společenský</span><span class="sp open">Otevřeno</span><span class="pr">200 Kč</span></div>
         <div class="b"><span class="d">pá 30. 10. · 18:00</span><span class="n">Páteční Americano</span><span class="m">Padel Klub Novosedlice · Teplice</span><div class="tg"><span>Americano · rotující partneři</span><span>Pro všechny</span></div>
         <div class="bar"><i style="width:56%"></i></div><div class="f"><span>9/16 · zbývá 7 míst</span><span>na místě</span></div><span class="btn go">Přihlásit se</span></div></div><p class="cap">Otevřeno</p></div>
-      <div><div class="ec"><div class="im"><img src="assets/img/court-serve.jpg" alt=""><span class="vibe">Competitive</span><span class="sp full">Plno · čeká 3</span><span class="pr">250 Kč</span></div>
+      <div><div class="ec"><div class="im"><img src="assets/img/court-serve.jpg" alt=""><span class="vibe">Soutěžní</span><span class="sp full">Plno · čeká 3</span><span class="pr">250 Kč</span></div>
         <div class="b"><span class="d">so 31. 10. · 10:00</span><span class="n">Sobotní Mexicano</span><span class="m">Padel Písečná · Teplice</span><div class="tg"><span>Mexicano · živý žebříček</span><span>Úroveň 4–6</span></div>
         <div class="bar"><i style="width:100%"></i></div><div class="f"><span>16/16</span><span>kartou</span></div><span class="btn sec">Na čekací listinu</span></div></div><p class="cap">Plno</p></div>
-      <div><div class="ec"><div class="im"><img src="assets/img/court-dark-run.jpg" alt=""><span class="vibe">Competitive</span><span class="sp live">Probíhá</span></div>
+      <div><div class="ec"><div class="im"><img src="assets/img/court-dark-run.jpg" alt=""><span class="vibe">Soutěžní</span><span class="sp live">Probíhá</span></div>
         <div class="b"><span class="d">dnes · 18:00 · kolo 3 z 4</span><span class="n">Středeční liga</span><span class="m">Padel Klub Novosedlice · Teplice</span><div class="tg"><span>Turnaj · skupiny + pavouk</span></div>
         <div class="bar"><i style="width:67%;background:#16A34A"></i></div><div class="f"><span>Zápasy 8/12</span><span>vede Veselý / Horák</span></div><span class="btn live">Sledovat živě</span></div></div><p class="cap">Probíhá</p></div>
-      <div><div class="ec dim"><div class="im"><img src="assets/img/court-blue-orange.jpg" alt=""><span class="vibe">Social</span><span class="sp done">Odehráno</span></div>
+      <div><div class="ec dim"><div class="im"><img src="assets/img/court-blue-orange.jpg" alt=""><span class="vibe">Společenský</span><span class="sp done">Odehráno</span></div>
         <div class="b"><span class="d">pá 23. 10.</span><span class="n">Mixy Americano</span><span class="m">Padel Klub Novosedlice · Teplice</span><div class="tg"><span>Americano</span><span>16 hráčů</span></div>
         <div class="f" style="margin-top:12px"><span>🏆 Tereza H.</span><span>58 bodů</span></div><span class="btn sec">Výsledky</span></div></div><p class="cap">Odehráno</p></div>
     </div>
     <div class="fix"><b>Co se liší od testovací verze</b><ul>
-      <li>Typ eventu je jednou (štítek „Social“). Dnes je nad kartou ještě „SOCIAL VIBE“ a Competitive má celou kartu i tlačítko žluté.</li>
+      <li>Typ eventu je jednou a česky (Soutěžní / Společenský / Tréninkový). Dnes je nad kartou ještě „SOCIAL VIBE“ a Competitive má celou kartu i tlačítko žluté.</li>
       <li>Tlačítko odpovídá stavu: Přihlásit se / Na čekací listinu / Sledovat živě / Výsledky. Dnes je na veřejné kartě „Přidat se do komunity“ nebo „Zobrazit detail“.</li>
       <li>Karta bez fotky dostane fotku klubu nebo výchozí fotku podle formátu místo navy plochy s logem.</li>
       <li>Kruh obsazenosti a progress jsou navy, oranžové je jen tlačítko.</li>
@@ -308,10 +309,12 @@ document.addEventListener('DOMContentLoaded', function () { plGlue(); });
         <tr><td>3</td><td class="nm">Procházka / Kučera</td><td>2</td><td>1</td><td class="pts">39</td></tr>
         <tr><td>4</td><td class="nm">Beneš / Doležal</td><td>2</td><td>0</td><td class="pts">27</td></tr></tbody></table></div>
     </div>
-    <div class="fix"><b>Poznámka</b>Skupiny jsme v testovací verzi neprocházely do hloubky (event „Turnaj Mistrů“ je odehraný). [PŘEDPOKLAD] Postupují první dva z každé skupiny.</div>
+    <div class="fix"><b>Poznámka</b>Skupiny jsme v testovací verzi neprocházely do hloubky (event „Turnaj Mistrů“ je odehraný). Postupují první dva (výchozí). Později půjde nastavit i tři: dělicí čára se posune o řádek níž a třetí řádek dostane také zelenou tečku.</div>
   </section>
 
   <footer>Návrh pro PadelLeague · Princová &amp; Fikarová · podklad: testovací verze ze 7. 10. 2026 · data jsou ukázková.</footer>
 </div>
+<script src="assets/js/typo.js?v=3"></script>
+<script src="assets/js/preview.js?v=4"></script>
 </body>
 </html>

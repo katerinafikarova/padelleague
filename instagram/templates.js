@@ -33,7 +33,8 @@
   function sframe(tone, inner, extraCls) {
     var bg = '', m = inner.match(/^<div class="g-photo">[\s\S]*?<div class="g-grain"><\/div><\/div>/);
     if (m) { bg = m[0]; inner = inner.slice(m[0].length); }
-    return '<div class="g g-story tone-' + tone + (extraCls ? ' ' + extraCls : '') + '">' + bg + '<div class="s-safe">' + inner + '<div class="g-sfoot"><span class="g-logo">' + LOGO.full + '</span></div></div></div>';
+    var deco = bg ? '' : '<div class="s-deco" aria-hidden="true">' + LOGO.symbol + '</div>';
+    return '<div class="g g-story tone-' + tone + (extraCls ? ' ' + extraCls : '') + '">' + bg + deco + '<div class="s-safe">' + inner + '<div class="g-sfoot"><span class="g-logo">' + LOGO.full + '</span></div></div></div>';
   }
   function going(ev) { return ev.going.length; }
   function leftTxt(n) { return n === 1 ? 'ZBÝVÁ 1 MÍSTO' : (n >= 2 && n <= 4 ? 'ZBÝVAJÍ ' + n + ' MÍSTA' : 'ZBÝVÁ ' + n + ' MÍST'); }
@@ -43,7 +44,7 @@
     return '<div class="m-wa"><div class="m-wa-top"><b>Padel čtvrtek 🎾</b><span>38 členů · 9 píše…</span></div>' +
       '<div class="m-bubble"><b>Ty</b>Americano ve čtvrtek 19:00! 12 míst, 350 Kč. Pište jména 👇</div>' +
       '<div class="m-bubble m-list">' + lines.map(esc).join('<br>') + '</div>' +
-      (short ? '' : '<div class="m-bubble"><b>Hewidy</b>tak jsem tam, nebo ne?? 😅</div>') + '</div>';
+      (short ? '' : '<div class="m-bubble"><b>Lukáš</b>tak jsem tam, nebo ne?? 😅</div>') + '</div>';
   }
   function mockLink(ev) {
     var n = going(ev);
@@ -123,7 +124,7 @@
       '<div class="g-glass g-cardbox"><div class="kv"><span>JMÉNO</span><b>' + esc(P(d.p)) + '</b></div><div class="kv"><span>EVENT</span><b>' + esc(IG.community.series) + ' #' + d.series + '</b></div>' +
       '<div class="kv"><span>KDY A KDE</span><b>' + esc(R.date) + ' 2026 · PRAHA</b></div><div class="kv"><span>VÝSLEDEK</span><b class="xl">' + esc(d.result || 'VÍTĚZ!') + '</b></div></div>' +
       '<div class="g-won"><b>' + (d.won || 8) + '/' + (d.total || 10) + '</b><span>VYHRANÝCH<br>ZÁPASŮ</span></div>';
-    return story ? sframe(v === 'photo' ? 'photo' : v, inner, 'g-card ' + (v !== 'photo' ? 'grid' : '')) : '<div class="g g-feed g-card tone-' + (v === 'photo' ? 'photo' : v) + (v !== 'photo' ? ' grid' : '') + '">' + inner + '</div>';
+    return story ? sframe(v === 'photo' ? 'photo' : v, inner, 'g-card ' + (v !== 'photo' ? 'grid' : '')) : '<div class="g g-feed g-card tone-' + (v === 'photo' ? 'photo' : v) + (v !== 'photo' ? ' grid' : '') + '">' + inner + '<div class="g-foot"><span class="g-logo">' + LOGO.full + '</span></div></div>';
   };
   F.leader = function (d, o) {
     var L = IG.leaderboard;
@@ -174,8 +175,8 @@
       (d.body ? '<p class="g-txt">' + esc(d.body) + '</p>' : '') + (d.cta ? '<div class="s-sticker">🔗 ' + esc(d.cta) + '</div>' : '') + '</div>', d.photo ? '' : 'grid');
   };
   S.stlink = function (d) { return sframe('navy', '<div class="s-body top"><p class="g-eye">' + esc(d.eyebrow) + '</p>' + title(d.title) + '</div><div class="s-mock">' + mockLink(IG.event) + '</div>', 'grid'); };
-  S.stchat = function (d) { return sframe('white', '<div class="s-body top"><p class="g-eye">' + esc(d.eyebrow) + '</p>' + title(d.title) + '</div><div class="s-mock">' + mockWA(['1. Petr', '2. Jana', '3. ?', '4. Tomáš (+1?)', '5. Klára ✅', '6. Ondra – zaplatil?']) + '</div>', 'grid'); };
-  S.storg = function (d) { return sframe('orange', '<div class="s-body top"><p class="g-eye">' + esc(d.eyebrow) + '</p>' + title(d.title) + '</div><div class="s-mock">' + mockOrg() + '</div>', 'grid'); };
+  S.stchat = function (d) { return sframe('white', '<div class="s-body top"><p class="g-eye">' + esc(d.eyebrow) + '</p>' + title(d.title) + '</div><div class="s-mock">' + mockWA(['1. Petr', '2. Jana', '3. ?', '4. Tomáš (+1?)', '5. Klára ✅', '6. Ondra – zaplatil?']) + '</div>', 'grid st-chat'); };
+  S.storg = function (d) { return sframe('orange', '<div class="s-body top"><p class="g-eye">' + esc(d.eyebrow) + '</p>' + title(d.title) + '</div><div class="s-mock">' + mockOrg() + '</div>', 'grid st-org'); };
   S.team = function (d) {
     var ev = IG.event;
     return sframe('navy', '<div class="s-body center"><p class="g-eye">' + esc(ev.name) + ' · ' + esc(ev.day) + '</p>' + title('TÝM|~POTVRZEN') +
@@ -185,7 +186,7 @@
   S.spots = function () {
     var ev = IG.event, n = going(ev), p = Math.round(n / ev.cap * 100);
     return sframe('orange', '<div class="s-body center"><p class="g-eye">' + esc(ev.name) + ' · ' + esc(ev.day + ' ' + ev.time) + '</p><div class="s-ring" style="--p:' + p + '"><b>' + n + '/' + ev.cap + '</b></div>' +
-      title(leftTxt(ev.cap - n)) + avatars(ev.going, 6) + '<div class="s-sticker light">🔗 Přihlásit se</div></div>', 'grid');
+      title(leftTxt(ev.cap - n)) + avatars(ev.going, 6) + '<div class="s-sticker light">🔗 Přihlásit se</div></div>', 'grid st-spots');
   };
   S.live = function (d) {
     return sframe('navy', '<div class="s-body center"><p class="g-eye"><i class="s-dot"></i>ŽIVĚ · KOLO ' + d.round + '</p>' + title('KURT ' + d.court + '|~JE TO TĚSNÉ') +

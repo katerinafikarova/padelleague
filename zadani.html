@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Co Jakub chtěl · PadelLeague</title>
+<style>
+  @font-face{font-family:'Satoshi';src:url(assets/fonts/satoshi-400.woff2) format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:'Satoshi';src:url(assets/fonts/satoshi-500.woff2) format('woff2');font-weight:500;font-display:swap}
+  @font-face{font-family:'Satoshi';src:url(assets/fonts/satoshi-700.woff2) format('woff2');font-weight:700;font-display:swap}
+  @font-face{font-family:'Satoshi';src:url(assets/fonts/satoshi-900.woff2) format('woff2');font-weight:900;font-display:swap}
+  :root{--navy:#034867;--navy-deep:#022F44;--orange:#F97316;--orange-ink:#C2530A;--ink:#0B2A3A;--muted:#4A6375;--line:#DCE5EA;--soft:#EEF3F6;--ground:#F9FAFB;--ok:#17633A;--ok-bg:#E3F4EA}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font:400 16px/1.5 Satoshi,system-ui,sans-serif;color:var(--ink);background:var(--ground);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  button{font:inherit;color:inherit;cursor:pointer}
+  :focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+
+  .head{position:sticky;top:0;z-index:5;background:var(--navy);color:#fff;padding:14px 16px}
+  .head .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .head .logo{display:flex;align-items:center;min-height:44px;color:#fff}.head .logo svg{height:24px;width:auto;display:block}
+  .head nav{display:flex;gap:14px;font-size:14px;font-weight:600}
+  .head nav a{text-decoration:none;opacity:.9;min-height:44px;display:inline-flex;align-items:center}
+  .intro{padding:22px 16px 6px}
+  .intro h1{margin:0;font:900 30px/1.2 Satoshi,sans-serif;text-transform:uppercase;color:var(--navy);padding-top:.08em}
+  .intro h1 span{display:block;font-weight:300}
+  .intro p{margin:10px 0 0;color:var(--muted);max-width:56ch}
+  .sum{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .sum span{background:var(--ok-bg);color:var(--ok);font-weight:700;font-size:14px;padding:6px 12px;border-radius:99px}
+  .sum span.n{background:var(--soft);color:var(--navy)}
+
+  .list{padding:8px 16px 40px}
+  .grp{margin-top:22px}
+  .grp h2{margin:0 0 4px;font:800 19px/1.25 Satoshi,sans-serif;color:var(--navy)}
+  .grp>p{margin:0 0 10px;color:var(--muted);font-size:14.5px}
+  .it{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 14px 14px 46px;margin-top:8px;position:relative}
+  .it::before{content:"";position:absolute;left:14px;top:16px;width:20px;height:20px;border-radius:50%;background:var(--ok-bg) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5.5 10.5l3 3 6-7' fill='none' stroke='%2317633A' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/14px no-repeat}
+  .it.info::before{background:var(--soft) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M10 9v5M10 6.2v.1' fill='none' stroke='%23034867' stroke-width='2.2' stroke-linecap='round'/></svg>") center/14px no-repeat}
+  .it b{display:block;font-weight:700;font-size:16px;line-height:1.35}
+  .it small{display:block;color:var(--muted);font-size:14.5px;margin-top:3px}
+  .it .go{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .it .go span{font-size:14px;font-weight:700;color:var(--navy);background:var(--soft);border-radius:99px;padding:10px 13px;min-height:40px;display:inline-flex;align-items:center;border:1px solid transparent}
+  .it .go span.on{border-color:var(--navy);background:#fff}
+  .it[aria-current="true"]{border-color:var(--navy);box-shadow:0 0 0 1px var(--navy)}
+
+  /* Náhled */
+  .pane{display:none}
+  .sheet{position:fixed;inset:0;z-index:20;background:var(--navy-deep);display:flex;flex-direction:column}
+  .sheet[hidden]{display:none}
+  .sheet .bar{display:flex;align-items:center;gap:10px;padding:10px 12px;color:#fff;background:var(--navy)}
+  .sheet .bar button{background:rgba(255,255,255,.12);border:0;border-radius:99px;padding:9px 14px;font-weight:700;color:#fff}
+  .sheet .bar b{font-size:14.5px;line-height:1.3;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sheet iframe{flex:1;width:100%;border:0;background:#fff}
+
+  @media (min-width:900px){
+    body{display:grid;grid-template-columns:440px 1fr;grid-template-rows:auto 1fr;height:100vh;overflow:hidden}
+    .head{grid-column:1/-1}
+    .side{overflow:auto;border-right:1px solid var(--line);background:var(--ground)}
+    .pane{display:flex;flex-direction:column;min-height:0;background:var(--navy-deep);background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:32px 32px}
+    .ptools{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;color:#D7E4EB;font-size:14px}
+    .ptools b{color:#fff;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+    .seg{display:flex;gap:6px;flex:none}
+    .seg button{border:1px solid rgba(255,255,255,.2);background:transparent;color:#D7E4EB;padding:7px 13px;border-radius:99px;font-size:13px;font-weight:600}
+    .seg button.on{background:#fff;color:var(--navy);border-color:#fff;font-weight:700}
+    .seg a{color:#D7E4EB;font-size:13px;align-self:center;margin-left:6px}
+    .stagebox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:4px 18px 18px;position:relative}
+    .pfit{position:relative;flex:none}
+    .phone{position:absolute;left:0;top:0;width:414px;height:868px;transform-origin:0 0;border-radius:62px;padding:12px;background:#0A1C26;box-shadow:0 40px 80px -30px rgba(0,0,0,.7),inset 0 0 0 2px #1D3442}
+    .phone iframe{width:390px;height:844px;border:0;border-radius:50px;background:#fff;display:block}
+    .deskbox{position:absolute;inset:4px 18px 18px;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+    .deskbox iframe{border:0;display:block;transform-origin:0 0}
+    .empty{color:#D7E4EB;text-align:center;max-width:34ch}
+    .sheet{display:none!important}
+  }
+  @media (max-width:440px){.head nav a:nth-child(2){display:none}}
+  .seg button{min-height:44px}
+  .seg a{min-height:44px;display:inline-flex;align-items:center}
+  .it .no{display:inline-block;font:800 13px/1 Satoshi,sans-serif;color:#9A3C05;background:#FFF1E6;border-radius:99px;padding:5px 9px;margin-bottom:6px}
+  .grp h2{font-size:20px}
+</style>
+</head>
+<body>
+<header class="head"><div class="row">
+  <a class="logo" href="index.html" aria-label="PadelLeague" data-logo></a>
+  <nav><a href="index.html">Prototyp</a><a href="landing.html">Landing</a><a href="pristupnost.html">Proč takhle</a></nav>
+</div></header>
+
+<div class="side">
+  <div class="intro">
+    <h1>Co Jakub chtěl<span>a kde to je</span></h1>
+    <p>Všechno z Jakubova e-mailu ze 7. 10. 2026, 19:50, seřazené podle jeho bodů. Klepni na položku a ukáže se přímo v prototypu.</p>
+    <div class="sum" id="sum"></div>
+  </div>
+  <div class="list" id="list"></div>
+</div>
+
+<main class="pane" id="pane" aria-live="polite">
+  <div class="ptools"><b id="ptitle">Vyber položku vlevo</b>
+    <div class="seg" role="group" aria-label="Zobrazení"><button type="button" data-dev="mobile">📱 Mobil</button><button type="button" data-dev="desktop">💻 Počítač</button><a id="popen" href="#" target="_blank" rel="noopener">Otevřít ↗</a></div>
+  </div>
+  <div class="stagebox" id="stage"><p class="empty">Klepni na požadavek vlevo. Obrazovka se ukáže tady, v telefonu nebo na počítači.</p></div>
+</main>
+
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="stitle">
+  <div class="bar"><button type="button" id="sclose">← Výčet</button><b id="stitle"></b></div>
+  <iframe id="sframe" title="Náhled"></iframe>
+</div>
+
+<script>
+/* m = mobil, d = počítač. Každý odkaz: [štítek, adresa, zařízení] */
+var R = 'index.html#/', RW = function (q) { return 'index.html?' + q + '#/o-new'; };
+var DATA = [
+  { g: 'Bod 1–4: Co Jakub potřebuje do 3. 11.', p: 'V tomhle pořadí. Když se něco nestihne, obětuje se bod 4, pak bod 3. Body 1 a 2 musí být.', items: [
+    { n: 'Bod 1', t: 'Landing page pro organizátory, finální, včetně mobilu', s: 'Priorita č. 1, Jakub ji posílá klubům.', l: [['Mobil', 'landing.html', 'm'], ['Počítač', 'landing.html', 'd']] },
+    { n: 'Bod 2', t: 'Mobilní verze organizátora: Rozpis, Průběh se zadáním skóre, Po eventu', s: 'Tři obrazovky čitelné na kurtu, převedené z PC verze na telefon.', l: [['Rozpis', R + 'o-schedule', 'm'], ['Průběh', R + 'o-play', 'm'], ['Po eventu', R + 'o-after', 'm']] },
+    { n: 'Bod 3', t: 'Vizuální vrstva na Jakubův průvodce a engine', s: 'Kroky ani pořadí se nemění. Karty, tabulky, pavouk a stavy otevřeno / plno / probíhá / odehráno.', l: [['Stavy', 'vizualni-vrstva.html#stavy', 'd'], ['Karty', 'vizualni-vrstva.html#karty', 'd'], ['Tabulka', 'vizualni-vrstva.html#tabulka', 'd'], ['Pavouk', 'vizualni-vrstva.html#pavouk', 'd'], ['Nad PC verzí', 'pc-navrhy.html', 'd']] },
+    { n: 'Bod 4', t: 'Instagram: mřížka s rytmem barev, highlights, šablona karty výsledku', l: [['Profil', 'instagram/index.html', 'd'], ['Šablony', 'instagram/templates.html', 'd']] }
+  ] },
+  { g: 'Vstupenka je event, ne komunita', p: 'První kontakt není „založ si komunitu“, ale „založ si Americano“. Komunita, Stripe a žebříček přijdou až po prvním odehraném eventu.', items: [
+    { n: '1', t: 'První obrazovka organizátora je „Vytvoř event“', l: [['Domov', R + 'o-home', 'm'], ['Vytvoř event', R + 'o-new', 'm']] },
+    { n: '2', t: 'Komunita a žebříček až po prvním odehraném eventu', l: [['Po eventu, co dál', R + 'o-after', 'm'], ['Komunita', R + 'o-community', 'm']] },
+    { n: '3', t: 'Platí i pro landing a Instagram', s: 'Landing vede na „Vytvoř první event“, Instagram nikde nezve k založení komunity.', l: [['Landing', 'landing.html#top', 'm'], ['Instagram', 'instagram/index.html', 'd']] }
+  ] },
+  { g: 'Co z prototypu Jakub bere', p: 'Pět věcí, které chce dál rozvíjet.', items: [
+    { n: '1', t: 'Landing: headline „Nikdy víc nehoníš peníze ani jména“, srovnání WhatsApp vs. PadelLeague a CTA „Vytvoř první event · Zdarma“', l: [['Headline', 'landing.html#top', 'm'], ['Srovnání', 'landing.html#compare', 'm'], ['Počítač', 'landing.html#top', 'd']] },
+    { n: '2', t: 'Stránka eventu pro hráče', s: 'Velká fotka, karta s údaji, „Kdo už jde“, přihlášení bez účtu, jedno oranžové tlačítko.', l: [['Mobil', R + 'p-event', 'm'], ['Počítač', 'index.html?mode=desktop#/p-event', 'd']] },
+    { n: '3', t: 'Karta výsledku na Instagram', l: [['V aplikaci', R + 'o-card', 'm'], ['Šablona', 'instagram/templates.html', 'd']] },
+    { n: '4', t: 'Hráčská cesta: WhatsApp → event → „Jsi ve hře!“ → připomínka', l: [['WhatsApp', R + 'p-chat', 'm'], ['Event', R + 'p-event', 'm'], ['Jsi ve hře', R + 'p-in', 'm'], ['Připomínka', R + 'p-reminder', 'm']] },
+    { n: '5', t: '„Po eventu“ (vybráno, nezaplatili, docházka, pořadí) a „Založit další event · stejné nastavení“', l: [['Po eventu', R + 'o-after', 'm'], ['Další event', R + 'o-next', 'm']] }
+  ] },
+  { g: 'Co Jakub odkládá', p: 'Tyhle věci se v prototypu nesmí objevit.', items: [
+    { n: '1', t: 'Naše verze „Nový event“ a nastavení komunity se nedělají', s: 'Průvodce na mobilu má Jakubovy 4 kroky a pořadí, jen převedené na telefon.', l: [['Průvodce', R + 'o-new', 'm']] },
+    { n: '2', t: 'Stripe není podmínkou zveřejnění, platba na místě je výchozí', s: 'Zveřejnit jde vždy, tlačítko není nikdy šedé.', l: [['Krok 3', RW('wz=2'), 'm'], ['Krok 4', RW('wz=3'), 'm']] },
+    { n: '3', t: 'Žádný přepínač „Nejdřív poslat odkaz 14 hráčům“', s: 'Aplikace nic neposílá do WhatsAppu, jen předá text.', l: [['Po zveřejnění', R + 'o-live', 'm']] },
+    { n: '4', t: 'Po zveřejnění seznam přihlášených, ne prázdný rozpis', s: 'Rozpis vzniká až po uzávěrce.', l: [['Po zveřejnění', R + 'o-live', 'm']] }
+  ] },
+  { g: 'Pravidlo 1–3: Pro všechno další', p: 'Tři pravidla, která platí na každé obrazovce.', items: [
+    { n: 'Pravidlo 1', t: 'Slovo je „event“, ne „turnaj“', s: '„Turnaj“ zůstává jen jako název formátu.', l: [['Homepage hráče', R + 'p-home', 'm'], ['Průvodce', R + 'o-new', 'm']] },
+    { n: 'Pravidlo 2', t: 'Bílé pozadí a fotky, navy jen hlavičky, oranžová jen tlačítka a akce', s: 'Rozpis, „Jsi ve hře“ a karta výsledku už nejsou tmavé celoplošné. Instagram má rytmus navy / fotka / oranžová / bílá.', l: [['Rozpis', R + 'o-schedule', 'm'], ['Jsi ve hře', R + 'p-in', 'm'], ['Instagram', 'instagram/index.html', 'd'], ['Proč takhle', 'pristupnost.html', 'm']] },
+    { n: 'Pravidlo 3', t: 'Čitelnost na kurtu jako PadelMix', s: 'Jedno kolo na obrazovce, velké skóre, celá karta kurtu je tlačítko, skóre za 10 vteřin jednou rukou.', l: [['Průběh', R + 'o-play', 'm'], ['Rozpis', R + 'o-schedule', 'm']] }
+  ] }
+];
+
+var list = document.getElementById('list'), wide = matchMedia('(min-width:900px)'), dev = 'mobile', cur = null;
+var nItems = 0, nOk = 0;
+list.innerHTML = DATA.map(function (g, gi) {
+  return '<section class="grp"><h2>' + g.g + '</h2><p>' + g.p + '</p>' + g.items.map(function (it, ii) {
+    nItems++; if (!it.info) nOk++;
+    var id = gi + '-' + ii;
+    return '<div role="button" tabindex="0" class="it' + (it.info ? ' info' : '') + '" data-id="' + id + '"><span class="no">' + it.n + '</span><b>' + it.t + '</b>' + (it.s ? '<small>' + it.s + '</small>' : '') +
+      (it.l.length ? '<span class="go">' + it.l.map(function (l, li) { return '<span data-li="' + li + '">' + l[0] + (l[2] === 'm' ? ' · 📱' : ' · 💻') + '</span>'; }).join('') + '</span>' : '') + '</div>';
+  }).join('') + '</section>';
+}).join('');
+document.getElementById('sum').innerHTML = '<span>✓ ' + nOk + ' z ' + nItems + ' hotovo</span>';
+
+function find(id) { var p = id.split('-'); return DATA[+p[0]].items[+p[1]]; }
+function withEmbed(u) { var h = u.split('#'), b = h[0]; b += (b.indexOf('?') < 0 ? '?' : '&') + 'embed=1'; return b + (h[1] ? '#' + h[1] : ''); }
+function deskUrl(u) { if (u.indexOf('index.html') === 0 && u.indexOf('mode=') < 0) u = u.replace('index.html', 'index.html?mode=desktop').replace('?mode=desktop?', '?mode=desktop&'); return u; }
+
+function show(id, li) {
+  var it = find(id); if (!it.l.length) return;
+  var l = it.l[li || 0]; cur = { id: id, li: li || 0 };
+  document.querySelectorAll('.it').forEach(function (e) { e.setAttribute('aria-current', e.dataset.id === id ? 'true' : 'false'); e.querySelectorAll('.go span').forEach(function (s) { s.classList.toggle('on', e.dataset.id === id && +s.dataset.li === cur.li); }); });
+  if (!wide.matches) {
+    document.getElementById('stitle').textContent = it.t;
+    document.getElementById('sframe').src = withEmbed(l[1]);
+    document.getElementById('sheet').hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    return;
+  }
+  dev = l[2] === 'd' ? 'desktop' : 'mobile';
+  render();
+}
+function render() {
+  if (!cur) return;
+  var it = find(cur.id), l = it.l[cur.li], st = document.getElementById('stage');
+  document.getElementById('ptitle').textContent = it.t + ' · ' + l[0];
+  document.getElementById('popen').href = dev === 'desktop' ? deskUrl(l[1]) : l[1];
+  document.querySelectorAll('[data-dev]').forEach(function (b) { b.classList.toggle('on', b.dataset.dev === dev); });
+  if (dev === 'mobile') {
+    st.innerHTML = '<div class="pfit"><div class="phone"><iframe title="Náhled na mobilu" src="' + withEmbed(l[1]) + '"></iframe></div></div>';
+    fit();
+  } else {
+    st.innerHTML = '<div class="deskbox"><iframe title="Náhled na počítači" src="' + withEmbed(deskUrl(l[1])) + '"></iframe></div>';
+    fit();
+  }
+}
+function fit() {
+  var pf = document.querySelector('.pfit');
+  if (pf) { var st = document.getElementById('stage'), k = Math.min(1, (st.clientHeight - 22) / 868, (st.clientWidth - 36) / 414); pf.style.width = Math.round(414 * k) + 'px'; pf.style.height = Math.round(868 * k) + 'px'; pf.querySelector('.phone').style.transform = 'scale(' + k + ')'; }
+  var box = document.querySelector('.deskbox'); if (!box) return;
+  var f = box.querySelector('iframe'), k = box.clientWidth / 1280;
+  f.style.width = '1280px'; f.style.height = Math.ceil(box.clientHeight / k) + 'px'; f.style.transform = 'scale(' + k + ')';
+}
+list.addEventListener('click', function (e) {
+  var it = e.target.closest('.it'); if (!it) return;
+  var sp = e.target.closest('.go span');
+  show(it.dataset.id, sp ? +sp.dataset.li : 0);
+});
+list.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('it')) { e.preventDefault(); show(e.target.dataset.id, 0); } });
+document.querySelectorAll('[data-dev]').forEach(function (b) { b.addEventListener('click', function () { dev = b.dataset.dev; render(); }); });
+document.getElementById('sclose').addEventListener('click', function () { document.getElementById('sheet').hidden = true; document.getElementById('sframe').src = 'about:blank'; document.documentElement.style.overflow = ''; });
+window.addEventListener('resize', fit);
+document.querySelectorAll('[data-logo]').forEach(function (a) { if (window.PL_LOGO) a.innerHTML = window.PL_LOGO.full; });
+</script>
+<script src="instagram/logos.js?v=10"></script>
+<script>document.querySelectorAll('[data-logo]').forEach(function (a) { if (window.PL_LOGO) a.innerHTML = window.PL_LOGO.full; });</script>
+<script src="assets/js/typo.js?v=3"></script>
+</body>
+</html>
