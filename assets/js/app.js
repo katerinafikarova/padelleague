@@ -270,8 +270,8 @@
       '<button class="row" data-act="signup" style="justify-content:center;background:#000;color:#fff;border-color:#000"><b>' + t('su_apple') + '</b></button>' +
       '<button class="row" data-act="signup" style="justify-content:center"><b>G&nbsp; ' + t('su_google') + '</b></button>' +
       '<div class="lbl" style="text-align:center">' + t('su_or') + '</div>' +
-      '<label class="field"><span class="lbl">E-mail</span><input id="su-email" type="email" value="jakub@padelteplice.cz"></label>' +
-      '<label class="field"><span class="lbl">' + t('su_pass') + '</span><input id="su-pass" type="password" value="prototyp"></label>' +
+      '<label class="field"><span class="lbl">E-mail</span><input id="su-email" type="email" value="jakub@example.com"></label>' +
+      '<label class="field"><span class="lbl">' + t('su_pass') + '</span><input id="su-pass" type="password" placeholder="••••••••" autocomplete="new-password"></label>' +
       '<p class="fine">' + t('su_fine') + '</p>' +
       '</div><div class="dock"><button class="cta" data-act="signup">' + t('su_cta') + '</button><button class="link" data-act="signup">' + t('su_have') + '</button></div>');
   };
